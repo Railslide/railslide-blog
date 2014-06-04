@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>My super title</title>
+        <title>How to set up Pelican on GitHub pages</title>
         <link rel="stylesheet" href="http://railslide.github.io/railslide-blog/theme/css/main.css" />
         <link href="http://railslide.github.io/railslide-blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Railslide Atom Feed" />
 
@@ -15,30 +15,48 @@
         <header id="banner" class="body">
                 <h1><a href="http://railslide.github.io/railslide-blog/">Railslide </a></h1>
                 <nav><ul>
-                    <li><a href="http://railslide.github.io/railslide-blog/category/pelican.html">Pelican</a></li>
+                    <li class="active"><a href="http://railslide.github.io/railslide-blog/category/pelican.html">Pelican</a></li>
+                    <li><a href="http://railslide.github.io/railslide-blog/category/python.html">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://railslide.github.io/railslide-blog/my-super-post.html" rel="bookmark"
-           title="Permalink to My super title">My super title</a></h1>
+        <a href="http://railslide.github.io/railslide-blog/pelican-github-pages.html" rel="bookmark"
+           title="Permalink to How to set up Pelican on GitHub pages">How to set up Pelican on GitHub pages</a></h1>
     </header>
 
     <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2014-05-26T23:20:00">
+        <abbr class="published" title="2014-05-26T00:00:00">
                 lun 26 maggio 2014
         </abbr>
 
         <address class="vcard author">
                 By <a class="url fn" href="http://railslide.github.io/railslide-blog/author/giulia-vergottini.html">Giulia Vergottini</a>
         </address>
-<p>In <a href="http://railslide.github.io/railslide-blog/category/python.html">Python</a>. </p>
-<p>tags: <a href="http://railslide.github.io/railslide-blog/tag/pelican.html">pelican</a><a href="http://railslide.github.io/railslide-blog/tag/publishing.html">publishing</a></p>
-</footer><!-- /.post-info -->      <p>This is the content of my super blog post.</p>
-<p>I am testing pelican!</p>
+<p>In <a href="http://railslide.github.io/railslide-blog/category/pelican.html">Pelican</a>. </p>
+<p>tags: <a href="http://railslide.github.io/railslide-blog/tag/pelican.html">pelican</a><a href="http://railslide.github.io/railslide-blog/tag/publishing.html">publishing</a><a href="http://railslide.github.io/railslide-blog/tag/github-pages.html">github pages</a></p>
+</footer><!-- /.post-info -->      <p>For setting up this blog I started by following <a href="http://mathamy.com/migrating-to-github-pages-using-pelican.html">this posts</a> by Amy Hanlon. All went great until I decided to take a look at the code of the makefile and discovered a <code>make github</code> option. Thus I started wondering whether there was a better way to integrate Pelican with GitHub pages and landed on a <a href="http://martinbrochhaus.com/pelican2.html">post</a> by Martin Brochhaus, which convinced me to use <a href="https://help.github.com/articles/user-organization-and-project-pages">project pages rather than personal ones</a>.</p>
+<p>So,
+The only thing that remained a bit unclear in my journey toward my Pelican powered blog was when I was supposed to push the source code. Here's the workflow I eventually came up with:</p>
+<div class="highlight"><pre><span class="c"># Write some content</span>
+
+<span class="c"># check if everything works fine</span>
+make devserver
+
+<span class="c"># pushing the source repo</span>
+git push origin master
+
+<span class="c"># push the output folder to GitHub pages</span>
+make github
+
+<span class="c"># stop the dev server</span>
+./develop_server.sh stop
+
+<span class="c"># celebrate!</span>
+</pre></div>
     </div><!-- /.entry-content -->
 
   </article>

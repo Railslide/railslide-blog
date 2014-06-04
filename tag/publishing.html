@@ -16,6 +16,7 @@
                 <h1><a href="http://railslide.github.io/railslide-blog/">Railslide </a></h1>
                 <nav><ul>
                     <li><a href="http://railslide.github.io/railslide-blog/category/pelican.html">Pelican</a></li>
+                    <li><a href="http://railslide.github.io/railslide-blog/category/python.html">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
@@ -33,26 +34,7 @@
 <p>In <a href="http://railslide.github.io/railslide-blog/category/pelican.html">Pelican</a>. </p>
 <p>tags: <a href="http://railslide.github.io/railslide-blog/tag/pelican.html">pelican</a><a href="http://railslide.github.io/railslide-blog/tag/publishing.html">publishing</a><a href="http://railslide.github.io/railslide-blog/tag/github-pages.html">github pages</a></p>
 </footer><!-- /.post-info --><p>Ok, my Pelican and GitHub pages powered blog seems to be up and running! Yay!</p>
-<p>For setting it up I started by following <a href="http://mathamy.com/migrating-to-github-pages-using-pelican.html">this posts</a> by Amy Hanlon. All went great until I decided to take a look at the code of the makefile and discovered a <code>make github</code> option. Thus I started wondering whether there was a better way to integrate Pelican with GitHub pages and landed on a <a href="http://martinbrochhaus.com/pelican2.html">post</a> by Martin Brochhaus, which convinced me to use <a href="https://help.github.com/articles/user-organization-and-project-pages">project pages rather than personal ones</a>.</p>
-<p>The only thing that remained a bit unclear in my journey toward my Pelican powered blog was when I was supposed to push the source code. Here's the workflow I eventually came up with:</p>
-<div class="highlight"><pre><span class="c"># Write some content</span>
-
-<span class="c"># check if everything works fine</span>
-make devserver
-
-<span class="c"># pushing the source repo</span>
-git push origin master
-
-<span class="c"># push the output folder to GitHub pages</span>
-make github
-
-<span class="c"># stop the dev server</span>
-./develop_server.sh stop
-
-<span class="c"># celebrate!</span>
-</pre></div>
-
-
+<p>Since I plan to write a dedicated post about the setup, I'll use this one to throw some ideas about what to do next.</p>
 <h2>TO DO (not necessarily in this order)</h2>
 <ul>
 <li>Change theme - ideally developing my own</li>

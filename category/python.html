@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Installing virtualenvwrapper for Python 3.4 on Ubuntu</title>
+        <title>Railslide - Python</title>
         <link rel="stylesheet" href="http://railslide.github.io/railslide-blog/theme/css/main.css" />
         <link href="http://railslide.github.io/railslide-blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Railslide Atom Feed" />
 
@@ -16,20 +16,16 @@
                 <h1><a href="http://railslide.github.io/railslide-blog/">Railslide </a></h1>
                 <nav><ul>
                     <li><a href="http://railslide.github.io/railslide-blog/category/pelican.html">Pelican</a></li>
+                    <li class="active"><a href="http://railslide.github.io/railslide-blog/category/python.html">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
-<section id="content" class="body">
-  <article>
-    <header>
-      <h1 class="entry-title">
-        <a href="http://railslide.github.io/railslide-blog/.html" rel="bookmark"
-           title="Permalink to Installing virtualenvwrapper for Python 3.4 on Ubuntu">Installing virtualenvwrapper for Python 3.4 on Ubuntu</a></h1>
-    </header>
 
-    <div class="entry-content">
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://railslide.github.io/railslide-blog/virtualenvwrapper-python3.html">Installing virtualenvwrapper for Python 3.4 on Ubuntu</a></h1>
 <footer class="post-info">
-        <abbr class="published" title="2014-05-28T23:20:00">
-                mer 28 maggio 2014
+        <abbr class="published" title="2014-06-04T00:00:00">
+                mer 04 giugno 2014
         </abbr>
 
         <address class="vcard author">
@@ -37,7 +33,7 @@
         </address>
 <p>In <a href="http://railslide.github.io/railslide-blog/category/python.html">Python</a>. </p>
 <p>tags: <a href="http://railslide.github.io/railslide-blog/tag/virtualenvwrapper.html">virtualenvwrapper</a><a href="http://railslide.github.io/railslide-blog/tag/virtualenv.html">virtualenv</a><a href="http://railslide.github.io/railslide-blog/tag/python34.html">python3.4</a></p>
-</footer><!-- /.post-info -->      <p>After listening to an inspiring talk by <a href="http://www.kennethreitz.org/">Kenneth Reitz</a> about transitioning from Python 2 to Python 3 at PyCon Sweden (I'll write a blog post about it sooner or later), I've decided that I should try to stick to Python 3 as much as possible.</p>
+</footer><!-- /.post-info --><p>After listening to an inspiring talk by <a href="http://www.kennethreitz.org/">Kenneth Reitz</a> about transitioning from Python 2 to Python 3 at PyCon Sweden (I'll write a blog post about it sooner or later), I've decided that I should try to stick to Python 3 as much as possible.</p>
 <p>So the first step in that direction was to set up my working environment in a Python 3 friendly way, hence to install Virtualenwrapper for Python 3. Here's how I did it.</p>
 <p>Virtualenwrapper documentation specifies that Virtualenvwrapper has been tested under Python 2.6-3.3, but no mention of Python 3.4. Being lazy and not really willing to install a third version of Python on my computer (Ubuntu 14.04 comes with Python 2.7.6 and Python 3.4 by default), I decided to give it try with what I had. Everything seems to work flawlessly so far, just keep it in mind in case you want to try to follow these instructions.</p>
 <h2>Setting up Virtualenvwrapper</h2>
@@ -75,21 +71,35 @@ deactivate virtualenv_name <span class="c"># Deactivate virtualenv</span>
 <h2>Projects and Postactivate</h2>
 <p>My typical workflow is to create a virtualenv and then create a project folder with the same name. So why not setting up Virtualenvwrapper to automatically do it for me every time I create a new virtualenv? Specify PROJECT_HOME in ~/.bashrc will do the trick:</p>
 <div class="highlight"><pre><span class="n">VIRTUALENVWRAPPER_PYTHON</span><span class="o">=</span><span class="err">&#39;</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">python3</span><span class="err">&#39;</span>
-<span class="n">PROJECT_HOME</span><span class="o">=</span><span class="err">&#39;</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">where</span><span class="o">/</span><span class="n">you</span><span class="o">/</span><span class="n">want</span><span class="o">/</span><span class="n">your</span><span class="o">/</span><span class="n">project</span><span class="o">/</span><span class="n">folder</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">be</span><span class="o">/</span><span class="n">created</span><span class="err">&#39;</span> <span class="err">#</span> <span class="n">This</span> <span class="n">needs</span> <span class="n">to</span> <span class="n">be</span> <span class="n">placed</span> <span class="n">before</span> <span class="n">the</span> <span class="n">virtualenvwrapper</span> <span class="n">command</span> <span class="n">as</span> <span class="n">well</span><span class="o">!</span>
+<span class="n">PROJECT_HOME</span><span class="o">=</span><span class="err">&#39;</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">where</span><span class="o">/</span><span class="n">you</span><span class="o">/</span><span class="n">want</span><span class="o">/</span><span class="n">your</span><span class="o">/</span><span class="n">project</span><span class="o">/</span><span class="n">folder</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">be</span><span class="o">/</span><span class="n">created</span><span class="err">&#39;</span> <span class="err">#</span> <span class="n">This</span> <span class="n">needs</span> <span class="n">to</span> <span class="n">be</span> <span class="n">placed</span> <span class="n">before</span> <span class="n">the</span> <span class="n">virtualenvwrapper</span> <span class="n">command</span> <span class="n">as</span> <span class="n">well</span>
 <span class="n">source</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">virtualenvwrapper</span><span class="p">.</span><span class="n">sh</span>
 </pre></div>
 
 
-<p>When typing</p>
-<div class="highlight"><pre>mkproject project_name
+<p>Now, when typing</p>
+<div class="highlight"><pre>mkproject my_project
 </pre></div>
 
 
-<p>Virtualenvwrapper will automatically create a virtualenv and a folder called <em>project_name</em>. Neat!</p>
-    </div><!-- /.entry-content -->
+<p>Virtualenvwrapper will automatically create a virtualenv and a folder called <em>my_project</em>.</p>
+<p>Finally I set up virtualenvwrapper to automatically navigate to the project folder on virtualenv activation, by adding the following lines to my postactivate script:</p>
+<div class="highlight"><pre><span class="n">project_name</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">basename</span> <span class="err">$</span><span class="n">VIRTUAL_ENV</span><span class="p">)</span>
+<span class="n">cd</span> <span class="o">~/</span><span class="n">Projects</span><span class="o">/</span><span class="err">$</span><span class="n">project_name</span>
+</pre></div>
 
-  </article>
-</section>
+
+<p>So when typing</p>
+<div class="highlight"><pre>workon my_project
+</pre></div>
+
+
+<p>Virtualenvwrapper activates the virtualenv and teleports me to ~/Projects/my_project. Neat!</p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>blogroll</h2>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Railslide - Giulia Vergottini</title>
+        <title>Installing virtualenvwrapper for Python 3.4 on Ubuntu</title>
         <link rel="stylesheet" href="http://railslide.github.io/railslide-blog/theme/css/main.css" />
         <link href="http://railslide.github.io/railslide-blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Railslide Atom Feed" />
 
@@ -16,13 +16,18 @@
                 <h1><a href="http://railslide.github.io/railslide-blog/">Railslide </a></h1>
                 <nav><ul>
                     <li><a href="http://railslide.github.io/railslide-blog/category/pelican.html">Pelican</a></li>
-                    <li><a href="http://railslide.github.io/railslide-blog/category/python.html">Python</a></li>
+                    <li class="active"><a href="http://railslide.github.io/railslide-blog/category/python.html">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://railslide.github.io/railslide-blog/virtualenvwrapper-python3.html" rel="bookmark"
+           title="Permalink to Installing virtualenvwrapper for Python 3.4 on Ubuntu">Installing virtualenvwrapper for Python 3.4 on Ubuntu</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://railslide.github.io/railslide-blog/virtualenvwrapper-python3.html">Installing virtualenvwrapper for Python 3.4 on Ubuntu</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2014-06-04T00:00:00">
                 mer 04 giugno 2014
@@ -33,7 +38,7 @@
         </address>
 <p>In <a href="http://railslide.github.io/railslide-blog/category/python.html">Python</a>. </p>
 <p>tags: <a href="http://railslide.github.io/railslide-blog/tag/virtualenvwrapper.html">virtualenvwrapper</a><a href="http://railslide.github.io/railslide-blog/tag/virtualenv.html">virtualenv</a><a href="http://railslide.github.io/railslide-blog/tag/python34.html">python3.4</a></p>
-</footer><!-- /.post-info --><p>After listening to an inspiring talk by <a href="http://www.kennethreitz.org/">Kenneth Reitz</a> about transitioning from Python 2 to Python 3 at PyCon Sweden (I'll write a blog post about it sooner or later), I've decided that I should try to stick to Python 3 as much as possible.</p>
+</footer><!-- /.post-info -->      <p>After listening to an inspiring talk by <a href="http://www.kennethreitz.org/">Kenneth Reitz</a> about transitioning from Python 2 to Python 3 at PyCon Sweden (I'll write a blog post about it sooner or later), I've decided that I should try to stick to Python 3 as much as possible.</p>
 <p>So the first step in that direction was to set up my working environment in a Python 3 friendly way, hence to install Virtualenwrapper for Python 3. Here's how I did it.</p>
 <p>Virtualenwrapper documentation specifies that Virtualenvwrapper has been tested under Python 2.6-3.3, but no mention of Python 3.4. Being lazy and not really willing to install a third version of Python on my computer (Ubuntu 14.04 comes with Python 2.7.6 and Python 3.4 by default), I decided to give it try with what I had. Everything seems to work flawlessly so far, just keep it in mind in case you want to try to follow these instructions.</p>
 <h2>Setting up Virtualenvwrapper</h2>
@@ -93,39 +98,11 @@ deactivate virtualenv_name <span class="c"># Deactivate virtualenv</span>
 </pre></div>
 
 
-<p>Virtualenvwrapper activates the virtualenv and teleports me to ~/Projects/my_project. Neat!</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>Virtualenvwrapper activates the virtualenv and teleports me to ~/Projects/my_project. Neat!</p>
+    </div><!-- /.entry-content -->
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://railslide.github.io/railslide-blog/up-and-running.html" rel="bookmark"
-                           title="Permalink to Up and running!">Up and running!</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2014-06-03T00:00:00">
-                mar 03 giugno 2014
-        </abbr>
-
-        <address class="vcard author">
-                By <a class="url fn" href="http://railslide.github.io/railslide-blog/author/giulia-vergottini.html">Giulia Vergottini</a>
-        </address>
-<p>In <a href="http://railslide.github.io/railslide-blog/category/pelican.html">Pelican</a>. </p>
-<p>tags: <a href="http://railslide.github.io/railslide-blog/tag/pelican.html">pelican</a><a href="http://railslide.github.io/railslide-blog/tag/publishing.html">publishing</a><a href="http://railslide.github.io/railslide-blog/tag/github-pages.html">github pages</a></p>
-</footer><!-- /.post-info -->                <p>Celebrating the first post of the blog and what to do next.</p>
-                <a class="readmore" href="http://railslide.github.io/railslide-blog/up-and-running.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-            </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 1
-</p>
-            </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>blogroll</h2>
