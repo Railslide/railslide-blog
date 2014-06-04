@@ -1,8 +1,8 @@
 Title: My super title
-Date: 2014-05-26 23:20
+Date: 2014-05-26
 Category: Python
 Tags: pelican, publishing
-Slug: my-super-post
+Slug: draft-template
 Author: Giulia Vergottini
 Summary: Short version for index and feeds
 Status: draft

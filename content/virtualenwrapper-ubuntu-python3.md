@@ -1,11 +1,11 @@
 Title: Installing virtualenvwrapper for Python 3.4 on Ubuntu
-Date: 2014-05-28 23:20
+Date: 2014-06-04
 Category: Python
 Tags: virtualenvwrapper, virtualenv, python3.4
-Slug:
+Slug: virtualenvwrapper-python3
 Author: Giulia Vergottini
 Summary: Virtualenvwrapper is a great virtualenv management tool. Here is how I set it up for Python 3.4 on Ubuntu.
-Status: draft
+
 
 After listening to an inspiring talk by [Kenneth Reitz](http://www.kennethreitz.org/) about transitioning from Python 2 to Python 3 at PyCon Sweden (I'll write a blog post about it sooner or later), I've decided that I should try to stick to Python 3 as much as possible.
 
@@ -55,12 +55,25 @@ Projects and Postactivate
 My typical workflow is to create a virtualenv and then create a project folder with the same name. So why not setting up Virtualenvwrapper to automatically do it for me every time I create a new virtualenv? Specify PROJECT_HOME in ~/.bashrc will do the trick:
 
     VIRTUALENVWRAPPER_PYTHON='/usr/bin/python3'
-    PROJECT_HOME='/path/to/where/you/want/your/project/folder/to/be/created' # This needs to be placed before the virtualenvwrapper command as well!
+    PROJECT_HOME='/path/to/where/you/want/your/project/folder/to/be/created' # This needs to be placed before the virtualenvwrapper command as well
     source /usr/local/bin/virtualenvwrapper.sh
 
-When typing
+Now, when typing
 
     :::bash
-    mkproject project_name
+    mkproject my_project
 
-Virtualenvwrapper will automatically create a virtualenv and a folder called *project_name*. Neat!
+Virtualenvwrapper will automatically create a virtualenv and a folder called *my_project*.
+
+Finally I set up virtualenvwrapper to automatically navigate to the project folder on virtualenv activation, by adding the following lines to my postactivate script:
+
+    project_name=$(basename $VIRTUAL_ENV)
+    cd ~/Projects/$project_name
+
+So when typing
+
+    :::bash
+    workon my_project
+
+Virtualenvwrapper activates the virtualenv and teleports me to ~/Projects/my_project. Neat!
+
