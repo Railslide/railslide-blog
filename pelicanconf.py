@@ -30,5 +30,8 @@ DEFAULT_PAGINATION = 10
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
 
-# CNAME file
-FILES_TO_COPY = (('extra/CNAME', 'CNAME'),)
+# Static paths
+STATIC_PATHS = [
+    'CNAME',
+    'images'
+    ]
