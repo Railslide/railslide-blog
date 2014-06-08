@@ -29,8 +29,8 @@
 
     <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2014-05-26T00:00:00">
-                lun 26 maggio 2014
+        <abbr class="published" title="2014-06-08T00:00:00">
+                dom 08 giugno 2014
         </abbr>
 
         <address class="vcard author">
@@ -38,25 +38,58 @@
         </address>
 <p>In <a href="http://railslide.github.io/railslide-blog/category/pelican.html">Pelican</a>. </p>
 <p>tags: <a href="http://railslide.github.io/railslide-blog/tag/pelican.html">pelican</a><a href="http://railslide.github.io/railslide-blog/tag/publishing.html">publishing</a><a href="http://railslide.github.io/railslide-blog/tag/github-pages.html">github pages</a></p>
-</footer><!-- /.post-info -->      <p>For setting up this blog I started by following <a href="http://mathamy.com/migrating-to-github-pages-using-pelican.html">this posts</a> by Amy Hanlon. All went great until I decided to take a look at the code of the makefile and discovered a <code>make github</code> option. Thus I started wondering whether there was a better way to integrate Pelican with GitHub pages and landed on a <a href="http://martinbrochhaus.com/pelican2.html">post</a> by Martin Brochhaus, which convinced me to use <a href="https://help.github.com/articles/user-organization-and-project-pages">project pages rather than personal ones</a>.</p>
-<p>So,
-The only thing that remained a bit unclear in my journey toward my Pelican powered blog was when I was supposed to push the source code. Here's the workflow I eventually came up with:</p>
-<div class="highlight"><pre><span class="c"># Write some content</span>
+</footer><!-- /.post-info -->      <p>Although the web is plenty of blog posts about how to set up a Pelican powered blog on GitHub pages, I still had to glean information from several sources and mix it with a bit of experimentation before being able to have my blog up and running. So hopefully this post will make someone's life easier, other than being a future reference for myself.</p>
+<p>Before starting I need to give credit where credit is due, since <a href="http://mathamy.com/migrating-to-github-pages-using-pelican.html">this post</a> by Amy Hanlon and <a href="http://martinbrochhaus.com/pelican2.html">this one</a> by Martin Brochhaus have been a tremendous starting point for my trial-and-error journey. Once said that, we can start.</p>
+<h1>1. Setting up GitHub project pages</h1>
+<p>GitHub offers the possibility to host your site in the cloud through either <a href="https://help.github.com/articles/user-organization-and-project-pages">personal or project pages</a>. Although it is possible to use both for hosting a Pelican powered blog, project pages make your life so much easier when it comes both to publish your blog content and to put blog source under revision control.</p>
+<p>For creating project pages, all we need to do is to create a repository as usual and put the content we wish to publish (i.e. the HTML static files) into a branch named <code>gh-pages</code>. Once done that, your page will show up at username.github.io/repository.</p>
+<p>Although it could sounds overly complicated - especially the <code>gh-pages</code> branch part - you don't have to worry since an awesome program called <a href="https://github.com/davisp/ghp-import">ghp-import</a> will take care of it for us. For now, simply create a new repository as you would do for any other project and set up a <code>.gitignore</code> file with the following content:</p>
+<div class="highlight"><pre><span class="o">*</span><span class="p">.</span><span class="n">pid</span>
+<span class="o">*</span><span class="p">.</span><span class="n">pyc</span>
+<span class="n">output</span><span class="o">/</span>
+</pre></div>
 
-<span class="c"># check if everything works fine</span>
-make devserver
 
-<span class="c"># pushing the source repo</span>
+<h1>2. Installing the needed packages</h1>
+<p>Before installing Pelican, I would recommend to create a new virtualenv. It is not mandatory, but it is definitely a good practice and would prevent the risk of conflicts between installed packages.</p>
+<p>NOTE: Pelican documentation recommends to use Pelican with Python 2.7. I am keeping up with <a href="http://railslide.github.io/railslide-blog/virtualenvwrapper-python3.html">my pledge of using Python 3 whenever possible</a>, as well as giving a try with Python 3.4 (Ubuntu 14.04 default version). Everything works fine so far and anyways these instructions are version agnostic - just be aware of it and choose your Python version accordingly.</p>
+<p>Install pelican and ghp-import</p>
+<div class="highlight"><pre><span class="nv">$ </span>pip install pelican
+<span class="nv">$ </span>pip install -e git+git://github.com/davisp/ghp-import.git#egg<span class="o">=</span>ghp-import
+</pre></div>
+
+
+<p>Next run <code>pelican-quickstart</code> and get ready to answer to a bunch of questions. Most of them are pretty straightforward and anyway you'll be able to change them later in your settings files. These are the only ones you need to care about for the moment:</p>
+<div class="highlight"><pre>Where <span class="k">do </span>you want to create your new web site? <span class="o">[</span>.<span class="o">]</span> <span class="c"># Press enter</span>
+Do you want to specify a URL prefix? e.g., http://example.com <span class="o">(</span>Y/n<span class="o">)</span> <span class="c"># y</span>
+What is your URL prefix? <span class="o">(</span>see above example; no trailing slash<span class="o">)</span> <span class="c"># http://username.github.io/repository</span>
+Do you want to generate a Fabfile/Makefile to automate generation and publishing? <span class="o">(</span>Y/n<span class="o">)</span> <span class="c"># y</span>
+</pre></div>
+
+
+<p>Answer <code>n</code> to all the questions about uploading your website and you are ready to go.</p>
+<h1>3. Writing content</h1>
+<p>Fire up your favorite text editor and write your blog content in either Markdown or reStructuredText. Once you have done, save it in the content folder. For previewing it:</p>
+<div class="highlight"><pre><span class="nv">$ </span>make devserver
+<span class="c"># go to http://localhost:8000 and check if everything looks good</span>
+^C <span class="c"># note that CTRL+C won&#39;t stop dev server</span>
+<span class="nv">$ </span>./develop_server.sh stop <span class="c"># manually stop the dev server</span>
+</pre></div>
+
+
+<h1>4. Publishing and pushing</h1>
+<p>Ok this is the easy part.</p>
+<div class="highlight"><pre><span class="c"># pushing the source repo</span>
 git push origin master
 
 <span class="c"># push the output folder to GitHub pages</span>
 make github
 
-<span class="c"># stop the dev server</span>
-./develop_server.sh stop
-
 <span class="c"># celebrate!</span>
 </pre></div>
+
+
+<p>Congrats! Your blog is now up and running!</p>
     </div><!-- /.entry-content -->
 
   </article>
