@@ -1,5 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide</title><link href="http://railslide.github.io/railslide-blog/" rel="alternate"></link><link href="http://railslide.github.io/railslide-blog/feeds/all.atom.xml" rel="self"></link><id>http://railslide.github.io/railslide-blog/</id><updated>2014-06-04T00:00:00+02:00</updated><entry><title>Installing virtualenvwrapper for Python 3.4 on Ubuntu</title><link href="http://railslide.github.io/railslide-blog/virtualenvwrapper-python3.html" rel="alternate"></link><updated>2014-06-04T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.github.io/railslide-blog,2014-06-04:virtualenvwrapper-python3.html</id><summary type="html">&lt;p&gt;After listening to an inspiring talk by &lt;a href="http://www.kennethreitz.org/"&gt;Kenneth Reitz&lt;/a&gt; about transitioning from Python 2 to Python 3 at PyCon Sweden (I'll write a blog post about it sooner or later), I've decided that I should try to stick to Python 3 as much as possible.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide</title><link href="http://railslide.github.io/railslide-blog/" rel="alternate"></link><link href="http://railslide.github.io/railslide-blog/feeds/all.atom.xml" rel="self"></link><id>http://railslide.github.io/railslide-blog/</id><updated>2014-06-09T00:00:00+02:00</updated><entry><title>How to set up Pelican on GitHub pages</title><link href="http://railslide.github.io/railslide-blog/pelican-github-pages.html" rel="alternate"></link><updated>2014-06-09T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.github.io/railslide-blog,2014-06-09:pelican-github-pages.html</id><summary type="html">&lt;p&gt;Although the web is plenty of blog posts about how to set up a Pelican powered blog on GitHub pages, I still had to glean information from several sources and mix it with a bit of experimentation before being able to have my blog up and running. So hopefully this post will make someone's life easier, other than being a future reference for myself.&lt;/p&gt;
+&lt;p&gt;Before starting I need to give credit where credit is due, since &lt;a href="http://mathamy.com/migrating-to-github-pages-using-pelican.html"&gt;this post&lt;/a&gt; by Amy Hanlon and &lt;a href="http://martinbrochhaus.com/pelican2.html"&gt;this one&lt;/a&gt; by Martin Brochhaus have been a tremendous starting point for my trial-and-error journey. Once said that, we can start.&lt;/p&gt;
+&lt;h1&gt;1. Setting up GitHub project pages&lt;/h1&gt;
+&lt;p&gt;GitHub offers the possibility to host your site in the cloud through either &lt;a href="https://help.github.com/articles/user-organization-and-project-pages"&gt;personal or project pages&lt;/a&gt;. Although it is possible to use both for hosting a Pelican powered blog, project pages make your life so much easier when it comes both to publish your blog content and to put blog source under revision control.&lt;/p&gt;
+&lt;p&gt;For creating project pages, all we need to do is to create a repository as usual and put the content we wish to publish (i.e. the HTML static files) into a branch named &lt;code&gt;gh-pages&lt;/code&gt;. Once done that, your page will show up at username.github.io/repository.&lt;/p&gt;
+&lt;p&gt;Although it could sounds overly complicated - especially the &lt;code&gt;gh-pages&lt;/code&gt; branch part - you don't have to worry since an awesome program called &lt;a href="https://github.com/davisp/ghp-import"&gt;ghp-import&lt;/a&gt; will take care of it for us. For now, simply create a new repository as you would do for any other project and set up a &lt;code&gt;.gitignore&lt;/code&gt; file with the following content:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;
+&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pyc&lt;/span&gt;
+&lt;span class="n"&gt;output&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;2. Installing the needed packages&lt;/h1&gt;
+&lt;p&gt;Before installing Pelican, I would recommend to create a new virtualenv. It is not mandatory, but it is definitely a good practice and would prevent the risk of conflicts between installed packages.&lt;/p&gt;
+&lt;p&gt;NOTE: Pelican documentation recommends to use Pelican with Python 2.7. I am keeping up with &lt;a href="http://railslide.github.io/railslide-blog/virtualenvwrapper-python3.html"&gt;my pledge of using Python 3 whenever possible&lt;/a&gt;, as well as giving a try with Python 3.4 (Ubuntu 14.04 default version). Everything works fine so far and anyways these instructions are version agnostic - just be aware of it and choose your Python version accordingly.&lt;/p&gt;
+&lt;p&gt;Install pelican and ghp-import&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;pip install pelican
+pip install -e git+git://github.com/davisp/ghp-import.git#egg&lt;span class="o"&gt;=&lt;/span&gt;ghp-import
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Next run &lt;code&gt;pelican-quickstart&lt;/code&gt; and get ready to answer to a bunch of questions. Most of them are pretty straightforward and anyway you'll be able to change them later in your settings files. These are the only ones you need to care about for the moment:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;Where &lt;span class="k"&gt;do &lt;/span&gt;you want to create your new web site? &lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="c"&gt;# Press enter&lt;/span&gt;
+Do you want to specify a URL prefix? e.g., http://example.com &lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# y&lt;/span&gt;
+What is your URL prefix? &lt;span class="o"&gt;(&lt;/span&gt;see above example; no trailing slash&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# http://username.github.io/repository&lt;/span&gt;
+Do you want to generate a Fabfile/Makefile to automate generation and publishing? &lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# y&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Answer &lt;code&gt;n&lt;/code&gt; to all the questions about uploading your website and you are ready to go.&lt;/p&gt;
+&lt;h1&gt;3. Writing content&lt;/h1&gt;
+&lt;p&gt;Fire up your favorite text editor and write your blog content in either Markdown or reStructuredText. Once you have done, save it in the content folder. For previewing it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;make devserver
+&lt;span class="c"&gt;# go to http://localhost:8000 and check if everything looks good&lt;/span&gt;
+^C &lt;span class="c"&gt;# note that CTRL+C won&amp;#39;t stop dev server&lt;/span&gt;
+./develop_server.sh stop &lt;span class="c"&gt;# manually stop the dev server&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;4. Publishing and pushing&lt;/h1&gt;
+&lt;p&gt;Ok this is the easy part.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# pushing the source repo&lt;/span&gt;
+git push origin master
+
+&lt;span class="c"&gt;# push the output folder to GitHub pages&lt;/span&gt;
+make github
+
+&lt;span class="c"&gt;# celebrate!&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Congrats! Your blog is now up and running!&lt;/p&gt;
+&lt;h1&gt;5. Setting up your custom domain&lt;/h1&gt;
+&lt;p&gt;Create a CNAME file containing your bare domain:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;mydomain&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Add the following lines to your pelicanconf.py, in order to make Pelican copying it to your output folder on every publish.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;STATIC_PATHS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;CNAME&amp;#39;&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then, assuming that you want both mydomain.com and www.mydomain.com to point at your blog, you need to set &lt;em&gt;both the CNAME and the A-records&lt;/em&gt; of your domain to point at github.&lt;/p&gt;
+&lt;p&gt;Since this has been the most problematic step for me, here's a couple of extra thoughts regarding my domain registrar (Gandi):&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Make sure to not have any other A-record&lt;/li&gt;
+&lt;li&gt;Using Gandi's web forwarding instead of setting both the CNAME and the A-records resulted in a redirect loop error&lt;/li&gt;
+&lt;li&gt;You can take the rest of the zone file data from Gandi's default one&lt;/li&gt;
+&lt;li&gt;Testing from different browsers and refreshing several times can help spotting some very sneaky bugs&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Here are the lines taking care of the magic in my case:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;www&lt;/span&gt; &lt;span class="mi"&gt;10800&lt;/span&gt; &lt;span class="n"&gt;IN&lt;/span&gt; &lt;span class="n"&gt;CNAME&lt;/span&gt; &lt;span class="n"&gt;railslide&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;github&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;io&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;span class="err"&gt;@&lt;/span&gt; &lt;span class="mi"&gt;10800&lt;/span&gt; &lt;span class="n"&gt;IN&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="mf"&gt;192.30.252.153&lt;/span&gt;
+&lt;span class="err"&gt;@&lt;/span&gt; &lt;span class="mi"&gt;10800&lt;/span&gt; &lt;span class="n"&gt;IN&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="mf"&gt;192.30.252.154&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After that, wait some hours for the DNS to propagate and you should be done.&lt;/p&gt;</summary><category term="pelican"></category><category term="publishing"></category><category term="github pages"></category></entry><entry><title>Installing virtualenvwrapper for Python 3.4 on Ubuntu</title><link href="http://railslide.github.io/railslide-blog/virtualenvwrapper-python3.html" rel="alternate"></link><updated>2014-06-04T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.github.io/railslide-blog,2014-06-04:virtualenvwrapper-python3.html</id><summary type="html">&lt;p&gt;After listening to an inspiring talk by &lt;a href="http://www.kennethreitz.org/"&gt;Kenneth Reitz&lt;/a&gt; about transitioning from Python 2 to Python 3 at PyCon Sweden (I'll write a blog post about it sooner or later), I've decided that I should try to stick to Python 3 as much as possible.&lt;/p&gt;
 &lt;p&gt;So the first step in that direction was to set up my working environment in a Python 3 friendly way, hence to install Virtualenwrapper for Python 3. Here's how I did it.&lt;/p&gt;
 &lt;p&gt;Virtualenwrapper documentation specifies that Virtualenvwrapper has been tested under Python 2.6-3.3, but no mention of Python 3.4. Being lazy and not really willing to install a third version of Python on my computer (Ubuntu 14.04 comes with Python 2.7.6 and Python 3.4 by default), I decided to give it try with what I had. Everything seems to work flawlessly so far, just keep it in mind in case you want to try to follow these instructions.&lt;/p&gt;
 &lt;h2&gt;Setting up Virtualenvwrapper&lt;/h2&gt;

@@ -29,8 +29,8 @@
 
     <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2014-06-08T00:00:00">
-                dom 08 giugno 2014
+        <abbr class="published" title="2014-06-09T00:00:00">
+                lun 09 giugno 2014
         </abbr>
 
         <address class="vcard author">
@@ -54,8 +54,8 @@
 <p>Before installing Pelican, I would recommend to create a new virtualenv. It is not mandatory, but it is definitely a good practice and would prevent the risk of conflicts between installed packages.</p>
 <p>NOTE: Pelican documentation recommends to use Pelican with Python 2.7. I am keeping up with <a href="http://railslide.github.io/railslide-blog/virtualenvwrapper-python3.html">my pledge of using Python 3 whenever possible</a>, as well as giving a try with Python 3.4 (Ubuntu 14.04 default version). Everything works fine so far and anyways these instructions are version agnostic - just be aware of it and choose your Python version accordingly.</p>
 <p>Install pelican and ghp-import</p>
-<div class="highlight"><pre><span class="nv">$ </span>pip install pelican
-<span class="nv">$ </span>pip install -e git+git://github.com/davisp/ghp-import.git#egg<span class="o">=</span>ghp-import
+<div class="highlight"><pre>pip install pelican
+pip install -e git+git://github.com/davisp/ghp-import.git#egg<span class="o">=</span>ghp-import
 </pre></div>
 
 
@@ -70,10 +70,10 @@ Do you want to generate a Fabfile/Makefile to automate generation and publishing
 <p>Answer <code>n</code> to all the questions about uploading your website and you are ready to go.</p>
 <h1>3. Writing content</h1>
 <p>Fire up your favorite text editor and write your blog content in either Markdown or reStructuredText. Once you have done, save it in the content folder. For previewing it:</p>
-<div class="highlight"><pre><span class="nv">$ </span>make devserver
+<div class="highlight"><pre>make devserver
 <span class="c"># go to http://localhost:8000 and check if everything looks good</span>
 ^C <span class="c"># note that CTRL+C won&#39;t stop dev server</span>
-<span class="nv">$ </span>./develop_server.sh stop <span class="c"># manually stop the dev server</span>
+./develop_server.sh stop <span class="c"># manually stop the dev server</span>
 </pre></div>
 
 
@@ -90,6 +90,35 @@ make github
 
 
 <p>Congrats! Your blog is now up and running!</p>
+<h1>5. Setting up your custom domain</h1>
+<p>Create a CNAME file containing your bare domain:</p>
+<div class="highlight"><pre><span class="n">mydomain</span><span class="p">.</span><span class="n">com</span>
+</pre></div>
+
+
+<p>Add the following lines to your pelicanconf.py, in order to make Pelican copying it to your output folder on every publish.</p>
+<div class="highlight"><pre><span class="n">STATIC_PATHS</span> <span class="o">=</span> <span class="p">[</span>
+<span class="s">&#39;CNAME&#39;</span>
+<span class="p">]</span>
+</pre></div>
+
+
+<p>Then, assuming that you want both mydomain.com and www.mydomain.com to point at your blog, you need to set <em>both the CNAME and the A-records</em> of your domain to point at github.</p>
+<p>Since this has been the most problematic step for me, here's a couple of extra thoughts regarding my domain registrar (Gandi):</p>
+<ol>
+<li>Make sure to not have any other A-record</li>
+<li>Using Gandi's web forwarding instead of setting both the CNAME and the A-records resulted in a redirect loop error</li>
+<li>You can take the rest of the zone file data from Gandi's default one</li>
+<li>Testing from different browsers and refreshing several times can help spotting some very sneaky bugs</li>
+</ol>
+<p>Here are the lines taking care of the magic in my case:</p>
+<div class="highlight"><pre><span class="n">www</span> <span class="mi">10800</span> <span class="n">IN</span> <span class="n">CNAME</span> <span class="n">railslide</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">io</span><span class="p">.</span>
+<span class="err">@</span> <span class="mi">10800</span> <span class="n">IN</span> <span class="n">A</span> <span class="mf">192.30.252.153</span>
+<span class="err">@</span> <span class="mi">10800</span> <span class="n">IN</span> <span class="n">A</span> <span class="mf">192.30.252.154</span>
+</pre></div>
+
+
+<p>After that, wait some hours for the DNS to propagate and you should be done.</p>
     </div><!-- /.entry-content -->
 
   </article>
