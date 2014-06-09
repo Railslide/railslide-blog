@@ -1,11 +1,10 @@
 Title: How to set up Pelican on GitHub pages
-Date: 2014-06-08
+Date: 2014-06-09
 Category: Pelican
 Tags: pelican, publishing, github pages
 Slug: pelican-github-pages
 Author: Giulia Vergottini
 Summary: How to set up Pelican on GitHUb pages and a custom domain
-Status: draft
 
 
 Although the web is plenty of blog posts about how to set up a Pelican powered blog on GitHub pages, I still had to glean information from several sources and mix it with a bit of experimentation before being able to have my blog up and running. So hopefully this post will make someone's life easier, other than being a future reference for myself.
@@ -37,8 +36,8 @@ NOTE: Pelican documentation recommends to use Pelican with Python 2.7. I am keep
 Install pelican and ghp-import
 
     :::bash
-    $ pip install pelican
-    $ pip install -e git+git://github.com/davisp/ghp-import.git#egg=ghp-import
+    pip install pelican
+    pip install -e git+git://github.com/davisp/ghp-import.git#egg=ghp-import
 
 
 Next run `pelican-quickstart` and get ready to answer to a bunch of questions. Most of them are pretty straightforward and anyway you'll be able to change them later in your settings files. These are the only ones you need to care about for the moment:
@@ -58,10 +57,11 @@ Answer `n` to all the questions about uploading your website and you are ready t
 Fire up your favorite text editor and write your blog content in either Markdown or reStructuredText. Once you have done, save it in the content folder. For previewing it:
 
     :::bash
-    $ make devserver
+    make devserver
     # go to http://localhost:8000 and check if everything looks good
     ^C # note that CTRL+C won't stop dev server
-    $ ./develop_server.sh stop # manually stop the dev server
+    ./develop_server.sh stop # manually stop the dev server
+
 
 4. Publishing and pushing
 =========================
@@ -78,3 +78,35 @@ Ok this is the easy part.
     # celebrate!
 
 Congrats! Your blog is now up and running!
+
+
+5. Setting up your custom domain
+================================
+
+Create a CNAME file containing your bare domain:
+
+    mydomain.com
+
+Add the following lines to your pelicanconf.py, in order to make Pelican copying it to your output folder on every publish.
+
+    :::python
+    STATIC_PATHS = [
+    'CNAME'
+    ]
+
+Then, assuming that you want both mydomain.com and www.mydomain.com to point at your blog, you need to set *both the CNAME and the A-records* of your domain to point at github.
+
+Since this has been the most problematic step for me, here's a couple of extra thoughts regarding my domain registrar (Gandi):
+
+1. Make sure to not have any other A-record
+2. Using Gandi's web forwarding instead of setting both the CNAME and the A-records resulted in a redirect loop error
+3. You can take the rest of the zone file data from Gandi's default one
+4. Testing from different browsers and refreshing several times can help spotting some very sneaky bugs
+
+Here are the lines taking care of the magic in my case:
+
+    www 10800 IN CNAME railslide.github.io.
+    @ 10800 IN A 192.30.252.153
+    @ 10800 IN A 192.30.252.154
+
+After that, wait some hours for the DNS to propagate and you should be done.
