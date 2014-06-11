@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = 'Giulia'
 SITENAME = 'Railslide'
+TAGLINE = 'Code, experiments, and thoughts'
 SITEURL = ''
 
 TIMEZONE = 'Europe/Paris'
@@ -22,8 +23,9 @@ LINKS =  (('Pelican', 'http://getpelican.com/'),
           ('You can modify those links in your config file', '#'),)
 
 # Social widget
-SOCIAL = (('You can add links in your config file', '#'),
-          ('Another social link', '#'),)
+SOCIAL = (('github-square', 'https://github.com/Railslide/'),
+          ('google-plus-square', 'https://plus.google.com/+GiuliaVergottini'),
+          ('linkedin-square', 'https://www.linkedin.com/in/giuliavergottini'),)
 
 DEFAULT_PAGINATION = 10
 
@@ -35,3 +37,7 @@ STATIC_PATHS = [
     'CNAME',
     'images'
     ]
+    
+# Theme
+THEME = 'themes/pure'
+
