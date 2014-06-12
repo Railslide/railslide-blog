@@ -16,22 +16,7 @@
 
 {% block content %}
 <div class="pure-g-r" id="layout">
-    <div class="sidebar sidebar-article pure-u">
-        <header class="header-article">
-            <hgroup>
-                <a href="{{ SITEURL }}/{{ article.author.url }}" title="See posts by {{ article.author }}">
-                    {% if article.author_gravatar %}
-                        <img class="avatar" alt="{{ article.author }}" src="{{ article.author_gravatar }}">
-                    {% endif %}
-                </a>
-                <h2 class="article-info">{{ article.author }}</h2>
-                <small class="about-author">{{ article.about_author }}</small>
-                <h5>Published</h5>
-                <p>{{ article.locale_date }}</p>
-                <a href="/">&larr;Home</a>
-            </hgroup>
-        </header>
-    </div>
+    {% include 'sidebar.html' %}
     <div class="pure-u">
         <div class="content">
             <section class="post">
