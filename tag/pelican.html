@@ -1,179 +1,112 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-        <meta charset="utf-8" />
-        <title>Railslide - pelican</title>
-        <link rel="stylesheet" href="http://railslide.github.io/railslide-blog/theme/css/main.css" />
-        <link href="http://railslide.github.io/railslide-blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Railslide Atom Feed" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
 
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+        <link rel="alternate"  href="http://railslide.github.io/railslide-blog/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>pelican tag // Railslide // Code, experiments, and thoughts</title>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://railslide.github.io/railslide-blog/theme/css/pure.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 </head>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="http://railslide.github.io/railslide-blog/">Railslide </a></h1>
-                <nav><ul>
-                    <li><a href="http://railslide.github.io/railslide-blog/category/pelican.html">Pelican</a></li>
-                    <li><a href="http://railslide.github.io/railslide-blog/category/python.html">Python</a></li>
-                </ul></nav>
-        </header><!-- /#banner -->
+<body>
+<div class="pure-g-r" id="layout">
+<div class="sidebar pure-u">
+    <div class="cover-img">
+        <div class="cover-body">
+            <header class="header">
+                <hgroup>
+                    <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                    <p class="tagline">Code, experiments, and thoughts</p>
+                    <p class="social">
+                        <a href="https://github.com/Railslide/">
+                            <i class="fa fa-github-square fa-3x"></i>
+                        </a>
+                        <a href="https://plus.google.com/+GiuliaVergottini">
+                            <i class="fa fa-google-plus-square fa-3x"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/giuliavergottini">
+                            <i class="fa fa-linkedin-square fa-3x"></i>
+                        </a>
+                    <p>
+                </hgroup>
+            </header>
+        </div>
+    </div>
+</div>    <div class="pure-u-1">
+        <div class="content">
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+                <h1 class="content-subhead">
+Posts tagged 'pelican'                </h1>
+<section class="post">
+    <header class="post-header">
+        <a href="http://railslide.github.io/railslide-blog/author/giulia-vergottini.html" title="See posts by Giulia Vergottini">
+        </a>
+        <h3><a class="post-title" href="http://railslide.github.io/railslide-blog/pelican-github-pages.html">How to set up Pelican on GitHub pages</a></h3>
+            <p class="post-meta"><p>How to set up Pelican on GitHUb pages and a custom domain</p></p>
+            <p class="post-meta">
+                in <a href="http://railslide.github.io/railslide-blog/category/pelican.html">Pelican</a> &middot; lun 09 giugno 2014
+            </p>
+    </header>
+</section><section class="post">
+    <header class="post-header">
+        <a href="http://railslide.github.io/railslide-blog/author/giulia-vergottini.html" title="See posts by Giulia Vergottini">
+        </a>
+        <h3><a class="post-title" href="http://railslide.github.io/railslide-blog/up-and-running.html">Up and running!</a></h3>
+            <p class="post-meta"><p>Celebrating the first post of the blog and what to do next.</p></p>
+            <p class="post-meta">
+                in <a href="http://railslide.github.io/railslide-blog/category/pelican.html">Pelican</a> &middot; mar 03 giugno 2014
+            </p>
+    </header>
+</section><div class="pagination-wrapper content-subhead">
+    <div class="pagination">
+        <div class="pagination-left">
+                &nbsp;
+        </div>
+        <span>Page 1 / 1</span>
+        <div class="pagination-right">
+        </div>
+    </div>
+</div><footer class="footer">
+    <p>&copy; Railslide &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        var $top = $('.go-top');
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://railslide.github.io/railslide-blog/pelican-github-pages.html">How to set up Pelican on GitHub pages</a></h1>
-<footer class="post-info">
-        <abbr class="published" title="2014-06-09T00:00:00">
-                lun 09 giugno 2014
-        </abbr>
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
 
-        <address class="vcard author">
-                By <a class="url fn" href="http://railslide.github.io/railslide-blog/author/giulia-vergottini.html">Giulia Vergottini</a>
-        </address>
-<p>In <a href="http://railslide.github.io/railslide-blog/category/pelican.html">Pelican</a>. </p>
-<p>tags: <a href="http://railslide.github.io/railslide-blog/tag/pelican.html">pelican</a><a href="http://railslide.github.io/railslide-blog/tag/publishing.html">publishing</a><a href="http://railslide.github.io/railslide-blog/tag/github-pages.html">github pages</a></p>
-</footer><!-- /.post-info --><p>Although the web is plenty of blog posts about how to set up a Pelican powered blog on GitHub pages, I still had to glean information from several sources and mix it with a bit of experimentation before being able to have my blog up and running. So hopefully this post will make someone's life easier, other than being a future reference for myself.</p>
-<p>Before starting I need to give credit where credit is due, since <a href="http://mathamy.com/migrating-to-github-pages-using-pelican.html">this post</a> by Amy Hanlon and <a href="http://martinbrochhaus.com/pelican2.html">this one</a> by Martin Brochhaus have been a tremendous starting point for my trial-and-error journey. Once said that, we can start.</p>
-<h1>1. Setting up GitHub project pages</h1>
-<p>GitHub offers the possibility to host your site in the cloud through either <a href="https://help.github.com/articles/user-organization-and-project-pages">personal or project pages</a>. Although it is possible to use both for hosting a Pelican powered blog, project pages make your life so much easier when it comes both to publish your blog content and to put blog source under revision control.</p>
-<p>For creating project pages, all we need to do is to create a repository as usual and put the content we wish to publish (i.e. the HTML static files) into a branch named <code>gh-pages</code>. Once done that, your page will show up at username.github.io/repository.</p>
-<p>Although it could sounds overly complicated - especially the <code>gh-pages</code> branch part - you don't have to worry since an awesome program called <a href="https://github.com/davisp/ghp-import">ghp-import</a> will take care of it for us. For now, simply create a new repository as you would do for any other project and set up a <code>.gitignore</code> file with the following content:</p>
-<div class="highlight"><pre><span class="o">*</span><span class="p">.</span><span class="n">pid</span>
-<span class="o">*</span><span class="p">.</span><span class="n">pyc</span>
-<span class="n">output</span><span class="o">/</span>
-</pre></div>
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
 
-
-<h1>2. Installing the needed packages</h1>
-<p>Before installing Pelican, I would recommend to create a new virtualenv. It is not mandatory, but it is definitely a good practice and would prevent the risk of conflicts between installed packages.</p>
-<p>NOTE: Pelican documentation recommends to use Pelican with Python 2.7. I am keeping up with <a href="http://railslide.github.io/railslide-blog/virtualenvwrapper-python3.html">my pledge of using Python 3 whenever possible</a>, as well as giving a try with Python 3.4 (Ubuntu 14.04 default version). Everything works fine so far and anyways these instructions are version agnostic - just be aware of it and choose your Python version accordingly.</p>
-<p>Install pelican and ghp-import</p>
-<div class="highlight"><pre>pip install pelican
-pip install -e git+git://github.com/davisp/ghp-import.git#egg<span class="o">=</span>ghp-import
-</pre></div>
-
-
-<p>Next run <code>pelican-quickstart</code> and get ready to answer to a bunch of questions. Most of them are pretty straightforward and anyway you'll be able to change them later in your settings files. These are the only ones you need to care about for the moment:</p>
-<div class="highlight"><pre>Where <span class="k">do </span>you want to create your new web site? <span class="o">[</span>.<span class="o">]</span> <span class="c"># Press enter</span>
-Do you want to specify a URL prefix? e.g., http://example.com <span class="o">(</span>Y/n<span class="o">)</span> <span class="c"># y</span>
-What is your URL prefix? <span class="o">(</span>see above example; no trailing slash<span class="o">)</span> <span class="c"># http://username.github.io/repository</span>
-Do you want to generate a Fabfile/Makefile to automate generation and publishing? <span class="o">(</span>Y/n<span class="o">)</span> <span class="c"># y</span>
-</pre></div>
-
-
-<p>Answer <code>n</code> to all the questions about uploading your website and you are ready to go.</p>
-<h1>3. Writing content</h1>
-<p>Fire up your favorite text editor and write your blog content in either Markdown or reStructuredText. Once you have done, save it in the content folder. For previewing it:</p>
-<div class="highlight"><pre>make devserver
-<span class="c"># go to http://localhost:8000 and check if everything looks good</span>
-^C <span class="c"># note that CTRL+C won&#39;t stop dev server</span>
-./develop_server.sh stop <span class="c"># manually stop the dev server</span>
-</pre></div>
-
-
-<h1>4. Publishing and pushing</h1>
-<p>Ok this is the easy part.</p>
-<div class="highlight"><pre><span class="c"># pushing the source repo</span>
-git push origin master
-
-<span class="c"># push the output folder to GitHub pages</span>
-make github
-
-<span class="c"># celebrate!</span>
-</pre></div>
-
-
-<p>Congrats! Your blog is now up and running!</p>
-<h1>5. Setting up your custom domain</h1>
-<p>Create a CNAME file containing your bare domain:</p>
-<div class="highlight"><pre><span class="n">mydomain</span><span class="p">.</span><span class="n">com</span>
-</pre></div>
-
-
-<p>Add the following lines to your pelicanconf.py, in order to make Pelican copying it to your output folder on every publish.</p>
-<div class="highlight"><pre><span class="n">STATIC_PATHS</span> <span class="o">=</span> <span class="p">[</span>
-<span class="s">&#39;CNAME&#39;</span>
-<span class="p">]</span>
-</pre></div>
-
-
-<p>Then, assuming that you want both mydomain.com and www.mydomain.com to point at your blog, you need to set <em>both the CNAME and the A-records</em> of your domain to point at github.</p>
-<p>Since this has been the most problematic step for me, here's a couple of extra thoughts regarding my domain registrar (Gandi):</p>
-<ol>
-<li>Make sure to not have any other A-record</li>
-<li>Using Gandi's web forwarding instead of setting both the CNAME and the A-records resulted in a redirect loop error</li>
-<li>You can take the rest of the zone file data from Gandi's default one</li>
-<li>Testing from different browsers and refreshing several times can help spotting some very sneaky bugs</li>
-</ol>
-<p>Here are the lines taking care of the magic in my case:</p>
-<div class="highlight"><pre><span class="n">www</span> <span class="mi">10800</span> <span class="n">IN</span> <span class="n">CNAME</span> <span class="n">railslide</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">io</span><span class="p">.</span>
-<span class="err">@</span> <span class="mi">10800</span> <span class="n">IN</span> <span class="n">A</span> <span class="mf">192.30.252.153</span>
-<span class="err">@</span> <span class="mi">10800</span> <span class="n">IN</span> <span class="n">A</span> <span class="mf">192.30.252.154</span>
-</pre></div>
-
-
-<p>After that, wait some hours for the DNS to propagate and you should be done.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://railslide.github.io/railslide-blog/up-and-running.html" rel="bookmark"
-                           title="Permalink to Up and running!">Up and running!</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2014-06-03T00:00:00">
-                mar 03 giugno 2014
-        </abbr>
-
-        <address class="vcard author">
-                By <a class="url fn" href="http://railslide.github.io/railslide-blog/author/giulia-vergottini.html">Giulia Vergottini</a>
-        </address>
-<p>In <a href="http://railslide.github.io/railslide-blog/category/pelican.html">Pelican</a>. </p>
-<p>tags: <a href="http://railslide.github.io/railslide-blog/tag/pelican.html">pelican</a><a href="http://railslide.github.io/railslide-blog/tag/publishing.html">publishing</a><a href="http://railslide.github.io/railslide-blog/tag/github-pages.html">github pages</a></p>
-</footer><!-- /.post-info -->                <p>Celebrating the first post of the blog and what to do next.</p>
-                <a class="readmore" href="http://railslide.github.io/railslide-blog/up-and-running.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-            </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 1
-</p>
-            </section><!-- /#content -->
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>blogroll</h2>
-                        <ul>
-                            <li><a href="http://getpelican.com/">Pelican</a></li>
-                            <li><a href="http://python.org/">Python.org</a></li>
-                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
-                            <li><a href="#">You can modify those links in your config file</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-                            <li><a href="http://railslide.github.io/railslide-blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
-
-                            <li><a href="#">You can add links in your config file</a></li>
-                            <li><a href="#">Another social link</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
-
-        <footer id="contentinfo" class="body">
-                <address id="about" class="vcard body">
-                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-                </address><!-- /#about -->
-
-                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        </footer><!-- /#contentinfo -->
-
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
 </body>
 </html>

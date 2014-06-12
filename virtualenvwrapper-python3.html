@@ -1,44 +1,65 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-        <meta charset="utf-8" />
-        <title>Installing virtualenvwrapper for Python 3.4 on Ubuntu</title>
-        <link rel="stylesheet" href="http://railslide.github.io/railslide-blog/theme/css/main.css" />
-        <link href="http://railslide.github.io/railslide-blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Railslide Atom Feed" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
 
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+        <link rel="alternate"  href="http://railslide.github.io/railslide-blog/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>Installing virtualenvwrapper for Python 3.4 on Ubuntu // Railslide // Code, experiments, and thoughts</title>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://railslide.github.io/railslide-blog/theme/css/pure.css">
+    <link rel="stylesheet" href="http://railslide.github.io/railslide-blog/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
 </head>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="http://railslide.github.io/railslide-blog/">Railslide </a></h1>
-                <nav><ul>
-                    <li><a href="http://railslide.github.io/railslide-blog/category/pelican.html">Pelican</a></li>
-                    <li class="active"><a href="http://railslide.github.io/railslide-blog/category/python.html">Python</a></li>
-                </ul></nav>
-        </header><!-- /#banner -->
-<section id="content" class="body">
-  <article>
-    <header>
-      <h1 class="entry-title">
-        <a href="http://railslide.github.io/railslide-blog/virtualenvwrapper-python3.html" rel="bookmark"
-           title="Permalink to Installing virtualenvwrapper for Python 3.4 on Ubuntu">Installing virtualenvwrapper for Python 3.4 on Ubuntu</a></h1>
-    </header>
-
-    <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2014-06-04T00:00:00">
-                mer 04 giugno 2014
-        </abbr>
-
-        <address class="vcard author">
-                By <a class="url fn" href="http://railslide.github.io/railslide-blog/author/giulia-vergottini.html">Giulia Vergottini</a>
-        </address>
-<p>In <a href="http://railslide.github.io/railslide-blog/category/python.html">Python</a>. </p>
-<p>tags: <a href="http://railslide.github.io/railslide-blog/tag/virtualenvwrapper.html">virtualenvwrapper</a><a href="http://railslide.github.io/railslide-blog/tag/virtualenv.html">virtualenv</a><a href="http://railslide.github.io/railslide-blog/tag/python34.html">python3.4</a></p>
-</footer><!-- /.post-info -->      <p>After listening to an inspiring talk by <a href="http://www.kennethreitz.org/">Kenneth Reitz</a> about transitioning from Python 2 to Python 3 at PyCon Sweden (I'll write a blog post about it sooner or later), I've decided that I should try to stick to Python 3 as much as possible.</p>
+<body>
+<div class="pure-g-r" id="layout">
+<div class="sidebar pure-u">
+    <div class="cover-img">
+        <div class="cover-body">
+            <header class="header">
+                <hgroup>
+                    <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                    <p class="tagline">Code, experiments, and thoughts</p>
+                    <p class="social">
+                        <a href="https://github.com/Railslide/">
+                            <i class="fa fa-github-square fa-3x"></i>
+                        </a>
+                        <a href="https://plus.google.com/+GiuliaVergottini">
+                            <i class="fa fa-google-plus-square fa-3x"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/giuliavergottini">
+                            <i class="fa fa-linkedin-square fa-3x"></i>
+                        </a>
+                    <p>
+                </hgroup>
+            </header>
+        </div>
+    </div>
+</div>    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Installing virtualenvwrapper for Python 3.4 on Ubuntu</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="http://railslide.github.io/railslide-blog/tag/virtualenvwrapper.html">virtualenvwrapper</a>
+                                <a class="post-category" href="http://railslide.github.io/railslide-blog/tag/virtualenv.html">virtualenv</a>
+                                <a class="post-category" href="http://railslide.github.io/railslide-blog/tag/python34.html">python3.4</a>
+                        </p>
+                </header>
+            </section>
+            <p>After listening to an inspiring talk by <a href="http://www.kennethreitz.org/">Kenneth Reitz</a> about transitioning from Python 2 to Python 3 at PyCon Sweden (I'll write a blog post about it sooner or later), I've decided that I should try to stick to Python 3 as much as possible.</p>
 <p>So the first step in that direction was to set up my working environment in a Python 3 friendly way, hence to install Virtualenwrapper for Python 3. Here's how I did it.</p>
 <p>Virtualenwrapper documentation specifies that Virtualenvwrapper has been tested under Python 2.6-3.3, but no mention of Python 3.4. Being lazy and not really willing to install a third version of Python on my computer (Ubuntu 14.04 comes with Python 2.7.6 and Python 3.4 by default), I decided to give it try with what I had. Everything seems to work flawlessly so far, just keep it in mind in case you want to try to follow these instructions.</p>
 <h2>Setting up Virtualenvwrapper</h2>
@@ -99,38 +120,39 @@ deactivate virtualenv_name <span class="c"># Deactivate virtualenv</span>
 
 
 <p>Virtualenvwrapper activates the virtualenv and teleports me to ~/Projects/my_project. Neat!</p>
-    </div><!-- /.entry-content -->
+            <div class="hr"></div>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+</div>
+    <script>
+        var $top = $('.go-top');
 
-  </article>
-</section>
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>blogroll</h2>
-                        <ul>
-                            <li><a href="http://getpelican.com/">Pelican</a></li>
-                            <li><a href="http://python.org/">Python.org</a></li>
-                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
-                            <li><a href="#">You can modify those links in your config file</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-                            <li><a href="http://railslide.github.io/railslide-blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
 
-                            <li><a href="#">You can add links in your config file</a></li>
-                            <li><a href="#">Another social link</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
 
-        <footer id="contentinfo" class="body">
-                <address id="about" class="vcard body">
-                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-                </address><!-- /#about -->
-
-                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        </footer><!-- /#contentinfo -->
-
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
 </body>
 </html>

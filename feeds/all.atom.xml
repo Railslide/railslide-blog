@@ -64,13 +64,14 @@ make github
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Then, assuming that you want both mydomain.com and www.mydomain.com to point at your blog, you need to set &lt;em&gt;both the CNAME and the A-records&lt;/em&gt; of your domain to point at github.&lt;/p&gt;
+&lt;p&gt;Then, assuming that you want both mydomain.com and www.mydomain.com to point at your blog, you need to set &lt;strong&gt;both the CNAME and the A-records&lt;/strong&gt; of your domain to point at github.&lt;/p&gt;
 &lt;p&gt;Since this has been the most problematic step for me, here's a couple of extra thoughts regarding my domain registrar (Gandi):&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Make sure to not have any other A-record&lt;/li&gt;
 &lt;li&gt;Using Gandi's web forwarding instead of setting both the CNAME and the A-records resulted in a redirect loop error&lt;/li&gt;
 &lt;li&gt;You can take the rest of the zone file data from Gandi's default one&lt;/li&gt;
 &lt;li&gt;Testing from different browsers and refreshing several times can help spotting some very sneaky bugs&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://stackoverflow.com/a/22374542/2926113"&gt;This answer&lt;/a&gt; from Stack Overflow provides great step-by-step instructions for using GitHub project pages with a custom domain&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Here are the lines taking care of the magic in my case:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;www&lt;/span&gt; &lt;span class="mi"&gt;10800&lt;/span&gt; &lt;span class="n"&gt;IN&lt;/span&gt; &lt;span class="n"&gt;CNAME&lt;/span&gt; &lt;span class="n"&gt;railslide&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;github&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;io&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
