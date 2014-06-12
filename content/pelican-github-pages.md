@@ -102,6 +102,7 @@ Since this has been the most problematic step for me, here's a couple of extra t
 2. Using Gandi's web forwarding instead of setting both the CNAME and the A-records resulted in a redirect loop error
 3. You can take the rest of the zone file data from Gandi's default one
 4. Testing from different browsers and refreshing several times can help spotting some very sneaky bugs
+5. [This answer](http://stackoverflow.com/a/22374542/2926113) from Stack Overflow provides great step-by-step instructions for using GitHub project pages with a custom domain
 
 Here are the lines taking care of the magic in my case:
 
