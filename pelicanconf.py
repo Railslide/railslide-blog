@@ -37,7 +37,7 @@ STATIC_PATHS = [
     'CNAME',
     'images'
     ]
-    
+
 # Theme
 THEME = 'themes/pure'
 

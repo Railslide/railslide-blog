@@ -94,7 +94,7 @@ Add the following lines to your pelicanconf.py, in order to make Pelican copying
     'CNAME'
     ]
 
-Then, assuming that you want both mydomain.com and www.mydomain.com to point at your blog, you need to set *both the CNAME and the A-records* of your domain to point at github.
+Then, assuming that you want both mydomain.com and www.mydomain.com to point at your blog, you need to set **both the CNAME and the A-records** of your domain to point at github.
 
 Since this has been the most problematic step for me, here's a couple of extra thoughts regarding my domain registrar (Gandi):
 
