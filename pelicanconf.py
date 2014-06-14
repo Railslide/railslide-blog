@@ -25,7 +25,7 @@ LINKS = (('Pelican', 'http://getpelican.com/'),
 # Social widget
 SOCIAL = (('github-square', 'https://github.com/Railslide/'),
           ('google-plus-square', 'https://plus.google.com/+GiuliaVergottini'),
-          ('linkedin-square', 'https://www.linkedin.com/in/giuliavergottini'),)
+          ('rss-square', 'feeds/all.atom.xml'),)
 
 DEFAULT_PAGINATION = 10
 
