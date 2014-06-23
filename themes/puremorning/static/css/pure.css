@@ -31,6 +31,12 @@ pre {
     box-shadow: 2px 2px 2px #888;
 }
 
+code {
+    font-family: monospace;
+    background-color: #EEE;
+    padding: 2px;
+}
+
 .sidebar {
     position: fixed;
     top: 0;
