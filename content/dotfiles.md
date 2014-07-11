@@ -5,7 +5,7 @@ Tags: dotfiles, utilities, git
 Slug: dotfiles
 Author: Giulia Vergottini
 Summary: How I set up a repository containing my setting and configuration files and delegated the task of creating symlinks to the computer.
-Status: draft
+
 
 After having spent quite some time in finding the right set up for my developing environment, it came natural to look for a way for porting my configuration. Enter a dotfiles repo, aka having all my configurations only one `git clone` away and making my life so much easier.
 
@@ -15,20 +15,20 @@ First of all, I needed to to move Sublime configuration files to my dotfiles fol
 
 Then I added a variable holding the path to the User directory:
 
-    !#bash
+    :::bash
     sublimedir=~/.config/sublime-text-3/Packages/User
 
 and at the end of the file the lines taking care of the magic:
 
-    !#bash
+    :::bash
     # move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks
     for file in $files; do
-    if [ -a ~/.$file ]; then    # check if a dotfile already exists
-        echo "Moving any existing dotfiles from ~ to $olddir"
-        mv ~/.$file $olddir
-    fi
-    echo "Creating symlink to $file in home directory."
-    ln -s $dir/$file ~/.$file
+        if [ -a ~/.$file ]; then    # check if a dotfile already exists
+            echo "Moving any existing dotfiles from ~ to $olddir"
+            mv ~/.$file $olddir
+        fi
+        echo "Creating symlink to $file in home directory."
+        ln -s $dir/$file ~/.$file
     done
 
     echo "...done"
