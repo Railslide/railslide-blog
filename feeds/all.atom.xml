@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide</title><link href="http://railslide.io/" rel="alternate"></link><link href="http://railslide.io/feeds/all.atom.xml" rel="self"></link><id>http://railslide.io/</id><updated>2014-06-09T00:00:00+02:00</updated><entry><title>How to set up Pelican on GitHub pages</title><link href="http://railslide.io/pelican-github-pages.html" rel="alternate"></link><updated>2014-06-09T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2014-06-09:pelican-github-pages.html</id><summary type="html">&lt;p&gt;Although the web is plenty of blog posts about how to set up a Pelican powered blog on GitHub pages, I still had to glean information from several sources and mix it with a bit of experimentation before being able to have my blog up and running. So hopefully this post will make someone's life easier, other than being a future reference for myself.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide</title><link href="http://railslide.io/" rel="alternate"></link><link href="http://railslide.io/feeds/all.atom.xml" rel="self"></link><id>http://railslide.io/</id><updated>2014-07-10T00:00:00+02:00</updated><entry><title>Setting up a dotfiles repo and easily port configurations around</title><link href="http://railslide.io/dotfiles.html" rel="alternate"></link><updated>2014-07-10T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2014-07-10:dotfiles.html</id><summary type="html">&lt;p&gt;After having spent quite some time in finding the right set up for my developing environment, it came natural to look for a way for porting my configuration. Enter a dotfiles repo, aka having all my configurations only one &lt;code&gt;git clone&lt;/code&gt; away and making my life so much easier.&lt;/p&gt;
+&lt;p&gt;Michael Smalley wrote an &lt;a href="http://blog.smalleycreative.com/tutorials/using-git-and-github-to-manage-your-dotfiles/"&gt;amazing tutorial&lt;/a&gt; for managing dotfiles and creating a script for automagically installing them (go and check it out!), which provided me with a great starting point. However, his script handles only dotfiles housed in the home directory and that didn't really get together with my goal of adding Sublime Text settings to my dotfiles repo. So I fired up Nano and extended the script in order to make it do exactly what I needed.&lt;/p&gt;
+&lt;p&gt;First of all, I needed to to move Sublime configuration files to my dotfiles folder. Thankfully &lt;a href="http://zanshin.net/2013/01/21/sublime-text-2-dotfiles-simplified/"&gt;Mark Nichols' post&lt;/a&gt; tipped me that I the only folder I needed to care about was the User one. So, after cleaning it up from some experiments leftovers, I moved to my dotfiles folder and placed a symlink in its previous location.&lt;/p&gt;
+&lt;p&gt;Then I added a variable holding the path to the User directory:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;sublimedir&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/.config/sublime-text-3/Packages/User
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and at the end of the file the lines taking care of the magic:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks&lt;/span&gt;
+&lt;span class="k"&gt;for &lt;/span&gt;file in &lt;span class="nv"&gt;$files&lt;/span&gt;; &lt;span class="k"&gt;do&lt;/span&gt;
+&lt;span class="k"&gt;    if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -a ~/.&lt;span class="nv"&gt;$file&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;; &lt;span class="k"&gt;then&lt;/span&gt;    &lt;span class="c"&gt;# check if a dotfile already exists&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Moving any existing dotfiles from ~ to $olddir&amp;quot;&lt;/span&gt;
+        mv ~/.&lt;span class="nv"&gt;$file&lt;/span&gt; &lt;span class="nv"&gt;$olddir&lt;/span&gt;
+    &lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="k"&gt;    &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Creating symlink to $file in home directory.&amp;quot;&lt;/span&gt;
+    ln -s &lt;span class="nv"&gt;$dir&lt;/span&gt;/&lt;span class="nv"&gt;$file&lt;/span&gt; ~/.&lt;span class="nv"&gt;$file&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
+
+&lt;span class="c"&gt;# move Sublime Text Users directory to dotfiles_old directory, then create symlink&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -d &lt;span class="nv"&gt;$sublimedir&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;; &lt;span class="k"&gt;then&lt;/span&gt; &lt;span class="c"&gt;# check whether the directory already exists&lt;/span&gt;
+    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Moving the existing Sublime Text Users directory from $sublimedir to $olddir&amp;quot;&lt;/span&gt;
+    mv &lt;span class="nv"&gt;$sublimedir&lt;/span&gt; &lt;span class="nv"&gt;$olddir&lt;/span&gt;
+    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Creating symlink to Users in $sublimedir&amp;quot;&lt;/span&gt;
+ln -s &lt;span class="nv"&gt;$dir&lt;/span&gt;/sublime/User &lt;span class="nv"&gt;$sublimedir&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The full script can be found on &lt;a href="https://github.com/Railslide/dotfiles/blob/master/installdotfiles.sh"&gt;github&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Finally, since Package Control updates regularly some of the files in the User folder, I added them to a &lt;code&gt;.gitignore&lt;/code&gt; file in order to avoid to much noise in my version control. A list of those files can be found in the &lt;a href="https://sublime.wbond.net/docs/syncing"&gt;docs&lt;/a&gt; of Package Control.&lt;/p&gt;</summary><category term="dotfiles"></category><category term="utilities"></category><category term="git"></category></entry><entry><title>How to set up Pelican on GitHub pages</title><link href="http://railslide.io/pelican-github-pages.html" rel="alternate"></link><updated>2014-06-09T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2014-06-09:pelican-github-pages.html</id><summary type="html">&lt;p&gt;Although the web is plenty of blog posts about how to set up a Pelican powered blog on GitHub pages, I still had to glean information from several sources and mix it with a bit of experimentation before being able to have my blog up and running. So hopefully this post will make someone's life easier, other than being a future reference for myself.&lt;/p&gt;
 &lt;p&gt;Before starting I need to give credit where credit is due, since &lt;a href="http://mathamy.com/migrating-to-github-pages-using-pelican.html"&gt;this post&lt;/a&gt; by Amy Hanlon and &lt;a href="http://martinbrochhaus.com/pelican2.html"&gt;this one&lt;/a&gt; by Martin Brochhaus have been a tremendous starting point for my trial-and-error journey. Once said that, we can start.&lt;/p&gt;
 &lt;h1&gt;1. Setting up GitHub project pages&lt;/h1&gt;
 &lt;p&gt;GitHub offers the possibility to host your site in the cloud through either &lt;a href="https://help.github.com/articles/user-organization-and-project-pages"&gt;personal or project pages&lt;/a&gt;. Although it is possible to use both for hosting a Pelican powered blog, project pages make your life so much easier when it comes both to publish your blog content and to put blog source under revision control.&lt;/p&gt;
