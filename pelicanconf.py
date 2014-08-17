@@ -40,3 +40,7 @@ STATIC_PATHS = [
 
 # Theme
 THEME = 'themes/puremorning'
+
+# Pages
+PAGE_URL = PAGE_SAVE_AS = '{slug}.html'
+#MENUITEMS = [('About', 'about.html'), ('Projects', 'projects.html'),]
