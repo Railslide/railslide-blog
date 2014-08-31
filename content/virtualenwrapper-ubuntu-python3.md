@@ -47,10 +47,14 @@ Close and re-open your shell and you're ready to go. Here are the basic commands
     workon virtualenv_name # Activate/switch to a virtualenv
     deactivate virtualenv_name # Deactivate virtualenv
 
-Congratulations! Your Virtualenvwrapper for Python 3 is now ready to use. However, being I lazy and a strong supporter of the idea that [tedious and repetitive tasks should be automated](http://xkcd.com/1319/), I added a couple of extra behaviors to Virtualenvwrapper settings.
+Congratulations! Your Virtualenvwrapper for Python 3 is now ready to use.
 
-Projects and Postactivate
--------------------------
+Projects
+--------
+
+_**EDIT**: in a previous version of this article, I suggested to use the postactivate script to automatically navigate to the project folder when activating the virtualenv. However, since I discovered that such a task is automatically performed by the projects plugin, I updated the post accordingly._
+
+While the possibility to have isolated virtual environments just a `mkvirtualenv` away had immediately convinced me of the usefulness of Virtualenvwrapper, projects made me falling in love for it.
 
 My typical workflow is to create a virtualenv and then create a project folder with the same name. So why not setting up Virtualenvwrapper to automatically do it for me every time I create a new virtualenv? Specify PROJECT_HOME in ~/.bashrc will do the trick:
 
@@ -65,12 +69,7 @@ Now, when typing
 
 Virtualenvwrapper will automatically create a virtualenv and a folder called *my_project*.
 
-Finally I set up virtualenvwrapper to automatically navigate to the project folder on virtualenv activation, by adding the following lines to my postactivate script:
-
-    project_name=$(basename $VIRTUAL_ENV)
-    cd ~/Projects/$project_name
-
-So when typing
+Cherry on top, projects automaticatilly navigates to the project folder when activating the virtualenv. Thus, when typing
 
     :::bash
     workon my_project
