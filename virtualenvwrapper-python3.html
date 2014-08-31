@@ -93,8 +93,10 @@ deactivate virtualenv_name <span class="c"># Deactivate virtualenv</span>
 </pre></div>
 
 
-<p>Congratulations! Your Virtualenvwrapper for Python 3 is now ready to use. However, being I lazy and a strong supporter of the idea that <a href="http://xkcd.com/1319/">tedious and repetitive tasks should be automated</a>, I added a couple of extra behaviors to Virtualenvwrapper settings.</p>
-<h2>Projects and Postactivate</h2>
+<p>Congratulations! Your Virtualenvwrapper for Python 3 is now ready to use.</p>
+<h2>Projects</h2>
+<p><em><strong>EDIT</strong>: in a previous version of this article, I suggested to use the postactivate script to automatically navigate to the project folder when activating the virtualenv. However, since I discovered that such a task is automatically performed by the projects plugin, I updated the post accordingly.</em></p>
+<p>While the possibility to have isolated virtual environments just a <code>mkvirtualenv</code> away had immediately convinced me of the usefulness of Virtualenvwrapper, projects made me falling in love for it.</p>
 <p>My typical workflow is to create a virtualenv and then create a project folder with the same name. So why not setting up Virtualenvwrapper to automatically do it for me every time I create a new virtualenv? Specify PROJECT_HOME in ~/.bashrc will do the trick:</p>
 <div class="highlight"><pre><span class="n">VIRTUALENVWRAPPER_PYTHON</span><span class="o">=</span><span class="err">&#39;</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">python3</span><span class="err">&#39;</span>
 <span class="n">PROJECT_HOME</span><span class="o">=</span><span class="err">&#39;</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">where</span><span class="o">/</span><span class="n">you</span><span class="o">/</span><span class="n">want</span><span class="o">/</span><span class="n">your</span><span class="o">/</span><span class="n">project</span><span class="o">/</span><span class="n">folder</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">be</span><span class="o">/</span><span class="n">created</span><span class="err">&#39;</span> <span class="err">#</span> <span class="n">This</span> <span class="n">needs</span> <span class="n">to</span> <span class="n">be</span> <span class="n">placed</span> <span class="n">before</span> <span class="n">the</span> <span class="n">virtualenvwrapper</span> <span class="n">command</span> <span class="n">as</span> <span class="n">well</span>
@@ -108,13 +110,7 @@ deactivate virtualenv_name <span class="c"># Deactivate virtualenv</span>
 
 
 <p>Virtualenvwrapper will automatically create a virtualenv and a folder called <em>my_project</em>.</p>
-<p>Finally I set up virtualenvwrapper to automatically navigate to the project folder on virtualenv activation, by adding the following lines to my postactivate script:</p>
-<div class="highlight"><pre><span class="n">project_name</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">basename</span> <span class="err">$</span><span class="n">VIRTUAL_ENV</span><span class="p">)</span>
-<span class="n">cd</span> <span class="o">~/</span><span class="n">Projects</span><span class="o">/</span><span class="err">$</span><span class="n">project_name</span>
-</pre></div>
-
-
-<p>So when typing</p>
+<p>Cherry on top, projects automaticatilly navigates to the project folder when activating the virtualenv. Thus, when typing</p>
 <div class="highlight"><pre>workon my_project
 </pre></div>
 
