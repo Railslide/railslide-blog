@@ -36,7 +36,7 @@ DEFAULT_PAGINATION = 10
 STATIC_PATHS = [
     'CNAME',
     'images'
-    ]
+]
 
 # Theme
 THEME = 'themes/puremorning'
