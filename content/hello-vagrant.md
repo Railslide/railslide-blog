@@ -1,5 +1,5 @@
 Title: Hello Vagrant! (aka development environment made easy)
-Date: 2014-08-31
+Date: 2014-09-14
 Category: Utilities
 Tags: vagrant, virtual machine, development environment
 Slug: hello-vagrant
@@ -7,9 +7,7 @@ Author: Giulia Vergottini
 Summary: If you don't use Vagrant yet, you should. Here's why.
 Status: draft
 
-For a long time my first step for starting a PHP based project has been to install Xampp on my machine. Xampp provides a considerably easy-to-install full lamp stack - no question about that. However, when I started working on a bit more complicated which implied to work together with other developers issues started rising.
-
-The main problem was the differences between my local environment and the production one. Add the a further layer of differences for potentially each person involved in the project and it doesn't take much to figure out that moving the result of your work somewhere else than your machine was a guaranteed headache.
+For a long time my first step for starting a PHP based project has been to install Xampp on my machine. Xampp provides a considerably easy-to-install full lamp stack - no question about that. However, when I started working on more complicated projects which implied to work together with other developers issues started rising. The main problem was the differences between my local environment and the production one. Add the a further layer of differences for potentially each person involved in the project and it doesn't take much to figure out that moving the result of your work somewhere else than your machine was a guaranteed headache.
 
 Now imagine a full LAMP stack that gets activated with a command as simple as `vagrant up` and takes automatically care of all the dependencies and needed libraries. Add on top of it that it's easily portable and tailored to your needs and you should already have enough reasons for giving Vagrant a try.
 
@@ -24,7 +22,11 @@ Since you are the one provisioning your virtual machine, you get the total freed
 Setup only once
 ---------------
 
+All you need for bringing up a VM with Vagrant is just the Vagrantfile and the provision script(s). Once you have those you are just a `vagrant up` away from that very machine every time you need it.
 
+But the coolness doesn't stop here! If you commit the Vagrantfile and the provision scripts together with the rest of your projects files (and I don't see any good reason why you shouldn't), any developer checking out the code will be able to run the same VM on her/his computer.
+
+This is particularly useful when working in a team, since *one person* set up the VM *just once* and a whole team benefits from it. Furthermore, thanks to CVS, if someone needs to install a library for carry out her/his job, s/he simply edits the provision file accordingly and commit it. In this way, everyone will get the needed library installed on the VM and so long forgotten dependencies.
 
 Develop the way you like
 -----------------------
