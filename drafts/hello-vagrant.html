@@ -7,7 +7,7 @@
 
         <link rel="alternate"  href="http://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
 
-        <title>Hello vagrant! (aka development environment made easy) // Railslide // Code, experiments, and thoughts</title>
+        <title>Hello Vagrant! (aka development environment made easy) // Railslide // Code, experiments, and thoughts</title>
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
@@ -51,7 +51,7 @@
         <div class="content">
             <section class="post">
                 <header class="post-header">
-                    <h1>Hello vagrant! (aka development environment made easy)</h1>
+                    <h1>Hello Vagrant! (aka development environment made easy)</h1>
                         <p class="post-meta">
                             // under                                 <a class="post-category" href="http://railslide.io/tag/vagrant.html">vagrant</a>
                                 <a class="post-category" href="http://railslide.io/tag/virtual-machine.html">virtual machine</a>
@@ -59,7 +59,24 @@
                         </p>
                 </header>
             </section>
-            <p>For a long time my first step for starting a PHP based project has been to install Xampp on my machine. Xampp provides a considerably easy-to-install full lamp stack, which worked fine for</p>
+            <p>For a long time my first step for starting a PHP based project has been to install Xampp on my machine. Xampp provides a considerably easy-to-install full lamp stack - no question about that. However, when I started working on more complicated projects which implied to work together with other developers issues started rising. The main problem was the differences between my local environment and the production one. Add the a further layer of differences for potentially each person involved in the project and it doesn't take much to figure out that moving the result of your work somewhere else than your machine was a guaranteed headache.</p>
+<p>Now imagine a full LAMP stack that gets activated with a command as simple as <code>vagrant up</code> and takes automatically care of all the dependencies and needed libraries. Add on top of it that it's easily portable and tailored to your needs and you should already have enough reasons for giving Vagrant a try.</p>
+<p>If you are still not fully convinced or just curios, here is a more detailed insight of how Vagrant increases productivity and makes your life so incredibly easier.</p>
+<h2>Exactly what you need</h2>
+<p>Since you are the one provisioning your virtual machine, you get the total freedom of setting it up the way you want. This means that you can have a VM that perfectly replicates your production environment, removing thus all the potentially annoying discrepancies between your local system and the production one.</p>
+<h2>Setup only once</h2>
+<p>All you need for bringing up a VM with Vagrant is just the Vagrantfile and the provision script(s). Once you have those you are just a <code>vagrant up</code> away from that very machine every time you need it.</p>
+<p>But the coolness doesn't stop here! If you commit the Vagrantfile and the provision scripts together with the rest of your projects files (and I don't see any good reason why you shouldn't), any developer checking out the code will be able to run the same VM on her/his computer.</p>
+<p>This is particularly useful when working in a team, since <em>one person</em> set up the VM <em>just once</em> and a whole team benefits from it. Furthermore, thanks to CVS, if someone needs to install a library for carry out her/his job, s/he simply edits the provision file accordingly and commit it. In this way, everyone will get the needed library installed on the VM and so long forgotten dependencies.</p>
+<h2>Develop the way you like</h2>
+<p>Vagrant automatically syncs files between the host and the guest machine. So there's no need to change anything in your beloved setup nor to use something other than your favorite editor. Any file you edit locally in a synced folder will automagically appear in the VM as well, ready to be used.</p>
+<h2>Multiple machines? Not a problem!</h2>
+<p>Vagrant allow you to have multiple VMs within the same project. They can communicate to each other, so that you can accurately reproduce the production environment of your multi-servers killer app. By the way, they are also independent from each other, so no need of bringing them all up when you need to work on only one.</p>
+<h2>Summing up</h2>
+<p>I guess it's pretty obvious that I am a huge fan of Vagrant. It makes my life so much easier (and my working team's too!) and I can no longer imagine my development workflow without it. Finally, the fact that it's also open source it's just the cherry on top.</p>
+<ul>
+<li><a href="http://vagrantup.com/">Vagrant homepage</a></li>
+</ul>
             <div class="hr"></div>
             <a href="#" class="go-top">Go Top</a>
 <footer class="footer">
