@@ -11,3 +11,5 @@ When I was looking for a python code linting plugin for Sublime Text 3, I stumbl
 
 The first thing that I have to acknowledge is that they are both very good when it comes to code linting and I haven't really noticed any difference on that side. So, no matter which one you choose, you can't really go wrong.
 
+When it comes to the extras Sublime Python IDE is the one that lacks most. Although this certainly comes with with the price of less flexibility, it isn't necessary a negative thing. Indeed, the strength of Sublime Python IDE is that it works out of the box: just make sure that your project settings point to correct interpreter (I delegate that to [Subvenv](http://github.com/Railslide/subvenv)) and you're ready to go. Without any further effort from your side, Sublime Python IDE will provide you with fancy linting icons on the gutter and colored linting marks. While the same things can be obtained with Anaconda as well, they still require you to read the docs and tinker with the settings.
+
