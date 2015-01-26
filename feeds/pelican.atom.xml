@@ -5,9 +5,9 @@
 &lt;p&gt;GitHub offers the possibility to host your site in the cloud through either &lt;a href="https://help.github.com/articles/user-organization-and-project-pages"&gt;personal or project pages&lt;/a&gt;. Although it is possible to use both for hosting a Pelican powered blog, project pages make your life so much easier when it comes both to publish your blog content and to put blog source under revision control.&lt;/p&gt;
 &lt;p&gt;For creating project pages, all we need to do is to create a repository as usual and put the content we wish to publish (i.e. the HTML static files) into a branch named &lt;code&gt;gh-pages&lt;/code&gt;. Once done that, your page will show up at username.github.io/repository.&lt;/p&gt;
 &lt;p&gt;Although it could sounds overly complicated - especially the &lt;code&gt;gh-pages&lt;/code&gt; branch part - you don't have to worry since an awesome program called &lt;a href="https://github.com/davisp/ghp-import"&gt;ghp-import&lt;/a&gt; will take care of it for us. For now, simply create a new repository as you would do for any other project and set up a &lt;code&gt;.gitignore&lt;/code&gt; file with the following content:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;
-&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pyc&lt;/span&gt;
-&lt;span class="n"&gt;output&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;*.pid
+*.pyc
+output/
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -21,9 +21,9 @@ pip install -e git+git://github.com/davisp/ghp-import.git#egg&lt;span class="o"&
 
 
 &lt;p&gt;Next run &lt;code&gt;pelican-quickstart&lt;/code&gt; and get ready to answer to a bunch of questions. Most of them are pretty straightforward and anyway you'll be able to change them later in your settings files. These are the only ones you need to care about for the moment:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;Where &lt;span class="k"&gt;do &lt;/span&gt;you want to create your new web site? &lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="c"&gt;# Press enter&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;Where &lt;span class="k"&gt;do&lt;/span&gt; you want to create your new web site? &lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="c"&gt;# Press enter&lt;/span&gt;
 Do you want to specify a URL prefix? e.g., http://example.com &lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# y&lt;/span&gt;
-What is your URL prefix? &lt;span class="o"&gt;(&lt;/span&gt;see above example; no trailing slash&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# http://username.github.io/repository&lt;/span&gt;
+What is your URL prefix? &lt;span class="o"&gt;(&lt;/span&gt;see above example&lt;span class="p"&gt;;&lt;/span&gt; no trailing slash&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# http://username.github.io/repository&lt;/span&gt;
 Do you want to generate a Fabfile/Makefile to automate generation and publishing? &lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# y&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -53,7 +53,7 @@ make github
 &lt;p&gt;Congrats! Your blog is now up and running!&lt;/p&gt;
 &lt;h1&gt;5. Setting up your custom domain&lt;/h1&gt;
 &lt;p&gt;Create a CNAME file containing your bare domain:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;mydomain&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;mydomain.com
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -74,9 +74,9 @@ make github
 &lt;li&gt;&lt;a href="http://stackoverflow.com/a/22374542/2926113"&gt;This answer&lt;/a&gt; from Stack Overflow provides great step-by-step instructions for using GitHub project pages with a custom domain&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Here are the lines taking care of the magic in my case:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;www&lt;/span&gt; &lt;span class="mi"&gt;10800&lt;/span&gt; &lt;span class="n"&gt;IN&lt;/span&gt; &lt;span class="n"&gt;CNAME&lt;/span&gt; &lt;span class="n"&gt;railslide&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;github&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;io&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
-&lt;span class="err"&gt;@&lt;/span&gt; &lt;span class="mi"&gt;10800&lt;/span&gt; &lt;span class="n"&gt;IN&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="mf"&gt;192.30.252.153&lt;/span&gt;
-&lt;span class="err"&gt;@&lt;/span&gt; &lt;span class="mi"&gt;10800&lt;/span&gt; &lt;span class="n"&gt;IN&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="mf"&gt;192.30.252.154&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;www 10800 IN CNAME railslide.github.io.
+@ 10800 IN A 192.30.252.153
+@ 10800 IN A 192.30.252.154
 &lt;/pre&gt;&lt;/div&gt;
 
 

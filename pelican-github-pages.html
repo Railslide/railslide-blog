@@ -65,9 +65,9 @@
 <p>GitHub offers the possibility to host your site in the cloud through either <a href="https://help.github.com/articles/user-organization-and-project-pages">personal or project pages</a>. Although it is possible to use both for hosting a Pelican powered blog, project pages make your life so much easier when it comes both to publish your blog content and to put blog source under revision control.</p>
 <p>For creating project pages, all we need to do is to create a repository as usual and put the content we wish to publish (i.e. the HTML static files) into a branch named <code>gh-pages</code>. Once done that, your page will show up at username.github.io/repository.</p>
 <p>Although it could sounds overly complicated - especially the <code>gh-pages</code> branch part - you don't have to worry since an awesome program called <a href="https://github.com/davisp/ghp-import">ghp-import</a> will take care of it for us. For now, simply create a new repository as you would do for any other project and set up a <code>.gitignore</code> file with the following content:</p>
-<div class="highlight"><pre><span class="o">*</span><span class="p">.</span><span class="n">pid</span>
-<span class="o">*</span><span class="p">.</span><span class="n">pyc</span>
-<span class="n">output</span><span class="o">/</span>
+<div class="highlight"><pre>*.pid
+*.pyc
+output/
 </pre></div>
 
 
@@ -81,9 +81,9 @@ pip install -e git+git://github.com/davisp/ghp-import.git#egg<span class="o">=</
 
 
 <p>Next run <code>pelican-quickstart</code> and get ready to answer to a bunch of questions. Most of them are pretty straightforward and anyway you'll be able to change them later in your settings files. These are the only ones you need to care about for the moment:</p>
-<div class="highlight"><pre>Where <span class="k">do </span>you want to create your new web site? <span class="o">[</span>.<span class="o">]</span> <span class="c"># Press enter</span>
+<div class="highlight"><pre>Where <span class="k">do</span> you want to create your new web site? <span class="o">[</span>.<span class="o">]</span> <span class="c"># Press enter</span>
 Do you want to specify a URL prefix? e.g., http://example.com <span class="o">(</span>Y/n<span class="o">)</span> <span class="c"># y</span>
-What is your URL prefix? <span class="o">(</span>see above example; no trailing slash<span class="o">)</span> <span class="c"># http://username.github.io/repository</span>
+What is your URL prefix? <span class="o">(</span>see above example<span class="p">;</span> no trailing slash<span class="o">)</span> <span class="c"># http://username.github.io/repository</span>
 Do you want to generate a Fabfile/Makefile to automate generation and publishing? <span class="o">(</span>Y/n<span class="o">)</span> <span class="c"># y</span>
 </pre></div>
 
@@ -113,7 +113,7 @@ make github
 <p>Congrats! Your blog is now up and running!</p>
 <h1>5. Setting up your custom domain</h1>
 <p>Create a CNAME file containing your bare domain:</p>
-<div class="highlight"><pre><span class="n">mydomain</span><span class="p">.</span><span class="n">com</span>
+<div class="highlight"><pre>mydomain.com
 </pre></div>
 
 
@@ -134,9 +134,9 @@ make github
 <li><a href="http://stackoverflow.com/a/22374542/2926113">This answer</a> from Stack Overflow provides great step-by-step instructions for using GitHub project pages with a custom domain</li>
 </ol>
 <p>Here are the lines taking care of the magic in my case:</p>
-<div class="highlight"><pre><span class="n">www</span> <span class="mi">10800</span> <span class="n">IN</span> <span class="n">CNAME</span> <span class="n">railslide</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">io</span><span class="p">.</span>
-<span class="err">@</span> <span class="mi">10800</span> <span class="n">IN</span> <span class="n">A</span> <span class="mf">192.30.252.153</span>
-<span class="err">@</span> <span class="mi">10800</span> <span class="n">IN</span> <span class="n">A</span> <span class="mf">192.30.252.154</span>
+<div class="highlight"><pre>www 10800 IN CNAME railslide.github.io.
+@ 10800 IN A 192.30.252.153
+@ 10800 IN A 192.30.252.154
 </pre></div>
 
 

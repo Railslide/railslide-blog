@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="http://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>Anaconda VS SublimePythonIDE // Railslide // Code, experiments, and thoughts</title>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/pure.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+<div class="pure-g-r" id="layout">
+<div class="sidebar pure-u">
+    <div class="cover-img">
+        <div class="cover-body">
+            <header class="header">
+                <hgroup>
+                    <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                    <p class="tagline">Code, experiments, and thoughts</p>
+                    <p class="social">
+                        <a href="https://github.com/Railslide/">
+                            <i class="fa fa-github-square fa-3x"></i>
+                        </a>
+                        <a href="https://plus.google.com/+GiuliaVergottini">
+                            <i class="fa fa-google-plus-square fa-3x"></i>
+                        </a>
+                        <a href="feeds/all.atom.xml">
+                            <i class="fa fa-rss-square fa-3x"></i>
+                        </a>
+                    <p>
+                </hgroup>
+            </header>
+        </div>
+    </div>
+</div>    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Anaconda VS SublimePythonIDE</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="http://railslide.io/tag/sublime-text.html">sublime text</a>
+                                <a class="post-category" href="http://railslide.io/tag/code-linting.html">code linting</a>
+                                <a class="post-category" href="http://railslide.io/tag/tools.html">tools</a>
+                        </p>
+                </header>
+            </section>
+            <p>When I was looking for a python code linting plugin for Sublime Text 3, I stumbled upon several blog posts mentioning either <a href="https://github.com/JulianEberius/SublimePythonIDE">SublimePythonIDE</a> or <a href="http://damnwidget.github.io/anaconda/">Anaconda</a>. The problem was, however, that a comparison between the two was nowhere to be found, so I ended up trying both.</p>
+<p>The first thing that I have to acknowledge is that they are both very good when it comes to code linting and auto completion. So, no matter which one you choose, you can't really go wrong.</p>
+<p>When it comes to the extras SublimePythonIDE is the one that lacks most. Although this certainly comes with with the price of less flexibility, it isn't necessary a negative thing. Indeed, the strength of SublimePythonIDE is that it works out of the box: just make sure that your project settings point to correct interpreter (I delegate that to <a href="http://github.com/Railslide/subvenv">Subvenv</a>) and you're ready to go. Without any further effort from your side, SublimePythonIDE will provide you with fancy linting icons on the gutter and colored linting marks. While the same things can be obtained with Anaconda as well, they still require you to read the docs and tinker with the settings.</p>
+<p>Although they require some initial tuning, the extensive amount of customizable settings are not necessarily a negative things, since they offer you the possibility to adjust the way it looks and feel to suite your taste. On top of that Anaconda provides a bunch of handy IDE-like features, such as <code>Go to definition</code>, <code>Show documentation</code>, and <code>Find usage</code> - all reachable via shortcuts or via command palette. It also comes with <a href="https://github.com/hhatto/autopep8">AutoPEP8</a>, McCabe complexity checker, and Vagrant integration (via command palette). Recently also a test runner and an import validator has been added to the already reach set of features.</p>
+<p>So which one is the best? It depends. I have settled on Anaconda, since I really enjoy the <code>Go to definition</code>, <code>Show documentation</code>, and <code>Find usage</code> features and use them quite often - especially when dealing with large projects and/or large files. However, if you need a linter that just works and don't want to spend time in playing around with its configuration, SublimePythonIDE is probably the right choice. On the contrary, you don't mind tinkering a bit with settings files and you are looking for a wider set of IDE-like functions, Anaconda is definitely worthy a shot.</p>
+            <div class="hr"></div>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+</div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+</body>
+</html>

@@ -26,24 +26,24 @@
 
 &lt;p&gt;and at the end of the file the lines taking care of the magic:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks&lt;/span&gt;
-&lt;span class="k"&gt;for &lt;/span&gt;file in &lt;span class="nv"&gt;$files&lt;/span&gt;; &lt;span class="k"&gt;do&lt;/span&gt;
-&lt;span class="k"&gt;    if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -a ~/.&lt;span class="nv"&gt;$file&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;; &lt;span class="k"&gt;then&lt;/span&gt;    &lt;span class="c"&gt;# check if a dotfile already exists&lt;/span&gt;
-        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Moving any existing dotfiles from ~ to $olddir&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; file in &lt;span class="nv"&gt;$files&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -a ~/.&lt;span class="nv"&gt;$file&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;    &lt;span class="c"&gt;# check if a dotfile already exists&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Moving any existing dotfiles from ~ to &lt;/span&gt;&lt;span class="nv"&gt;$olddir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
         mv ~/.&lt;span class="nv"&gt;$file&lt;/span&gt; &lt;span class="nv"&gt;$olddir&lt;/span&gt;
     &lt;span class="k"&gt;fi&lt;/span&gt;
-&lt;span class="k"&gt;    &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Creating symlink to $file in home directory.&amp;quot;&lt;/span&gt;
+    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Creating symlink to &lt;/span&gt;&lt;span class="nv"&gt;$file&lt;/span&gt;&lt;span class="s2"&gt; in home directory.&amp;quot;&lt;/span&gt;
     ln -s &lt;span class="nv"&gt;$dir&lt;/span&gt;/&lt;span class="nv"&gt;$file&lt;/span&gt; ~/.&lt;span class="nv"&gt;$file&lt;/span&gt;
 &lt;span class="k"&gt;done&lt;/span&gt;
 
 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
 
 &lt;span class="c"&gt;# move Sublime Text Users directory to dotfiles_old directory, then create symlink&lt;/span&gt;
-&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -d &lt;span class="nv"&gt;$sublimedir&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;; &lt;span class="k"&gt;then&lt;/span&gt; &lt;span class="c"&gt;# check whether the directory already exists&lt;/span&gt;
-    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Moving the existing Sublime Text Users directory from $sublimedir to $olddir&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -d &lt;span class="nv"&gt;$sublimedir&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt; &lt;span class="c"&gt;# check whether the directory already exists&lt;/span&gt;
+    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Moving the existing Sublime Text Users directory from &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;&lt;span class="s2"&gt; to &lt;/span&gt;&lt;span class="nv"&gt;$olddir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
     mv &lt;span class="nv"&gt;$sublimedir&lt;/span&gt; &lt;span class="nv"&gt;$olddir&lt;/span&gt;
     &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
 &lt;span class="k"&gt;fi&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Creating symlink to Users in $sublimedir&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Creating symlink to Users in &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
 ln -s &lt;span class="nv"&gt;$dir&lt;/span&gt;/sublime/User &lt;span class="nv"&gt;$sublimedir&lt;/span&gt;
 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;

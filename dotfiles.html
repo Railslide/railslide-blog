@@ -69,24 +69,24 @@
 
 <p>and at the end of the file the lines taking care of the magic:</p>
 <div class="highlight"><pre><span class="c"># move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks</span>
-<span class="k">for </span>file in <span class="nv">$files</span>; <span class="k">do</span>
-<span class="k">    if</span> <span class="o">[</span> -a ~/.<span class="nv">$file</span> <span class="o">]</span>; <span class="k">then</span>    <span class="c"># check if a dotfile already exists</span>
-        <span class="nb">echo</span> <span class="s2">&quot;Moving any existing dotfiles from ~ to $olddir&quot;</span>
+<span class="k">for</span> file in <span class="nv">$files</span><span class="p">;</span> <span class="k">do</span>
+    <span class="k">if</span> <span class="o">[</span> -a ~/.<span class="nv">$file</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>    <span class="c"># check if a dotfile already exists</span>
+        <span class="nb">echo</span> <span class="s2">&quot;Moving any existing dotfiles from ~ to </span><span class="nv">$olddir</span><span class="s2">&quot;</span>
         mv ~/.<span class="nv">$file</span> <span class="nv">$olddir</span>
     <span class="k">fi</span>
-<span class="k">    </span><span class="nb">echo</span> <span class="s2">&quot;Creating symlink to $file in home directory.&quot;</span>
+    <span class="nb">echo</span> <span class="s2">&quot;Creating symlink to </span><span class="nv">$file</span><span class="s2"> in home directory.&quot;</span>
     ln -s <span class="nv">$dir</span>/<span class="nv">$file</span> ~/.<span class="nv">$file</span>
 <span class="k">done</span>
 
 <span class="nb">echo</span> <span class="s2">&quot;...done&quot;</span>
 
 <span class="c"># move Sublime Text Users directory to dotfiles_old directory, then create symlink</span>
-<span class="k">if</span> <span class="o">[</span> -d <span class="nv">$sublimedir</span> <span class="o">]</span>; <span class="k">then</span> <span class="c"># check whether the directory already exists</span>
-    <span class="nb">echo</span> <span class="s2">&quot;Moving the existing Sublime Text Users directory from $sublimedir to $olddir&quot;</span>
+<span class="k">if</span> <span class="o">[</span> -d <span class="nv">$sublimedir</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> <span class="c"># check whether the directory already exists</span>
+    <span class="nb">echo</span> <span class="s2">&quot;Moving the existing Sublime Text Users directory from </span><span class="nv">$sublimedir</span><span class="s2"> to </span><span class="nv">$olddir</span><span class="s2">&quot;</span>
     mv <span class="nv">$sublimedir</span> <span class="nv">$olddir</span>
     <span class="nb">echo</span> <span class="s2">&quot;...done&quot;</span>
 <span class="k">fi</span>
-<span class="nb">echo</span> <span class="s2">&quot;Creating symlink to Users in $sublimedir&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;Creating symlink to Users in </span><span class="nv">$sublimedir</span><span class="s2">&quot;</span>
 ln -s <span class="nv">$dir</span>/sublime/User <span class="nv">$sublimedir</span>
 <span class="nb">echo</span> <span class="s2">&quot;...done&quot;</span>
 </pre></div>
