@@ -80,13 +80,20 @@
 
 <span class="nb">echo</span> <span class="s2">&quot;...done&quot;</span>
 
-<span class="c"># move Sublime Text Users directory to dotfiles_old directory, then create symlink</span>
+<span class="c"># Create symlink for Sublime Text User directory</span>
 <span class="k">if</span> <span class="o">[</span> -d <span class="nv">$sublimedir</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> <span class="c"># check whether the directory already exists</span>
-    <span class="nb">echo</span> <span class="s2">&quot;Moving the existing Sublime Text Users directory from </span><span class="nv">$sublimedir</span><span class="s2"> to </span><span class="nv">$olddir</span><span class="s2">&quot;</span>
-    mv <span class="nv">$sublimedir</span> <span class="nv">$olddir</span>
-    <span class="nb">echo</span> <span class="s2">&quot;...done&quot;</span>
+
+    <span class="k">if</span> <span class="o">[</span> -L <span class="nv">$sublimedir</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">echo</span> <span class="s2">&quot;Removing old symlink&quot;</span>
+        rm <span class="nv">$sublimedir</span>
+        <span class="nb">echo</span> <span class="s2">&quot;...done&quot;</span>
+    <span class="k">else</span>
+        <span class="nb">echo</span> <span class="s2">&quot;Moving the existing Sublime Text Users directory from </span><span class="nv">$sublimedir</span><span class="s2"> to </span><span class="nv">$olddir</span><span class="s2">&quot;</span>
+        mv <span class="nv">$sublimedir</span> <span class="nv">$olddir</span>
+        <span class="nb">echo</span> <span class="s2">&quot;...done&quot;</span>
+    <span class="k">fi</span>
 <span class="k">fi</span>
-<span class="nb">echo</span> <span class="s2">&quot;Creating symlink to Users in </span><span class="nv">$sublimedir</span><span class="s2">&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;Creating symlink to User in </span><span class="nv">$sublimedir</span><span class="s2">&quot;</span>
 ln -s <span class="nv">$dir</span>/sublime/User <span class="nv">$sublimedir</span>
 <span class="nb">echo</span> <span class="s2">&quot;...done&quot;</span>
 </pre></div>
