@@ -16,12 +16,6 @@ FEED_ALL_ATOM = None
 CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
 
-# Blogroll
-LINKS = (('Pelican', 'http://getpelican.com/'),
-        ('Python.org', 'http://python.org/'),
-        ('Jinja2', 'http://jinja.pocoo.org/'),
-        ('You can modify those links in your config file', '#'),)
-
 # Social widget
 SOCIAL = (('github-square', 'https://github.com/Railslide/'),
           ('google-plus-square', 'https://plus.google.com/+GiuliaVergottini'),
@@ -32,6 +26,8 @@ DEFAULT_PAGINATION = 10
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
 
+DEFAULT_DATE_FORMAT = ('%d-%m-%Y')
+
 # Static paths
 STATIC_PATHS = [
     'CNAME',
@@ -41,6 +37,9 @@ STATIC_PATHS = [
 # Theme
 THEME = 'themes/puremorning'
 
+
 # Pages
 PAGE_URL = PAGE_SAVE_AS = '{slug}.html'
-#MENUITEMS = [('About', 'about.html'), ('Projects', 'projects.html'),]
+
+# Sidebar menu
+#MENUITEMS = [('About', 'about.html'), ('Projects', 'projects.html')]

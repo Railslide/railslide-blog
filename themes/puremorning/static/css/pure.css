@@ -196,8 +196,7 @@ code {
 }
 .post-meta {
     color: #999;
-    font-size: 90%;
-    margin-top: -10px;
+    font-family: monospace;
 }
 
 .post-category {
