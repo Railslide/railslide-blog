@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide</title><link href="http://railslide.io/" rel="alternate"></link><link href="http://railslide.io/feeds/all.atom.xml" rel="self"></link><id>http://railslide.io/</id><updated>2015-01-27T00:00:00+01:00</updated><entry><title>Anaconda VS SublimePythonIDE</title><link href="http://railslide.io/anaconda-vs-sublime-python-ide.html" rel="alternate"></link><updated>2015-01-27T00:00:00+01:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2015-01-27:anaconda-vs-sublime-python-ide.html</id><summary type="html">&lt;p&gt;When I was looking for a python code linting plugin for Sublime Text 3, I stumbled upon several blog posts mentioning either &lt;a href="https://github.com/JulianEberius/SublimePythonIDE"&gt;SublimePythonIDE&lt;/a&gt; or &lt;a href="http://damnwidget.github.io/anaconda/"&gt;Anaconda&lt;/a&gt;. The problem was, however, that a comparison between the two was nowhere to be found, so I ended up trying both.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide</title><link href="http://railslide.io/" rel="alternate"></link><link href="http://railslide.io/feeds/all.atom.xml" rel="self"></link><id>http://railslide.io/</id><updated>2015-04-27T00:00:00+02:00</updated><entry><title>How to encrypt a removable disk in Ubuntu 14.04</title><link href="http://railslide.io/encrypt-removable-disk-ubuntu-1404.html" rel="alternate"></link><updated>2015-04-27T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2015-04-27:encrypt-removable-disk-ubuntu-1404.html</id><summary type="html">&lt;p&gt;The other day, while encrypting a USB stick, I discovered that most of the available howtos (including the community wiki) refers to Ubuntu 12.04. So, here's how to do it in Ubuntu 14.04, taking into account the changes that the latest LTS introduced to the disks manager tool.&lt;/p&gt;
+&lt;h2&gt;1. Install cryptsetup&lt;/h2&gt;
+&lt;p&gt;The first thing you need to do is to install &lt;code&gt;cryptsetup&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sudo apt-get install cryptsetup
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can also install it from the Software center if you feel more comfortable with a graphical interface.&lt;/p&gt;
+&lt;h2&gt;2. Disks manager&lt;/h2&gt;
+&lt;p&gt;Launch the disk manager via &lt;em&gt;Dash &amp;gt; Disks&lt;/em&gt; and select the volume you wish to encrypt.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;WARNING: The encryption process requires will format the volume, so any previously stored data will be wiped off.&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;In other words,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If you have any data on your USB, you probably want to back them up.&lt;/li&gt;
+&lt;li&gt;Make sure to select the rigth volume to encrypt, otherwise you could accidentally wipe your hard disk off.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Select the partition, click on the gear icon under it, and choose &lt;code&gt;Format&lt;/code&gt;. Select &lt;code&gt;Overwrite existing data with zeroes (slow)&lt;/code&gt; and &lt;code&gt;Encrypted, compatible with Linux systems (LUKS + ext4)&lt;/code&gt; as type.&lt;/p&gt;
+&lt;p&gt;Then insert the passphrase, confirm it, and wait until the process it's complete. Click on the lockpad icon (i.e. to close it) and you're ready to go.&lt;/p&gt;
+&lt;h2&gt;Troubleshooting&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;You need to have &lt;code&gt;cryptsetup&lt;/code&gt; installed in order to get &lt;code&gt;LUKS + ext4&lt;/code&gt; option showing up in the list of available system format.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If you had the disk manager already open while installing &lt;code&gt;cryptsetup&lt;/code&gt;, you have to restart it in order to see the &lt;code&gt;LUKS + ext4&lt;/code&gt; option.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="ubuntu"></category><category term="encryption"></category><category term="howto"></category></entry><entry><title>Anaconda VS SublimePythonIDE</title><link href="http://railslide.io/anaconda-vs-sublime-python-ide.html" rel="alternate"></link><updated>2015-01-27T00:00:00+01:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2015-01-27:anaconda-vs-sublime-python-ide.html</id><summary type="html">&lt;p&gt;When I was looking for a python code linting plugin for Sublime Text 3, I stumbled upon several blog posts mentioning either &lt;a href="https://github.com/JulianEberius/SublimePythonIDE"&gt;SublimePythonIDE&lt;/a&gt; or &lt;a href="http://damnwidget.github.io/anaconda/"&gt;Anaconda&lt;/a&gt;. The problem was, however, that a comparison between the two was nowhere to be found, so I ended up trying both.&lt;/p&gt;
 &lt;p&gt;The first thing that I have to acknowledge is that they are both very good when it comes to code linting and auto completion. So, no matter which one you choose, you can't really go wrong.&lt;/p&gt;
 &lt;p&gt;When it comes to the extras SublimePythonIDE is the one that lacks most. Although this certainly comes with with the price of less flexibility, it isn't necessary a negative thing. Indeed, the strength of SublimePythonIDE is that it works out of the box: just make sure that your project settings point to correct interpreter (I delegate that to &lt;a href="http://github.com/Railslide/subvenv"&gt;Subvenv&lt;/a&gt;) and you're ready to go. Without any further effort from your side, SublimePythonIDE will provide you with fancy linting icons on the gutter and colored linting marks. While the same things can be obtained with Anaconda as well, they still require you to read the docs and tinker with the settings.&lt;/p&gt;
 &lt;p&gt;Although they require some initial tuning, the extensive amount of customizable settings are not necessarily a negative things, since they offer you the possibility to adjust the way it looks and feel to suite your taste. On top of that Anaconda provides a bunch of handy IDE-like features, such as &lt;code&gt;Go to definition&lt;/code&gt;, &lt;code&gt;Show documentation&lt;/code&gt;, and &lt;code&gt;Find usage&lt;/code&gt; - all reachable via shortcuts or via command palette. It also comes with &lt;a href="https://github.com/hhatto/autopep8"&gt;AutoPEP8&lt;/a&gt;, McCabe complexity checker, and Vagrant integration (via command palette). Recently also a test runner and an import validator has been added to the already reach set of features.&lt;/p&gt;

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="http://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>How to encrypt a removable disk in Ubuntu 14.04 // Railslide // Code, experiments, and thoughts</title>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/pure.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+<div class="pure-g-r" id="layout">
+<div class="sidebar pure-u">
+    <div class="cover-img">
+        <div class="cover-body">
+            <header class="header">
+                <hgroup>
+                    <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                    <p class="tagline">Code, experiments, and thoughts</p>
+                    <p class="social">
+                        <a href="https://github.com/Railslide/">
+                            <i class="fa fa-github-square fa-3x"></i>
+                        </a>
+                        <a href="https://plus.google.com/+GiuliaVergottini">
+                            <i class="fa fa-google-plus-square fa-3x"></i>
+                        </a>
+                        <a href="feeds/all.atom.xml">
+                            <i class="fa fa-rss-square fa-3x"></i>
+                        </a>
+                    <p>
+                </hgroup>
+            </header>
+        </div>
+    </div>
+</div>    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>How to encrypt a removable disk in Ubuntu 14.04</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="http://railslide.io/tag/ubuntu.html">ubuntu</a>
+                                <a class="post-category" href="http://railslide.io/tag/encryption.html">encryption</a>
+                                <a class="post-category" href="http://railslide.io/tag/howto.html">howto</a>
+                        </p>
+                </header>
+            </section>
+            <p>The other day, while encrypting a USB stick, I discovered that most of the available howtos (including the community wiki) refers to Ubuntu 12.04. So, here's how to do it in Ubuntu 14.04, taking into account the changes that the latest LTS introduced to the disks manager tool.</p>
+<h2>1. Install cryptsetup</h2>
+<p>The first thing you need to do is to install <code>cryptsetup</code>:</p>
+<div class="highlight"><pre>sudo apt-get install cryptsetup
+</pre></div>
+
+
+<p>You can also install it from the Software center if you feel more comfortable with a graphical interface.</p>
+<h2>2. Disks manager</h2>
+<p>Launch the disk manager via <em>Dash &gt; Disks</em> and select the volume you wish to encrypt.</p>
+<p><em><strong>WARNING: The encryption process requires will format the volume, so any previously stored data will be wiped off.</strong></em></p>
+<p>In other words,</p>
+<ul>
+<li>If you have any data on your USB, you probably want to back them up.</li>
+<li>Make sure to select the rigth volume to encrypt, otherwise you could accidentally wipe your hard disk off.</li>
+</ul>
+<p>Select the partition, click on the gear icon under it, and choose <code>Format</code>. Select <code>Overwrite existing data with zeroes (slow)</code> and <code>Encrypted, compatible with Linux systems (LUKS + ext4)</code> as type.</p>
+<p>Then insert the passphrase, confirm it, and wait until the process it's complete. Click on the lockpad icon (i.e. to close it) and you're ready to go.</p>
+<h2>Troubleshooting</h2>
+<ul>
+<li>
+<p>You need to have <code>cryptsetup</code> installed in order to get <code>LUKS + ext4</code> option showing up in the list of available system format.</p>
+</li>
+<li>
+<p>If you had the disk manager already open while installing <code>cryptsetup</code>, you have to restart it in order to see the <code>LUKS + ext4</code> option.</p>
+</li>
+</ul>
+            <div class="hr"></div>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+</div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+</body>
+</html>
