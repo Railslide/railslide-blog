@@ -4,10 +4,10 @@ Category: Ubuntu
 Tags: ubuntu, encryption, howto
 Slug: encrypt-removable-disk-ubuntu-1404
 Author: Giulia Vergottini
-Summary: Most of the guides (including the official ones) on how to encrypt a removable disk in Ubuntu still refer to Ubuntu 12.04. Here's how to do it in Ubuntu 14.04 and to cope with the changes it introduces to the disks manager tool.
+Summary: Most of the guides on how to encrypt a removable disk in Ubuntu still refer to Ubuntu 12.04. Here's how to do it in Ubuntu 14.04 and to cope with the changes it introduces to the disks manager tool.
 Status: draft
 
-The other day I wanted to encrypt a USB stick, but to my dismay I discovered that all the available howtos (including the community wiki) refers to Ubuntu 12.04. Ubuntu 14.04 introuced some changes to the disks manager tool, which - even
+The other day, while encrypting a USB stick, I discovered that most of the available howtos (including the community wiki) refers to Ubuntu 12.04. So, here's how to do it in Ubuntu 14.04, taking into account the changes that the latest LTS introduced to the disks manager tool.
 
 1. Install cryptsetup
 ---------------------
@@ -25,5 +25,19 @@ You can also install it from the Software center if you feel more comfortable wi
 
 Launch the disk manager via __Dash > Disks__ and select the volume you wish to encrypt.
 
-> A word of warning
-> If you have any data on your USB, you probably want to back them up. The encryption process requires will format the volume, so any previously stored data will be wiped off.
+__WARNING__
+The encryption process requires will format the volume, so any previously stored data will be wiped off.
+
+In other words,
+
+* If you have any data on your USB, you probably want to back them up.
+* Make sure to select the rigth volume to encrypt, otherwise you could accidentally wipe your hard disk off.
+
+Select the partition, click on the gear icon beneath it, and choose `Format`. Select `(slow)` and `ext4 LUKS` as file system.
+
+Troubleshooting
+---------------
+
+* You need to have `cryptsetup` installed in order to get ext4 + LUKS option showing up in the list of available system format.
+
+* If you had the disk manager already open while installing `cryptsetup`, you have to restart it in order to see the ext4 + LUKS option.
