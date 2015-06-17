@@ -1,6 +1,6 @@
 Title: How to encrypt a removable disk in Ubuntu 14.04
 Date: 2015-04-27
-Category: Ubuntu
+Category: Cryptography
 Tags: ubuntu, encryption, howto
 Slug: encrypt-removable-disk-ubuntu-1404
 Author: Giulia Vergottini

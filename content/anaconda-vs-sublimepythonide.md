@@ -1,6 +1,6 @@
 Title: Anaconda VS SublimePythonIDE
 Date: 2015-01-27
-Category: Python, Utilities
+Category: Python
 Tags: sublime text, code linting, tools
 Slug: anaconda-vs-sublime-python-ide
 Author: Giulia Vergottini
