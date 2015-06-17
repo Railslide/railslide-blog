@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="http://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>Using pyvenv with virtualenvwrapper // Railslide // Code, experiments, and thoughts</title>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/pure.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+<div class="pure-g-r" id="layout">
+<div class="sidebar pure-u">
+    <div class="cover-img">
+        <div class="cover-body">
+            <header class="header">
+                <hgroup>
+                    <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                    <p class="tagline">Code, experiments, and thoughts</p>
+                    <p class="social">
+                        <a href="https://github.com/Railslide/">
+                            <i class="fa fa-github-square fa-3x"></i>
+                        </a>
+                        <a href="https://plus.google.com/+GiuliaVergottini">
+                            <i class="fa fa-google-plus-square fa-3x"></i>
+                        </a>
+                        <a href="feeds/all.atom.xml">
+                            <i class="fa fa-rss-square fa-3x"></i>
+                        </a>
+                    <p>
+                </hgroup>
+            </header>
+        </div>
+    </div>
+</div>    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Using pyvenv with virtualenvwrapper</h1>
+                        <p class="post-meta">
+                        category: <a href="http://railslide.io/category/python.html">Python</a>, date: 15-05-2015
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="http://railslide.io/tag/virtualenvwrapper.html">virtualenvwrapper</a>
+                                <a class="post-category" href="http://railslide.io/tag/virtualenv.html">virtualenv</a>
+                                <a class="post-category" href="http://railslide.io/tag/python3.html">python3</a>
+                                <a class="post-category" href="http://railslide.io/tag/pyvenv.html">pyvenv</a>
+                        </p>
+                </header>
+            </section>
+            <p>Python 3 ships with pyvenv, a built-in virtualenv management. Although I welcomed the news as a definitely good one, the absence of a virtualenvwrapper-like tool for pyvenv has always stopped me from giving it a try. I find virtualenvwrapper a super neat tool (I even wrote a plugin for it!) and I don't see why I would want to type the path to my python interpreter every time I want to create a new virtualenv, when I can just use a way more pythonic <code>mkvirtualenv my_venv</code>.</p>
+<p>I happened, however, to run into <a href="https://groups.google.com/forum/#!msg/virtualenvwrapper/bkpwkfyIppM/9M9mz3pB0RQJ">this conversation</a> in virtualenvwrapper google group, where Dough Hellman aka the guy behind virtualenvwrapper says that <strong>in theory</strong> it should be possible to use virtualenvwrapper with pyvenv. So I immediately fired up a couple of virtual machines and started playing around in order to see whether it was possible to turn that <em>in theory</em> into an <em>in practice</em>.</p>
+<p>TL;DR: yes, it is possible by setting <code>VIRTUALENVWRAPPER_VIRTUALENV='pyvenv'</code> in your bash profile. There are some caveats though, which are described below.</p>
+<h2>1. Which pyvenv?</h2>
+<p>According to Python documentation (for Python 3.4.2 at the time of writing) I should be able to invoke pyvenv by simply calling <code>pyvenv [options]</code>. However, that is not the case for Python 3.4.0 which is the version of Python 3 shipped with Ubuntu 14.04. Thus, my first attempt to set my <code>VIRTUALENVWRAPPER_VIRTUALENV</code> variable equal to <code>pyvenv</code> resulted in my vagrant machine complaining because it could not find it in my path. Setting it to <code>pyvenv-3.4</code> solved it, even though having to manually change it whenever I decide to update my Python version is far from optimal.</p>
+<h2>2. Trusty bug</h2>
+<p>So I set <code>pyvenv-3.4</code> as <code>VIRTUALENVWRAPPER_VIRTUALENV</code>, created a new virtualenv and...</p>
+<div class="highlight"><pre><span class="n">Error</span><span class="o">:</span> <span class="n">Command</span> <span class="s1">&#39;[&#39;</span><span class="sr">/home/vagrant/.virtualenvs/test/bin/</span><span class="n">python3</span><span class="o">.</span><span class="mi">4</span><span class="s1">&#39;, &#39;</span><span class="o">-</span><span class="n">Im</span><span class="s1">&#39;, &#39;</span><span class="n">ensurepip</span><span class="s1">&#39;, &#39;</span><span class="o">--</span><span class="n">upgrade</span><span class="s1">&#39;, &#39;</span><span class="o">--</span><span class="k">default</span><span class="o">-</span><span class="n">pip</span><span class="s1">&#39;]&#39;</span> <span class="n">returned</span> <span class="n">non</span><span class="o">-</span><span class="n">zero</span> <span class="n">exit</span> <span class="n">status</span> <span class="mi">1</span>
+</pre></div>
+
+
+<p>Ok, not exactly what I was hoping for.</p>
+<p>After a bit of digging, it came out that it is due <a href="https://bugs.launchpad.net/ubuntu/+source/python3.4/+bug/1290847">to a bug</a> in Ubuntu 14.04 (Trusty Tahr). At the time of writing a fixed was released, but not yet distributed through apt-get. However, it is possible to bypass the problem by first creating the virtualenv without pip and then manually installing it once inside the virtualenv.</p>
+<div class="highlight"><pre>mkvirtualenv --without-pip my_venv
+curl https://bootstrap.pypa.io/get-pip.py | python
+</pre></div>
+            <div class="hr"></div>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+</div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+</body>
+</html>

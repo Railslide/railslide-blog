@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide</title><link href="http://railslide.io/" rel="alternate"></link><link href="http://railslide.io/feeds/all.atom.xml" rel="self"></link><id>http://railslide.io/</id><updated>2015-04-27T00:00:00+02:00</updated><entry><title>How to encrypt a removable disk in Ubuntu 14.04</title><link href="http://railslide.io/encrypt-removable-disk-ubuntu-1404.html" rel="alternate"></link><updated>2015-04-27T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2015-04-27:encrypt-removable-disk-ubuntu-1404.html</id><summary type="html">&lt;p&gt;The other day, while encrypting a USB stick, I discovered that most of the available howtos (including the community wiki) refers to Ubuntu 12.04. So, here's how to do it in Ubuntu 14.04, taking into account the changes that the latest LTS introduced to the disks manager tool.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide</title><link href="http://railslide.io/" rel="alternate"></link><link href="http://railslide.io/feeds/all.atom.xml" rel="self"></link><id>http://railslide.io/</id><updated>2015-06-17T00:00:00+02:00</updated><entry><title>Some great reading resources about GPG</title><link href="http://railslide.io/gpg-reading-resources.html" rel="alternate"></link><updated>2015-06-17T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2015-06-17:gpg-reading-resources.html</id><summary type="html">&lt;p&gt;While setting up my GPG keyring, I stumbled upon quite some interesting reading resources about PGP/GPG and cryptography in general. I collected them in this blog post in case they could come in handy for someone else or for future reference.&lt;/p&gt;
+&lt;p&gt;Happy reading!&lt;/p&gt;
+&lt;h2&gt;Cryptography in general&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.philzimmermann.com/EN/essays/WhyIWrotePGP.html"&gt;Why I Wrote PGP (Philip Zimmermann)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.autistici.org/en/stuff/man_mail/privacymail.html"&gt;Protecting your privacy: how and why (Autistici/Inventati)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.gnupg.org/gph/en/manual/book1.html"&gt;The GNU Privacy Handbook&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Key creation&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://wiki.debian.org/Subkeys"&gt;Debian wiki about Subkeys&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.void.gr/kargig/blog/2013/12/02/creating-a-new-gpg-key-with-subkeys/"&gt;Creating a new GPG key with subkeys (void.gr)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://alexcabal.com/creating-the-perfect-gpg-keypair/"&gt;Creating the perfect GPG keypair (Alex Cabal)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.debian-administration.org/article/451/Submitting_your_GPG_key_to_a_keyserver"&gt;Submitting your GPG key to a keyserver (Debian Administration)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://openpgpblog.tumblr.com/post/219954494/photos-on-pgp-keys"&gt;Photos on PGP keys (OpenPGP Blog)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.spywarewarrior.com/uiuc/ss/revoke/pgp-revoke.htm"&gt;Creating a Key Revocation Certificate in PGP (spywarewarriors.com)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;GPG + Email&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://lifehacker.com/180878/how-to-encrypt-your-email"&gt;How to encrypt your email (Lifehacker)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.enigmail.net/home/index.php"&gt;Enigmail&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://mailpile.is"&gt;Mailpile&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="GPG"></category><category term="cryptography"></category></entry><entry><title>How to encrypt a removable disk in Ubuntu 14.04</title><link href="http://railslide.io/encrypt-removable-disk-ubuntu-1404.html" rel="alternate"></link><updated>2015-04-27T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2015-04-27:encrypt-removable-disk-ubuntu-1404.html</id><summary type="html">&lt;p&gt;The other day, while encrypting a USB stick, I discovered that most of the available howtos (including the community wiki) refers to Ubuntu 12.04. So, here's how to do it in Ubuntu 14.04, taking into account the changes that the latest LTS introduced to the disks manager tool.&lt;/p&gt;
 &lt;h2&gt;1. Install cryptsetup&lt;/h2&gt;
 &lt;p&gt;The first thing you need to do is to install &lt;code&gt;cryptsetup&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;sudo apt-get install cryptsetup

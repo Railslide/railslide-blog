@@ -7,7 +7,7 @@
 
         <link rel="alternate"  href="http://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
 
-        <title>How to encrypt a removable disk in Ubuntu 14.04 // Railslide // Code, experiments, and thoughts</title>
+        <title>Some great reading resources about GPG // Railslide // Code, experiments, and thoughts</title>
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
@@ -51,43 +51,38 @@
         <div class="content">
             <section class="post">
                 <header class="post-header">
-                    <h1>How to encrypt a removable disk in Ubuntu 14.04</h1>
+                    <h1>Some great reading resources about GPG</h1>
                         <p class="post-meta">
-                        category: <a href="http://railslide.io/category/cryptography.html">Cryptography</a>, date: 27-04-2015
+                        category: <a href="http://railslide.io/category/cryptography.html">Cryptography</a>, date: 17-06-2015
                         </p>
                         <p class="post-meta">
-                            tags =                                 <a class="post-category" href="http://railslide.io/tag/ubuntu.html">ubuntu</a>
-                                <a class="post-category" href="http://railslide.io/tag/encryption.html">encryption</a>
-                                <a class="post-category" href="http://railslide.io/tag/howto.html">howto</a>
+                            tags =                                 <a class="post-category" href="http://railslide.io/tag/gpg.html">GPG</a>
+                                <a class="post-category" href="http://railslide.io/tag/cryptography.html">cryptography</a>
                         </p>
                 </header>
             </section>
-            <p>The other day, while encrypting a USB stick, I discovered that most of the available howtos (including the community wiki) refers to Ubuntu 12.04. So, here's how to do it in Ubuntu 14.04, taking into account the changes that the latest LTS introduced to the disks manager tool.</p>
-<h2>1. Install cryptsetup</h2>
-<p>The first thing you need to do is to install <code>cryptsetup</code>:</p>
-<div class="highlight"><pre>sudo apt-get install cryptsetup
-</pre></div>
-
-
-<p>You can also install it from the Software center if you feel more comfortable with a graphical interface.</p>
-<h2>2. Disks manager</h2>
-<p>Launch the disk manager via <em>Dash &gt; Disks</em> and select the volume you wish to encrypt.</p>
-<p><em><strong>WARNING: The encryption process requires will format the volume, so any previously stored data will be wiped off.</strong></em></p>
-<p>In other words,</p>
+            <p>While setting up my GPG keyring, I stumbled upon quite some interesting reading resources about PGP/GPG and cryptography in general. I collected them in this blog post in case they could come in handy for someone else or for future reference.</p>
+<p>Happy reading!</p>
+<h2>Cryptography in general</h2>
 <ul>
-<li>If you have any data on your USB, you probably want to back them up.</li>
-<li>Make sure to select the rigth volume to encrypt, otherwise you could accidentally wipe your hard disk off.</li>
+<li><a href="https://www.philzimmermann.com/EN/essays/WhyIWrotePGP.html">Why I Wrote PGP (Philip Zimmermann)</a></li>
+<li><a href="http://www.autistici.org/en/stuff/man_mail/privacymail.html">Protecting your privacy: how and why (Autistici/Inventati)</a></li>
+<li><a href="https://www.gnupg.org/gph/en/manual/book1.html">The GNU Privacy Handbook</a></li>
 </ul>
-<p>Select the partition, click on the gear icon under it, and choose <code>Format</code>. Select <code>Overwrite existing data with zeroes (slow)</code> and <code>Encrypted, compatible with Linux systems (LUKS + ext4)</code> as type.</p>
-<p>Then insert the passphrase, confirm it, and wait until the process it's complete. Click on the lockpad icon (i.e. to close it) and you're ready to go.</p>
-<h2>Troubleshooting</h2>
+<h2>Key creation</h2>
 <ul>
-<li>
-<p>You need to have <code>cryptsetup</code> installed in order to get <code>LUKS + ext4</code> option showing up in the list of available system format.</p>
-</li>
-<li>
-<p>If you had the disk manager already open while installing <code>cryptsetup</code>, you have to restart it in order to see the <code>LUKS + ext4</code> option.</p>
-</li>
+<li><a href="https://wiki.debian.org/Subkeys">Debian wiki about Subkeys</a></li>
+<li><a href="https://www.void.gr/kargig/blog/2013/12/02/creating-a-new-gpg-key-with-subkeys/">Creating a new GPG key with subkeys (void.gr)</a></li>
+<li><a href="https://alexcabal.com/creating-the-perfect-gpg-keypair/">Creating the perfect GPG keypair (Alex Cabal)</a></li>
+<li><a href="https://www.debian-administration.org/article/451/Submitting_your_GPG_key_to_a_keyserver">Submitting your GPG key to a keyserver (Debian Administration)</a></li>
+<li><a href="http://openpgpblog.tumblr.com/post/219954494/photos-on-pgp-keys">Photos on PGP keys (OpenPGP Blog)</a></li>
+<li><a href="http://www.spywarewarrior.com/uiuc/ss/revoke/pgp-revoke.htm">Creating a Key Revocation Certificate in PGP (spywarewarriors.com)</a></li>
+</ul>
+<h2>GPG + Email</h2>
+<ul>
+<li><a href="http://lifehacker.com/180878/how-to-encrypt-your-email">How to encrypt your email (Lifehacker)</a></li>
+<li><a href="https://www.enigmail.net/home/index.php">Enigmail</a></li>
+<li><a href="https://mailpile.is">Mailpile</a></li>
 </ul>
             <div class="hr"></div>
             <a href="#" class="go-top">Go Top</a>
