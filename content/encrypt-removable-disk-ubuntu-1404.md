@@ -24,7 +24,7 @@ You can also install it from the Software center if you feel more comfortable wi
 
 Launch the disk manager via _Dash > Disks_ and select the volume you wish to encrypt.
 
-_**WARNING: The encryption process requires will format the volume, so any previously stored data will be wiped off.**_
+_**WARNING: The encryption process will format the volume, so any previously stored data will be wiped off.**_
 
 In other words,
 
