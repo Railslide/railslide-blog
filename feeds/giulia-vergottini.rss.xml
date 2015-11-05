@@ -31,7 +31,7 @@
 &lt;p&gt;You can also install it from the Software center if you feel more comfortable with a graphical interface.&lt;/p&gt;
 &lt;h2&gt;2. Disks manager&lt;/h2&gt;
 &lt;p&gt;Launch the disk manager via &lt;em&gt;Dash &amp;gt; Disks&lt;/em&gt; and select the volume you wish to encrypt.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;&lt;strong&gt;WARNING: The encryption process requires will format the volume, so any previously stored data will be wiped off.&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;WARNING: The encryption process will format the volume, so any previously stored data will be wiped off.&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;In other words,&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;If you have any data on your USB, you probably want to back them up.&lt;/li&gt;
