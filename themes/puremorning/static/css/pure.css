@@ -47,6 +47,7 @@ code {
 }
 
 .cover-img {
+    /* Background pattern from subtlepatterns.com */
     background: url('../img/concrete-wall.png') #0d302e;
     position: absolute;
     width: 100%;
