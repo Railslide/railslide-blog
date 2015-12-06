@@ -1,4 +1,5 @@
-{% extends 'base.html' %}
+{% extends 'index.html' %}
+{% block sidebar %}{% if article.sidebarimage %}{{ article.sidebarimage }}{% else %}{{ super() }}{% endif %}{% endblock %}
 {% block title %}{{ article.title|striptags }} // {{ super() }}{% endblock title %}
 
 {% block head_css %}
@@ -12,11 +13,15 @@
             $(".content").fitVids();
         });
     </script>
+    {% if article and article.latex %}
+        {{ article.latex }}
+    {% endif %}
+    {% if page and page.latex %}
+        {{ page.latex }}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
-<div class="pure-g-r" id="layout">
-    {% include 'sidebar.html' %}
     <div class="pure-u">
         <div class="content">
             <section class="post">
@@ -29,17 +34,12 @@
                             tags = {% for tag in article.tags %}
                                 <a class="post-category" href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a>
                             {% endfor %}
-                        </p>
                 </header>
             </section>
             {{ article.content }}
-            <div class="hr"></div>
             <a href="#" class="go-top">Go Top</a>
-            {% if DISQUS_SITENAME %}
-                {% include 'disqus.html' %}
-            {% endif %}
+            {% include 'disqus.html' %}
             {% include 'footer.html' %}
         </div>
     </div>
-</div>
 {% endblock  %}

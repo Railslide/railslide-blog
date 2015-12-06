@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="pure-g-r" id="layout">
-    {% include 'sidebar.html' %}
-    <div class="pure-u-1">
+    <div class="pure-u">
         <div class="content">
             <!-- A wrapper for all the blog posts -->
             <div class="posts">
@@ -20,20 +18,31 @@
                     {% endif %}
                 </h1>
                 {% for article in articles_page.object_list %}
-                    {% include 'post.html' %}
-                    {% if MATH is defined and not MATH['auto_insert'] %}
-			{% if page and page.mathjax or article and article.mathjax %}
-                            {% set mathjax = True %}
+                    {# Include's latex math only if an article in the index has it present #}
+                    {% if article and article.latex and latex is not defined %}
+                        {% set latex = True %}
+                        {{ article.latex }}
+                    {% endif %}
+                    <section class="post">
+                        <header class="post-header">
+                            <h3><a class="post-title" href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></h3>
+                            <p class="post-meta">{{ article.summary }}</p>
+                        {% if HIDE_CATEGORIES %}
+                            <p class="post-meta">// under {% for tag in article.tags %}
+                                <a class="post-category" href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a>
+                                {% endfor %} &middot; {{ article.locale_date }}
+                            </p>
+                        {% else %}
+                            <p class="post-meta">
+                                in <a href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a> &middot; {{ article.locale_date }}
+                            </p>
                         {% endif %}
-                    {% endif %}
-                    {% if loop.last and mathjax is defined %}
-                        {{ MATHJAXSCRIPT }}
-                    {% endif %}
+                        </header>
+                    </section>
                 {% endfor %}
                 {% include 'pagination.html' %}
                 {% include 'footer.html' %}
             </div>
         </div>
     </div>
-</div>
 {% endblock content %}
