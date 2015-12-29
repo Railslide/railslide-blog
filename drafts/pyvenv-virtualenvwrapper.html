@@ -9,6 +9,7 @@
 
         <title>Using pyvenv with virtualenvwrapper // Railslide // Code, experiments, and thoughts</title>
 
+
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="http://railslide.io/theme/css/pure.css">
@@ -24,30 +25,32 @@
 </head>
 
 <body>
-<div class="pure-g-r" id="layout">
-<div class="sidebar pure-u">
-    <div class="cover-img">
-        <div class="cover-body">
-            <header class="header">
-                <hgroup>
-                    <h1 class="brand-main"><a href="/">Railslide</a></h1>
-                    <p class="tagline">Code, experiments, and thoughts</p>
-                    <p class="social">
-                        <a href="https://github.com/Railslide/">
-                            <i class="fa fa-github-square fa-3x"></i>
-                        </a>
-                        <a href="https://plus.google.com/+GiuliaVergottini">
-                            <i class="fa fa-google-plus-square fa-3x"></i>
-                        </a>
-                        <a href="feeds/all.atom.xml">
-                            <i class="fa fa-rss-square fa-3x"></i>
-                        </a>
-                    <p>
-                </hgroup>
-            </header>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github-square fa-3x"></i>
+                                    </a>
+                                    <a href="https://plus.google.com/+GiuliaVergottini">
+                                        <i class="fa fa-google-plus-square fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss-square fa-3x"></i>
+                                    </a>
+                                </p>
+                                <p></p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
         </div>
-    </div>
-</div>    <div class="pure-u">
+    <div class="pure-u">
         <div class="content">
             <section class="post">
                 <header class="post-header">
@@ -60,7 +63,6 @@
                                 <a class="post-category" href="http://railslide.io/tag/virtualenv.html">virtualenv</a>
                                 <a class="post-category" href="http://railslide.io/tag/python3.html">python3</a>
                                 <a class="post-category" href="http://railslide.io/tag/pyvenv.html">pyvenv</a>
-                        </p>
                 </header>
             </section>
             <p>Python 3 ships with pyvenv, a built-in virtualenv management. Although I welcomed the news as a definitely good one, the absence of a virtualenvwrapper-like tool for pyvenv has always stopped me from giving it a try. I find virtualenvwrapper a super neat tool (I even wrote a plugin for it!) and I don't see why I would want to type the path to my python interpreter every time I want to create a new virtualenv, when I can just use a way more pythonic <code>mkvirtualenv my_venv</code>.</p>
@@ -79,16 +81,15 @@
 <div class="highlight"><pre>mkvirtualenv --without-pip my_venv
 curl https://bootstrap.pypa.io/get-pip.py | python
 </pre></div>
-            <div class="hr"></div>
             <a href="#" class="go-top">Go Top</a>
 <footer class="footer">
     <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
         Built with <a href="http://blog.getpelican.com/">Pelican</a>
-        and a modified version of <a href="https://github.com/PurePelicanTheme/pure">Pure Theme</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
     </p>
 </footer>        </div>
     </div>
-</div>
+    </div>
     <script>
         var $top = $('.go-top');
 
@@ -123,5 +124,6 @@ curl https://bootstrap.pypa.io/get-pip.py | python
             pageTracker._trackPageview();
             } catch(err) {}
     </script>
+
 </body>
 </html>

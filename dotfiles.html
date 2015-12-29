@@ -9,6 +9,7 @@
 
         <title>Setting up a dotfiles repo and easily port configurations around // Railslide // Code, experiments, and thoughts</title>
 
+
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="http://railslide.io/theme/css/pure.css">
@@ -24,30 +25,32 @@
 </head>
 
 <body>
-<div class="pure-g-r" id="layout">
-<div class="sidebar pure-u">
-    <div class="cover-img">
-        <div class="cover-body">
-            <header class="header">
-                <hgroup>
-                    <h1 class="brand-main"><a href="/">Railslide</a></h1>
-                    <p class="tagline">Code, experiments, and thoughts</p>
-                    <p class="social">
-                        <a href="https://github.com/Railslide/">
-                            <i class="fa fa-github-square fa-3x"></i>
-                        </a>
-                        <a href="https://plus.google.com/+GiuliaVergottini">
-                            <i class="fa fa-google-plus-square fa-3x"></i>
-                        </a>
-                        <a href="feeds/all.atom.xml">
-                            <i class="fa fa-rss-square fa-3x"></i>
-                        </a>
-                    <p>
-                </hgroup>
-            </header>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github-square fa-3x"></i>
+                                    </a>
+                                    <a href="https://plus.google.com/+GiuliaVergottini">
+                                        <i class="fa fa-google-plus-square fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss-square fa-3x"></i>
+                                    </a>
+                                </p>
+                                <p></p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
         </div>
-    </div>
-</div>    <div class="pure-u">
+    <div class="pure-u">
         <div class="content">
             <section class="post">
                 <header class="post-header">
@@ -59,7 +62,6 @@
                             tags =                                 <a class="post-category" href="http://railslide.io/tag/dotfiles.html">dotfiles</a>
                                 <a class="post-category" href="http://railslide.io/tag/utilities.html">utilities</a>
                                 <a class="post-category" href="http://railslide.io/tag/git.html">git</a>
-                        </p>
                 </header>
             </section>
             <p>After having spent quite some time in finding the right set up for my developing environment, it came natural to look for a way for porting my configuration. Enter a dotfiles repo, aka having all my configurations only one <code>git clone</code> away and making my life so much easier.</p>
@@ -104,16 +106,15 @@ ln -s <span class="nv">$dir</span>/sublime/User <span class="nv">$sublimedir</sp
 
 <p>The full script can be found on <a href="https://github.com/Railslide/dotfiles/blob/master/installdotfiles.sh">github</a>.</p>
 <p>Finally, since Package Control updates regularly some of the files in the User folder, I added them to a <code>.gitignore</code> file in order to avoid to much noise in my version control. A list of those files can be found in the <a href="https://sublime.wbond.net/docs/syncing">docs</a> of Package Control.</p>
-            <div class="hr"></div>
             <a href="#" class="go-top">Go Top</a>
 <footer class="footer">
     <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
         Built with <a href="http://blog.getpelican.com/">Pelican</a>
-        and a modified version of <a href="https://github.com/PurePelicanTheme/pure">Pure Theme</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
     </p>
 </footer>        </div>
     </div>
-</div>
+    </div>
     <script>
         var $top = $('.go-top');
 
@@ -148,5 +149,6 @@ ln -s <span class="nv">$dir</span>/sublime/User <span class="nv">$sublimedir</sp
             pageTracker._trackPageview();
             } catch(err) {}
     </script>
+
 </body>
 </html>
