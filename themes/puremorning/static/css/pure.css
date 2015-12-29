@@ -110,7 +110,6 @@ pre {
 .brand-main a {
     text-transform: uppercase;
     text-decoration: none;
-    margin-left: 15px;
     font-size: 25px;
     color: #fff;
     border-bottom: 1px solid rgba(255,255,255,0.3);
@@ -119,9 +118,8 @@ pre {
 }
 
 .tagline {
-    margin-top: -15px;
     line-height: 15px;
-    margin-left: 15px;
+    margin: -15px 7.5px 0;
     font-size: 80%;
     text-shadow: 0 1px 3px rgba(0,0,0,0.3);
     color: #fff;
@@ -132,7 +130,7 @@ pre {
 }
 .social a {
     text-decoration: none;
-    margin-left: 15px;
+    margin: auto 7.5px;
     text-shadow: 0 1px 3px rgba(0,0,0,0.3);
     color: #fff;
 }

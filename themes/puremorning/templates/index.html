@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="pure-u">
+    <div class="pure-u-1">
         <div class="content">
             <!-- A wrapper for all the blog posts -->
             <div class="posts">
@@ -34,7 +34,7 @@
                             </p>
                         {% else %}
                             <p class="post-meta">
-                                in <a href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a> &middot; {{ article.locale_date }}
+                                category: <a href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a>, date: {{ article.locale_date }}
                             </p>
                         {% endif %}
                         </header>
