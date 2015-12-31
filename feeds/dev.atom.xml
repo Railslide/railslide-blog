@@ -1,53 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide</title><link href="http://railslide.io/" rel="alternate"></link><link href="http://railslide.io/feeds/giulia-vergottini.atom.xml" rel="self"></link><id>http://railslide.io/</id><updated>2015-06-17T00:00:00+02:00</updated><entry><title>Some great reading resources about GPG</title><link href="http://railslide.io/gpg-reading-resources.html" rel="alternate"></link><updated>2015-06-17T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2015-06-17:gpg-reading-resources.html</id><summary type="html">&lt;p&gt;While setting up my GPG keyring, I stumbled upon quite some interesting reading resources about PGP/GPG and cryptography in general. I collected them in this blog post in case they could come in handy for someone else or for future reference.&lt;/p&gt;
-&lt;p&gt;Happy reading!&lt;/p&gt;
-&lt;h2&gt;Cryptography in general&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://www.philzimmermann.com/EN/essays/WhyIWrotePGP.html"&gt;Why I Wrote PGP (Philip Zimmermann)&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://www.autistici.org/en/stuff/man_mail/privacymail.html"&gt;Protecting your privacy: how and why (Autistici/Inventati)&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://www.gnupg.org/gph/en/manual/book1.html"&gt;The GNU Privacy Handbook&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2&gt;Key creation&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://wiki.debian.org/Subkeys"&gt;Debian wiki about Subkeys&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://www.void.gr/kargig/blog/2013/12/02/creating-a-new-gpg-key-with-subkeys/"&gt;Creating a new GPG key with subkeys (void.gr)&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://alexcabal.com/creating-the-perfect-gpg-keypair/"&gt;Creating the perfect GPG keypair (Alex Cabal)&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://www.debian-administration.org/article/451/Submitting_your_GPG_key_to_a_keyserver"&gt;Submitting your GPG key to a keyserver (Debian Administration)&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://openpgpblog.tumblr.com/post/219954494/photos-on-pgp-keys"&gt;Photos on PGP keys (OpenPGP Blog)&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://www.spywarewarrior.com/uiuc/ss/revoke/pgp-revoke.htm"&gt;Creating a Key Revocation Certificate in PGP (spywarewarriors.com)&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2&gt;GPG + Email&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="http://lifehacker.com/180878/how-to-encrypt-your-email"&gt;How to encrypt your email (Lifehacker)&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://www.enigmail.net/home/index.php"&gt;Enigmail&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://mailpile.is"&gt;Mailpile&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</summary><category term="GPG"></category><category term="cryptography"></category></entry><entry><title>How to encrypt a removable disk in Ubuntu 14.04</title><link href="http://railslide.io/encrypt-removable-disk-ubuntu-1404.html" rel="alternate"></link><updated>2015-04-27T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2015-04-27:encrypt-removable-disk-ubuntu-1404.html</id><summary type="html">&lt;p&gt;The other day, while encrypting a USB stick, I discovered that most of the available howtos (including the community wiki) refers to Ubuntu 12.04. So, here's how to do it in Ubuntu 14.04, taking into account the changes that the latest LTS introduced to the disks manager tool.&lt;/p&gt;
-&lt;h2&gt;1. Install cryptsetup&lt;/h2&gt;
-&lt;p&gt;The first thing you need to do is to install &lt;code&gt;cryptsetup&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;sudo apt-get install cryptsetup
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;You can also install it from the Software center if you feel more comfortable with a graphical interface.&lt;/p&gt;
-&lt;h2&gt;2. Disks manager&lt;/h2&gt;
-&lt;p&gt;Launch the disk manager via &lt;em&gt;Dash &amp;gt; Disks&lt;/em&gt; and select the volume you wish to encrypt.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;&lt;strong&gt;WARNING: The encryption process will format the volume, so any previously stored data will be wiped off.&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;In other words,&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;If you have any data on your USB, you probably want to back them up.&lt;/li&gt;
-&lt;li&gt;Make sure to select the rigth volume to encrypt, otherwise you could accidentally wipe your hard disk off.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Select the partition, click on the gear icon under it, and choose &lt;code&gt;Format&lt;/code&gt;. Select &lt;code&gt;Overwrite existing data with zeroes (slow)&lt;/code&gt; and &lt;code&gt;Encrypted, compatible with Linux systems (LUKS + ext4)&lt;/code&gt; as type.&lt;/p&gt;
-&lt;p&gt;Then insert the passphrase, confirm it, and wait until the process it's complete. Click on the lockpad icon (i.e. to close it) and you're ready to go.&lt;/p&gt;
-&lt;h2&gt;Troubleshooting&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;You need to have &lt;code&gt;cryptsetup&lt;/code&gt; installed in order to get &lt;code&gt;LUKS + ext4&lt;/code&gt; option showing up in the list of available system format.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;If you had the disk manager already open while installing &lt;code&gt;cryptsetup&lt;/code&gt;, you have to restart it in order to see the &lt;code&gt;LUKS + ext4&lt;/code&gt; option.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;</summary><category term="ubuntu"></category><category term="encryption"></category><category term="howto"></category></entry><entry><title>Anaconda VS SublimePythonIDE</title><link href="http://railslide.io/anaconda-vs-sublime-python-ide.html" rel="alternate"></link><updated>2015-01-27T00:00:00+01:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2015-01-27:anaconda-vs-sublime-python-ide.html</id><summary type="html">&lt;p&gt;When I was looking for a python code linting plugin for Sublime Text 3, I stumbled upon several blog posts mentioning either &lt;a href="https://github.com/JulianEberius/SublimePythonIDE"&gt;SublimePythonIDE&lt;/a&gt; or &lt;a href="http://damnwidget.github.io/anaconda/"&gt;Anaconda&lt;/a&gt;. The problem was, however, that a comparison between the two was nowhere to be found, so I ended up trying both.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide</title><link href="http://railslide.io/" rel="alternate"></link><link href="http://railslide.io/feeds/dev.atom.xml" rel="self"></link><id>http://railslide.io/</id><updated>2015-01-27T00:00:00+01:00</updated><entry><title>Anaconda VS SublimePythonIDE</title><link href="http://railslide.io/anaconda-vs-sublime-python-ide.html" rel="alternate"></link><updated>2015-01-27T00:00:00+01:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2015-01-27:anaconda-vs-sublime-python-ide.html</id><summary type="html">&lt;p&gt;When I was looking for a python code linting plugin for Sublime Text 3, I stumbled upon several blog posts mentioning either &lt;a href="https://github.com/JulianEberius/SublimePythonIDE"&gt;SublimePythonIDE&lt;/a&gt; or &lt;a href="http://damnwidget.github.io/anaconda/"&gt;Anaconda&lt;/a&gt;. The problem was, however, that a comparison between the two was nowhere to be found, so I ended up trying both.&lt;/p&gt;
 &lt;p&gt;The first thing that I have to acknowledge is that they are both very good when it comes to code linting and auto completion. So, no matter which one you choose, you can't really go wrong.&lt;/p&gt;
 &lt;p&gt;When it comes to the extras SublimePythonIDE is the one that lacks most. Although this certainly comes with with the price of less flexibility, it isn't necessary a negative thing. Indeed, the strength of SublimePythonIDE is that it works out of the box: just make sure that your project settings point to correct interpreter (I delegate that to &lt;a href="http://github.com/Railslide/subvenv"&gt;Subvenv&lt;/a&gt;) and you're ready to go. Without any further effort from your side, SublimePythonIDE will provide you with fancy linting icons on the gutter and colored linting marks. While the same things can be obtained with Anaconda as well, they still require you to read the docs and tinker with the settings.&lt;/p&gt;
 &lt;p&gt;Although they require some initial tuning, the extensive amount of customizable settings are not necessarily a negative things, since they offer you the possibility to adjust the way it looks and feel to suite your taste. On top of that Anaconda provides a bunch of handy IDE-like features, such as &lt;code&gt;Go to definition&lt;/code&gt;, &lt;code&gt;Show documentation&lt;/code&gt;, and &lt;code&gt;Find usage&lt;/code&gt; - all reachable via shortcuts or via command palette. It also comes with &lt;a href="https://github.com/hhatto/autopep8"&gt;AutoPEP8&lt;/a&gt;, McCabe complexity checker, and Vagrant integration (via command palette). Recently also a test runner and an import validator has been added to the already reach set of features.&lt;/p&gt;
@@ -109,88 +61,7 @@ ln -s &lt;span class="nv"&gt;$dir&lt;/span&gt;/sublime/User &lt;span class="nv"&
 
 
 &lt;p&gt;The full script can be found on &lt;a href="https://github.com/Railslide/dotfiles/blob/master/installdotfiles.sh"&gt;github&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;Finally, since Package Control updates regularly some of the files in the User folder, I added them to a &lt;code&gt;.gitignore&lt;/code&gt; file in order to avoid to much noise in my version control. A list of those files can be found in the &lt;a href="https://sublime.wbond.net/docs/syncing"&gt;docs&lt;/a&gt; of Package Control.&lt;/p&gt;</summary><category term="dotfiles"></category><category term="utilities"></category><category term="git"></category><category term="developing environment"></category></entry><entry><title>How to set up Pelican on GitHub pages</title><link href="http://railslide.io/pelican-github-pages.html" rel="alternate"></link><updated>2014-06-09T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2014-06-09:pelican-github-pages.html</id><summary type="html">&lt;p&gt;Although the web is plenty of blog posts about how to set up a Pelican powered blog on GitHub pages, I still had to glean information from several sources and mix it with a bit of experimentation before being able to have my blog up and running. So hopefully this post will make someone's life easier, other than being a future reference for myself.&lt;/p&gt;
-&lt;p&gt;Before starting I need to give credit where credit is due, since &lt;a href="http://mathamy.com/migrating-to-github-pages-using-pelican.html"&gt;this post&lt;/a&gt; by Amy Hanlon and &lt;a href="http://martinbrochhaus.com/pelican2.html"&gt;this one&lt;/a&gt; by Martin Brochhaus have been a tremendous starting point for my trial-and-error journey. Once said that, we can start.&lt;/p&gt;
-&lt;h1&gt;1. Setting up GitHub project pages&lt;/h1&gt;
-&lt;p&gt;GitHub offers the possibility to host your site in the cloud through either &lt;a href="https://help.github.com/articles/user-organization-and-project-pages"&gt;personal or project pages&lt;/a&gt;. Although it is possible to use both for hosting a Pelican powered blog, project pages make your life so much easier when it comes both to publish your blog content and to put blog source under revision control.&lt;/p&gt;
-&lt;p&gt;For creating project pages, all we need to do is to create a repository as usual and put the content we wish to publish (i.e. the HTML static files) into a branch named &lt;code&gt;gh-pages&lt;/code&gt;. Once done that, your page will show up at username.github.io/repository.&lt;/p&gt;
-&lt;p&gt;Although it could sounds overly complicated - especially the &lt;code&gt;gh-pages&lt;/code&gt; branch part - you don't have to worry since an awesome program called &lt;a href="https://github.com/davisp/ghp-import"&gt;ghp-import&lt;/a&gt; will take care of it for us. For now, simply create a new repository as you would do for any other project and set up a &lt;code&gt;.gitignore&lt;/code&gt; file with the following content:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;*.pid
-*.pyc
-output/
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;h1&gt;2. Installing the needed packages&lt;/h1&gt;
-&lt;p&gt;Before installing Pelican, I would recommend to create a new virtualenv. It is not mandatory, but it is definitely a good practice and would prevent the risk of conflicts between installed packages.&lt;/p&gt;
-&lt;p&gt;NOTE: Pelican documentation recommends to use Pelican with Python 2.7. I am keeping up with &lt;a href="http://railslide.io/virtualenvwrapper-python3.html"&gt;my pledge of using Python 3 whenever possible&lt;/a&gt;, as well as giving a try with Python 3.4 (Ubuntu 14.04 default version). Everything works fine so far and anyways these instructions are version agnostic - just be aware of it and choose your Python version accordingly.&lt;/p&gt;
-&lt;p&gt;Install pelican and ghp-import&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;pip install pelican
-pip install -e git+git://github.com/davisp/ghp-import.git#egg&lt;span class="o"&gt;=&lt;/span&gt;ghp-import
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Next run &lt;code&gt;pelican-quickstart&lt;/code&gt; and get ready to answer to a bunch of questions. Most of them are pretty straightforward and anyway you'll be able to change them later in your settings files. These are the only ones you need to care about for the moment:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;Where &lt;span class="k"&gt;do&lt;/span&gt; you want to create your new web site? &lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="c"&gt;# Press enter&lt;/span&gt;
-Do you want to specify a URL prefix? e.g., http://example.com &lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# y&lt;/span&gt;
-What is your URL prefix? &lt;span class="o"&gt;(&lt;/span&gt;see above example&lt;span class="p"&gt;;&lt;/span&gt; no trailing slash&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# http://username.github.io/repository&lt;/span&gt;
-Do you want to generate a Fabfile/Makefile to automate generation and publishing? &lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# y&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Answer &lt;code&gt;n&lt;/code&gt; to all the questions about uploading your website and you are ready to go.&lt;/p&gt;
-&lt;h1&gt;3. Writing content&lt;/h1&gt;
-&lt;p&gt;Fire up your favorite text editor and write your blog content in either Markdown or reStructuredText. Once you have done, save it in the content folder. For previewing it:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;make devserver
-&lt;span class="c"&gt;# go to http://localhost:8000 and check if everything looks good&lt;/span&gt;
-^C &lt;span class="c"&gt;# note that CTRL+C won&amp;#39;t stop dev server&lt;/span&gt;
-./develop_server.sh stop &lt;span class="c"&gt;# manually stop the dev server&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;h1&gt;4. Publishing and pushing&lt;/h1&gt;
-&lt;p&gt;Ok this is the easy part.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# pushing the source repo&lt;/span&gt;
-git push origin master
-
-&lt;span class="c"&gt;# push the output folder to GitHub pages&lt;/span&gt;
-make github
-
-&lt;span class="c"&gt;# celebrate!&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Congrats! Your blog is now up and running!&lt;/p&gt;
-&lt;h1&gt;5. Setting up your custom domain&lt;/h1&gt;
-&lt;p&gt;Create a CNAME file containing your bare domain:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;mydomain.com
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Add the following lines to your pelicanconf.py, in order to make Pelican copying it to your output folder on every publish.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;STATIC_PATHS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;CNAME&amp;#39;&lt;/span&gt;
-&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Then, assuming that you want both mydomain.com and www.mydomain.com to point at your blog, you need to set &lt;strong&gt;both the CNAME and the A-records&lt;/strong&gt; of your domain to point at github.&lt;/p&gt;
-&lt;p&gt;Since this has been the most problematic step for me, here's a couple of extra thoughts regarding my domain registrar (Gandi):&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;Make sure to not have any other A-record&lt;/li&gt;
-&lt;li&gt;Using Gandi's web forwarding instead of setting both the CNAME and the A-records resulted in a redirect loop error&lt;/li&gt;
-&lt;li&gt;You can take the rest of the zone file data from Gandi's default one&lt;/li&gt;
-&lt;li&gt;Testing from different browsers and refreshing several times can help spotting some very sneaky bugs&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://stackoverflow.com/a/22374542/2926113"&gt;This answer&lt;/a&gt; from Stack Overflow provides great step-by-step instructions for using GitHub project pages with a custom domain&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;Here are the lines taking care of the magic in my case:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;www 10800 IN CNAME railslide.github.io.
-@ 10800 IN A 192.30.252.153
-@ 10800 IN A 192.30.252.154
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;After that, wait some hours for the DNS to propagate and you should be done.&lt;/p&gt;</summary><category term="pelican"></category><category term="publishing"></category><category term="github pages"></category></entry><entry><title>Installing virtualenvwrapper for Python 3.4 on Ubuntu</title><link href="http://railslide.io/virtualenvwrapper-python3.html" rel="alternate"></link><updated>2014-06-04T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2014-06-04:virtualenvwrapper-python3.html</id><summary type="html">&lt;p&gt;After listening to an inspiring talk by &lt;a href="http://www.kennethreitz.org/"&gt;Kenneth Reitz&lt;/a&gt; about transitioning from Python 2 to Python 3 at PyCon Sweden (I'll write a blog post about it sooner or later), I've decided that I should try to stick to Python 3 as much as possible.&lt;/p&gt;
+&lt;p&gt;Finally, since Package Control updates regularly some of the files in the User folder, I added them to a &lt;code&gt;.gitignore&lt;/code&gt; file in order to avoid to much noise in my version control. A list of those files can be found in the &lt;a href="https://sublime.wbond.net/docs/syncing"&gt;docs&lt;/a&gt; of Package Control.&lt;/p&gt;</summary><category term="dotfiles"></category><category term="utilities"></category><category term="git"></category><category term="developing environment"></category></entry><entry><title>Installing virtualenvwrapper for Python 3.4 on Ubuntu</title><link href="http://railslide.io/virtualenvwrapper-python3.html" rel="alternate"></link><updated>2014-06-04T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2014-06-04:virtualenvwrapper-python3.html</id><summary type="html">&lt;p&gt;After listening to an inspiring talk by &lt;a href="http://www.kennethreitz.org/"&gt;Kenneth Reitz&lt;/a&gt; about transitioning from Python 2 to Python 3 at PyCon Sweden (I'll write a blog post about it sooner or later), I've decided that I should try to stick to Python 3 as much as possible.&lt;/p&gt;
 &lt;p&gt;So the first step in that direction was to set up my working environment in a Python 3 friendly way, hence to install Virtualenwrapper for Python 3. Here's how I did it.&lt;/p&gt;
 &lt;p&gt;Virtualenwrapper documentation specifies that Virtualenvwrapper has been tested under Python 2.6-3.3, but no mention of Python 3.4. Being lazy and not really willing to install a third version of Python on my computer (Ubuntu 14.04 comes with Python 2.7.6 and Python 3.4 by default), I decided to give it try with what I had. Everything seems to work flawlessly so far, just keep it in mind in case you want to try to follow these instructions.&lt;/p&gt;
 &lt;h2&gt;Setting up Virtualenvwrapper&lt;/h2&gt;
@@ -246,13 +117,4 @@ source /usr/local/bin/virtualenvwrapper.sh
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Virtualenvwrapper activates the virtualenv and teleports me to ~/Projects/my_project. Neat!&lt;/p&gt;</summary><category term="virtualenvwrapper"></category><category term="virtualenv"></category><category term="python3"></category></entry><entry><title>Up and running!</title><link href="http://railslide.io/up-and-running.html" rel="alternate"></link><updated>2014-06-03T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2014-06-03:up-and-running.html</id><summary type="html">&lt;p&gt;Ok, my Pelican and GitHub pages powered blog seems to be up and running! Yay!&lt;/p&gt;
-&lt;p&gt;Since I plan to write a dedicated post about the setup, I'll use this one to throw some ideas about what to do next.&lt;/p&gt;
-&lt;h2&gt;TO DO (not necessarily in this order)&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;Change theme - ideally developing my own&lt;/li&gt;
-&lt;li&gt;Fix links, social buttons, etc.&lt;/li&gt;
-&lt;li&gt;Fix an about page&lt;/li&gt;
-&lt;li&gt;Setting up a comment system&lt;/li&gt;
-&lt;li&gt;Write stuff&lt;/li&gt;
-&lt;/ul&gt;</summary><category term="pelican"></category><category term="publishing"></category><category term="github pages"></category></entry></feed>
+&lt;p&gt;Virtualenvwrapper activates the virtualenv and teleports me to ~/Projects/my_project. Neat!&lt;/p&gt;</summary><category term="virtualenvwrapper"></category><category term="virtualenv"></category><category term="python3"></category></entry></feed>
