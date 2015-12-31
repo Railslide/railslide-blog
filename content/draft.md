@@ -1,6 +1,6 @@
 Title: My super title
 Date: 2014-05-26
-Category: Python
+Category: /dev
 Tags: pelican, publishing
 Slug: draft-template
 Author: Giulia Vergottini

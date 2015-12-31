@@ -1,6 +1,6 @@
 Title: Using pyvenv with virtualenvwrapper
 Date: 2015-05-15
-Category: Python
+Category: /dev
 Tags: virtualenvwrapper, virtualenv, python3, pyvenv
 Slug: pyvenv-virtualenvwrapper
 Author: Giulia Vergottini
