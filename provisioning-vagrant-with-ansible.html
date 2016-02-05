@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="http://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>Provisioning Vagrant with Ansible // Railslide // Code, experiments, and thoughts</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/pure.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github-square fa-3x"></i>
+                                    </a>
+                                    <a href="https://plus.google.com/+GiuliaVergottini">
+                                        <i class="fa fa-google-plus-square fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss-square fa-3x"></i>
+                                    </a>
+                                </p>
+                                <p></p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Provisioning Vagrant with Ansible</h1>
+                        <p class="post-meta">
+                        category: <a href="http://railslide.io/category/dev.html">/dev</a>, date: 05-02-2016
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="http://railslide.io/tag/vagrant.html">vagrant</a>
+                                <a class="post-category" href="http://railslide.io/tag/ansible.html">ansible</a>
+                                <a class="post-category" href="http://railslide.io/tag/automatization.html">automatization</a>
+                </header>
+            </section>
+            <p>When I started using Vagrant I picked bash as my provisioning tool. It looked as the most logical choice as I was already familiar with the command line. It served me well - I brought up a fair amount of virtual machines with it - but the process of getting the provision scripts still gave me some annoyances.</p>
+<p>First of all, running a non-interactive installation adds an extra layer of complexity, since you don't always know (or think about) how an interactive command will behave in an unattended installation. For me that often translated itself into: run provision, get a more or less cryptic message, ssh into the machine, run the command manually, figure out what went wrong, edit the provision script, rinse, and repeat.</p>
+<p>Then, the provision script runs from top to bottom every time a provision is run - no matter whether the machine has been already partially provisioned. You could throw in a bunch of conditional statements in order to skip the already performed steps, but that would come with the price of adding further complexity to the provisioning script.</p>
+<p>Finally, you have to <em>echo all the things</em> in order to keep track of the different installation steps - reducing thus the readability of the script.</p>
+<p>Of course these are trivial problems and I've happily coped with them for quite some time. But then I had the chance to have a look at Ansible - and it has been a game changer!</p>
+<p>Ansible uses yaml as a language for its orchestration files (aka playbook), which makes them extremely easy to read. For example, this is how a task for installing Git could look</p>
+<div class="highlight"><pre><span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Install git</span>
+  <span class="l-Scalar-Plain">sudo</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">yes</span>
+  <span class="l-Scalar-Plain">apt</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">pkg=git state=latest</span>
+</pre></div>
+
+
+<p>Pretty easy to figure out what it does! On top of that, Ansible outputs the name of your tasks when running them, making it trivial for you to keep track of what's going on behind the scenes.</p>
+<p>Then there are modules, like <code>apt</code> in the example above, which are basically wrappers for the most common operations. There are lots of them, so there's a very high chance that you'll find a module for the command you need to run. And in case you don't, you can always use the shell module to run your command as you would type it in the terminal.</p>
+<p>Besides making your life easier when it comes to write provision scripts, Ansible also makes the process of running them way faster. In fact, <em>idempotency</em> is one of the key concept of Ansible modules, which basically means that they won't execute if their target state has already been reached. So, if you resume a partial provisioning, Ansible will skip all the previously performed tasks.</p>
+<p>Last but not least, Ansible is written in Python which is a nice plus. Unfortunately it does not support Python 3, but I guess I'll have to live with it for the time being.</p>
+<p>It is probably worthy mentioning that Ansible doesn't natively run on Windows. Fortunately the <a href="http://phansible.com">Phansible team</a> came up with a workaround for it: using a shell provision to install Ansible on the guest and the run provision from there. It is a bit slower than running Ansible locally, but works great for projects with cross platforms contributors. Alternatively, I heard of people being able to run Ansible with cgywin, but I have no clues about what it takes to make it happen.</p>
+<p>All in all, I would warmly recommend to give Ansible a try - especially if you are currently using bash for provisioning your vagrant machines. Here some links to get you started:</p>
+<ul>
+<li><a href="https://www.ansible.com/">Ansible</a></li>
+<li><a href="https://docs.ansible.com">Ansible docs</a></li>
+<li><a href="https://docs.vagrantup.com/v2/provisioning/ansible.html">Vagrant docs - provisioning with Ansible</a></li>
+</ul>
+<p>Happy provisioning!</p>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+    <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+        try {
+            var pageTracker = _gat._getTracker("UA-69748538-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+    </script>
+
+</body>
+</html>
