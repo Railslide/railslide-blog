@@ -7,14 +7,21 @@
 
         <link rel="alternate"  href="http://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
 
-        <title>python tag // Railslide // Code, experiments, and thoughts</title>
+        <title>Subvenv // Railslide // Code, experiments, and thoughts</title>
 
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="http://railslide.io/theme/css/pure.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/pygments.css">
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
 </head>
 
 <body>
@@ -43,46 +50,47 @@
                 </div>
             </div>
         </div>
-    <div class="pure-u-1">
+    <div class="pure-u">
         <div class="content">
-            <!-- A wrapper for all the blog posts -->
-            <div class="posts">
-                <h1 class="content-subhead">
-Posts tagged 'python'                </h1>
-                    <section class="post">
-                        <header class="post-header">
-                            <h3><a class="post-title" href="http://railslide.io/subvenv-v1-0.html">Subvenv</a></h3>
-                            <p class="post-meta"><p>Subvenv 1.0 is out! What it is, why I wrote it, and why you might want to use it.</p></p>
-                            <p class="post-meta">
-                                category: <a href="http://railslide.io/category/dev.html">/dev</a>, date: 01-03-2016
-                            </p>
-                        </header>
-                    </section>
-                    <section class="post">
-                        <header class="post-header">
-                            <h3><a class="post-title" href="http://railslide.io/anaconda-vs-sublime-python-ide.html">Anaconda VS SublimePythonIDE</a></h3>
-                            <p class="post-meta"><p>When I was looking for a python code linting plugin for Sublime Text 3, I stumbled upon several blog posts mentioning either SublimePythonIDE or Anaconda. The problem was, however, that a comparison between the two was nowhere to be found, so I ended up trying both.</p></p>
-                            <p class="post-meta">
-                                category: <a href="http://railslide.io/category/dev.html">/dev</a>, date: 27-01-2015
-                            </p>
-                        </header>
-                    </section>
-<div class="pagination-wrapper content-subhead">
-    <div class="pagination">
-        <div class="pagination-left">
-                &nbsp;
-        </div>
-        <span>Page 1 / 1</span>
-        <div class="pagination-right">
-        </div>
-    </div>
-</div><footer class="footer">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Subvenv</h1>
+                        <p class="post-meta">
+                        category: <a href="http://railslide.io/category/dev.html">/dev</a>, date: 01-03-2016
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="http://railslide.io/tag/subvenv.html">subvenv</a>
+                                <a class="post-category" href="http://railslide.io/tag/announcements.html">announcements</a>
+                                <a class="post-category" href="http://railslide.io/tag/virtual-environments.html">virtual environments</a>
+                                <a class="post-category" href="http://railslide.io/tag/python.html">python</a>
+                </header>
+            </section>
+            <p>A couple of days ago I released and upload to PyPI the first stable release of <a href="https://github.com/Railslide/subvenv">Subvenv</a>. Besides being a labor of love, Subvenv is an utility for creating virtualenv-friendly Sublime Text project files.</p>
+<p>The reason why I wrote it is that I am lazy and I love to have computers taking care of boring and repetitive tasks on my behalf. More specifically, I wasn't super happy with my typical workflow for starting a new project, since it required me a certain number of steps before being finally able to crunch some code.</p>
+<p>Here's what my workflow used to look like:</p>
+<ul>
+<li>create a Virtualenvwrapper project</li>
+<li>open Sublime Text</li>
+<li>create a Sublime Text project</li>
+<li>add the previously created folder to the project file</li>
+<li>add the virtual environment interpreter path to the project file, so that linting plugins could pick that instead of the global one (and stop complaining about missing imports!)</li>
+<li>Start coding</li>
+</ul>
+<p>Now with Subvenv instead:</p>
+<ul>
+<li>create a Virtualenvwrapper project</li>
+<li>open Sublime Text</li>
+<li>open the Sublime Text project</li>
+<li>Start coding</li>
+</ul>
+<p>Way faster and less error prone! So, why not sharing it? I cleaned up the code a bit, made it more virtual environment management agnostic, and uploaded it on PyPI. Now it's out there. If you use Sublime Text you might want to have a look it - it may speed up your workflow too :)</p>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
     <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
         Built with <a href="http://blog.getpelican.com/">Pelican</a>
         and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
     </p>
-</footer>            </div>
-        </div>
+</footer>        </div>
     </div>
     </div>
     <script>

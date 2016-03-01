@@ -7,14 +7,21 @@
 
         <link rel="alternate"  href="http://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
 
-        <title>Railslide - Authors</title>
+        <title>How to release your code (aka Git tags) // Railslide // Code, experiments, and thoughts</title>
 
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="http://railslide.io/theme/css/pure.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/pygments.css">
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
 </head>
 
 <body>
@@ -43,10 +50,32 @@
                 </div>
             </div>
         </div>
-    <h1>Authors on Railslide</h1>
-
-    <ul>        <li><a href="http://railslide.io/author/giulia-vergottini.html">Giulia Vergottini</a> (10)</li>
-    </ul>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>How to release your code (aka Git tags)</h1>
+                        <p class="post-meta">
+                        category: <a href="http://railslide.io/category/dev.html">/dev</a>, date: 04-03-2016
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="http://railslide.io/tag/git.html">git</a>
+                                <a class="post-category" href="http://railslide.io/tag/github.html">github</a>
+                                <a class="post-category" href="http://railslide.io/tag/release.html">release</a>
+                </header>
+            </section>
+            <p>After spending quite some time working on your side project, you feel that it is finally good enough for going public. That's great, but now what? Releasing sounds like a super neat idea, but how do you do it?</p>
+<p>As a matter of fact Github makes the process of releasing extremely simple. All you need to do is to click on the releases counter, press the <em>"Create a new release"</em> button, fill the form, and submit. Refresh the main page of your repo and you'll see that the release counter has increased - congrats, you have just done your first release!</p>
+<p>That's certainly awesome, but is it really neceessary to use the Github interface? Wouldn't it be possible to release directly from your trusted terminal? Of course it is possible, and it's also quite simple! In fact what Github does behind the scene is actually just setting a Git tag.</p>
+<p>Tags in Git are a way to set a reference to a specific point in history. You can think of them as a way to <em>bookmark</em> a specific commit. So when you download the source code for your-awesome-project.v1.1.0 you're basically saying "Hey Git, fetch me the code up to the point that corrispond to the commit tagged with the name your-awesome-project.v1.1.0".</p>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
     </div>
     <script>
         var $top = $('.go-top');
