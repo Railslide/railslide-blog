@@ -13,6 +13,10 @@ a:focus {
     text-decoration: underline;
 }
 
+code {
+    background-color: rgba(0,0,0,0.1);
+    padding: 0px 3px;
+}
 
 .comments {
     padding: 50px 0 0;
