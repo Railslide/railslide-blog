@@ -1,5 +1,5 @@
 Title: How to release your code (aka Git tags)
-Date: 2016-03-16
+Date: 2016-04-02
 Category: /dev
 Tags: git, github, release
 Slug: how-to-release-aka-git-tags
