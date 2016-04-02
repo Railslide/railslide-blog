@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="http://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>How to release your code (aka Git tags) // Railslide // Code, experiments, and thoughts</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/pure.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github-square fa-3x"></i>
+                                    </a>
+                                    <a href="https://plus.google.com/+GiuliaVergottini">
+                                        <i class="fa fa-google-plus-square fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss-square fa-3x"></i>
+                                    </a>
+                                </p>
+                                <p></p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>How to release your code (aka Git tags)</h1>
+                        <p class="post-meta">
+                        category: <a href="http://railslide.io/category/dev.html">/dev</a>, date: 02-04-2016
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="http://railslide.io/tag/git.html">git</a>
+                                <a class="post-category" href="http://railslide.io/tag/github.html">github</a>
+                                <a class="post-category" href="http://railslide.io/tag/release.html">release</a>
+                </header>
+            </section>
+            <p>After spending quite some time working on your side project, you feel that it is finally good enough for going public. Releasing sounds like a super neat idea, but how do you do it?</p>
+<h2>Releasing through Github</h2>
+<p>Github provides a very straightforward release interface. All you need to do is to click on the releases counter, press the <em>"Create a new release"</em> button, fill the form, submit, and you're done. Github also offer the possibility to draft releases - which comes in handy if you want to start preparing the release while still working on the code for it - or pre-releases, in case your code is not really stable yet.</p>
+<p>Github also provides you with a fancy link in the form of github.com/Username/repo/releases/latest, which will allow people to get directly to the latest release, no matter its number.</p>
+<h2>Releasing from the command line (with Git tags)</h2>
+<p>Github interface it is certainly nice, but it comes to the price of making your release workflow dependent on Github. What if a certain point you decide that you want to move your code away from Github? Also wouldn't be awesome if you could take care of your releases directly from your trusted terminal? Well, it turns out that you can, since what Github does behind the scene is to create and set a Git tag on the repository.</p>
+<p>Tags in Git are a way to set a reference to a specific point in history. You can think of them as a way to <em>bookmark</em> a specific commit. So when you download the source code for your-awesome-project.v1.1.0 you're basically saying "Hey Git, fetch me the code up to the point that correspond to the commit tagged with the name your-awesome-project.v1.1.0".</p>
+<p>You can set a tag with the <code>git tag</code> command. However, before you go git-tagging all the things, you should probably be aware that there are two kinds of tags in Git: annotated and lightweight. As the man page for <code>git-tag</code> explains:</p>
+<div class="highlight"><pre>Tag objects (created with -a, -s, or -u) are called &quot;annotated&quot; tags;
+they contain a creation date, the tagger name and e-mail, a tagging
+message, and an optional GnuPG signature. Whereas a &quot;lightweight&quot; tag
+is simply a name for an object (usually a commit object).
+
+Annotated tags are meant for release while lightweight tags are meant
+for private or temporary object labels. For this reason, some git
+commands for naming objects (like git describe) will ignore lightweight
+tags by default.
+</pre></div>
+
+
+<p>To be honest, I still haven't yet figured out a good case for lightweight tags - if you have, give me a shout 'cause I'd love to know! Anyways, the bottom line is: <strong>do not forget the <code>-a</code> flag when you're trying to make a release</strong>.</p>
+<p>Ok, back to our release!</p>
+<div class="highlight"><pre><span class="nv">$ </span>git tag -a v1.0.0 -m <span class="s2">&quot;My awesome message for v1.0.0&quot;</span>
+<span class="nv">$ </span>git push --tags  <span class="c"># tags need to be pushed explicitly</span>
+</pre></div>
+
+
+<p>Done!</p>
+<h2>Happy ending? Almost...</h2>
+<p>OK, so after pushing your latest release via command line, you go an check Github to see if everything worked as expected. The counter increased - which is good - but if you had done any previous release via GUI the releases page might not look exactly how you would have expected it. In fact, even though Github correctly displays your tags, it doesn't mark it as the latest relase.</p>
+<p>The reason for that is that at the time of writing Github doesn't fully support releases made via command line. That's a bummer and unfortunately there's nothing we can do other than hoping that the folk at Github will implement it soon.</p>
+<p>However, leaving it as it is doesn't really qualify as an option since having a flag and a direct link pointing to the wrong release is worse than not having them at all. So what our workaround options? We could use the Github interface to mark a tag as the latest release, though it would add extra manual work to the release process and - again - making it dependent on Github. Alternatively it possible is to remove the Github sugarcoat from previous releases, so that the <em>latest release</em> flag disappears. The downside of doing so is that the direct link to the latest release won't work anymore.</p>
+<p>Unfortunately, every workaround has its flaws, so which one would work best depends on what your needs are and what compromises you're ready to make. Other than that, happy releasing!</p>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+    <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+        try {
+            var pageTracker = _gat._getTracker("UA-69748538-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+    </script>
+
+</body>
+</html>
