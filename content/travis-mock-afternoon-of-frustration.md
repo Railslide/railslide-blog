@@ -1,11 +1,10 @@
 Title: Travis, Mock, different Python versions, and an afternoon of frustration
-Date: 2016-05-08
+Date: 2016-05-15
 Category: /dev
 Tags: travis-ci, python, python3, mock
 Slug: travis-mock-afternoon-of-frustration
 Author: Giulia Vergottini
 Summary: My plan was to quickly set up Travis CI for Subvenv and then move on to other projects. Instead, it came out that I couldn't have been more wrong and I ended up instead in an afternoon of frustration.
-Status: draft
 
 I have been tinkering for a while with the idea of setting up Travis CI for Subvenv. I mean, automatically running tests on pull requests sounded like a great idea and the getting started guide seemed pretty straightforward, so why not use a bit of my today's free-for-coding time for setting Travis up?
 
@@ -27,7 +26,7 @@ To be honest, I am not super glad about an import that relies on a non-mandatory
 
 Ok so, commit my hack, push, and hold my breath for a handful of seconds. Does it work? Nope.
 
-Builtins, __builtins__, and better mocking decisions
+Builtins, \_\_builtin\_\_, and better mocking decisions
 ----------------------------------------------------
 Since Subvenv relies on I/O operations for doing its job, I made sure to mock them away when writing my tests. However, since I use Python 3 as my default, I had initially mocked the `open` function like this:
 
@@ -54,7 +53,7 @@ Which mock?
 -----------
 Ok, so back to my mocks! Now they get imported and patch what they need to patch, but still don't seem to work as expected. Or rather, it looks like there's something off with the `mock_open` helper, since for some reason it returns a `MagicMock` instance instead of the specified `read_data`.
 
-After a bit of head scratching and googling, I found a [feature request](https://github.com/travis-ci/travis-ci/issues/5849) to Travis that shaded light over my own problem. Thanks to it I got to discover that Travis runs an old version of Mock (I haven't figure out which one exactly, but for sure older than 1.3.0) which does not implement `mock_open` as later versions do. Thankfully the same issue suggested also a workaround for it, i.e. to add an explicit install command for the desired version to the configuration file:
+After a bit of head scratching and googling, I found a [feature request](https://github.com/travis-ci/travis-ci/issues/5849) to Travis that shaded light over my own problem. Thanks to it I got to discover that Travis runs an old version of Mock (I haven't figured out which one exactly, but for sure older than 1.3.0) which does not implement `mock_open` as later versions do. Thankfully the same issue suggested also a workaround for it, i.e. to add an explicit install command for the desired version to the configuration file:
 
     :::yaml
     install:
@@ -80,4 +79,8 @@ And finally, all green!
 
 All in all
 ----------
-Phew! That was quite an amount of trials and errors - especially considering that I was expecting to be done with it in half an hour or so! It is a bit sad to think that if I would have codede Subvenv in Python 2.7 I would have spared myself quite some headaches. Also, I am still not super happy to have to rely on an external backport of a built-in module in order to continuously integrate my code. But hey, the bright side is that I got to learn a lot from it! While there have been moments when the thought of giving up has surfaced my mind, the whole process has been a super interesting travel through how different things are implemented in different versions of Python, as well as how to write code that is compatible with them.
+Phew! That was quite an amount of trials and errors - especially considering that I was expecting to be done with it in half an hour or so!
+
+It is a bit sad to think that if I would have coded Subvenv in Python 2.7 I would have spared myself quite some headaches. Also, I am still not super happy to have to rely on an external backport of a built-in module in order to continuously integrate my code.
+
+But hey, the bright side is that I got to learn a lot from it! While there have been moments when the thought of giving up has surfaced my mind, the whole process has been a super interesting travel through how different things are implemented in different versions of Python, as well as how to write code that is compatible with them. Also, code gets now automatically tested when opening a pull request, which is great. So yeah, I guess I can call it a long but profitable afternoon!
