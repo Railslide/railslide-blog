@@ -1,11 +1,10 @@
 Title: Using pyvenv with virtualenvwrapper
-Date: 2015-06-10
+Date: 2016-06-07
 Category: /dev
 Tags: virtualenvwrapper, virtualenv, python3, pyvenv
 Slug: pyvenv-virtualenvwrapper
 Author: Giulia Vergottini
-Summary: After reading that it might be possible to use virtualenvwrapper with pyvenv, I decided to fire up a couple of virtual machine and to find it out.
-Status: draft
+Summary: After reading that it might be possible to use virtualenvwrapper with pyvenv, I decided to fire up a couple of virtual machines and to find it out.
 
 Python 3 ships with pyvenv, a built-in virtualenv manager. Although I welcomed the news as a definitely good one, the absence of a virtualenvwrapper-like tool for pyvenv has always stopped me from giving it a try. I consider virtualenvwrapper to be a super neat tool (I even wrote a plugin for it!) and I don't see why I would want to type the path to my virtual environment activation script every time I want to activate it, when I can just use a way more pythonic `workon my_venv`.
 
@@ -35,19 +34,19 @@ Fortunately the issue has been solved in Ubuntu 14.04.2 (which allowed me to per
 
 Ok, not exactly an encouraging scenario... but hey! Ubuntu 16.04 has been released in the meanwhile and it ships with Python 3.5! Maybe things have changed in the new LTS? Well, apparently not, since getting an image with a working pyvenv package looks pretty much like a lottery: you pick one and hope for the best.
 
-The vagrant box 20160521.0.0 shipped with a working pyvenv, but then it disappeared from the catalog. The [???] one brings instead back to the good old ensurepip bug. For the sake honesty, it might be a problem related to the vagrant boxes only, since this wasn't the [only](https://github.com/mitchellh/vagrant/issues/7288) [issue](https://groups.google.com/d/msg/vagrant-up/cUXVwSDi4vc/OhyXR-G7CAAJ) I encountered. But at this point I already started to wonder whether the pyvenv package will be ever stable enough to be used in everyday development.
+The vagrant box `20160521.0.0` shipped with a working pyvenv, but then it disappeared from the catalog. The `20160528.0.0` one brings back to the good old ensurepip bug, while in the `20160606.1.0` pyvenv seems to work again. For the sake honesty, it might be a problem related to the vagrant boxes only, since this wasn't the [only](https://github.com/mitchellh/vagrant/issues/7288) [issue](https://groups.google.com/d/msg/vagrant-up/cUXVwSDi4vc/OhyXR-G7CAAJ) I encountered. But at this point I already started to wonder whether the pyvenv package will be ever stable enough to be used in everyday development.
 
-The only good news is that in 16.04 the package can also be invoked through a more generic alias, i.e. `pyvenv-3`, so that - if it will ever become stable - you will have no longer to worry about manually updating your pyvenv version in your shell start file.
+The only good news is that in 16.04 the package can also be installed and invoked through a more generic alias (`python3-venv` for installing and `pyvenv` for invoking), so that - if it will ever become stable - you will have no longer to worry about manually updating your pyvenv version in your shell start file.
 
 
 What doesn't work when it works
 -------------------------------
 
-Leaving Ubuntu peculiarity apart, the initial question remains: assuming a working pyvenv package, is it possible to use it as a replacement for virtualenv in virtualenwrapper?
+Leaving Ubuntu peculiarities apart, the initial question remains: assuming a working pyvenv package, is it possible to use it as a replacement for virtualenv in virtualenwrapper?
 
 The answer is yes, but with some gotchas.
 
-All the site packages related command, i.e
+All the site packages related commands, i.e
 
 * `lssitepackages`
 * `toogleglobalsitepackages`
@@ -66,9 +65,9 @@ Last but not least, is probably worthy mentioning that - by design - pyvenv does
     :::bash
     $ mkvirtualenv -p /path/to/python/intepreter my_venv
 
-no longer works. So, no way to get a Python 2.7 virtualenv out of it.
+no longer works, which means no way to get a Python 2.7 virtualenv out of it.
 
-Other than those things, all the rest work as expected.
+All the rest work as expected.
 
 Summing up
 ----------
