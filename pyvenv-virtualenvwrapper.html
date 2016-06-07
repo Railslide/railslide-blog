@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="http://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>Using pyvenv with virtualenvwrapper // Railslide // Code, experiments, and thoughts</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/puremorning.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github-square fa-3x"></i>
+                                    </a>
+                                    <a href="https://plus.google.com/+GiuliaVergottini">
+                                        <i class="fa fa-google-plus-square fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss-square fa-3x"></i>
+                                    </a>
+                                </p>
+                                <p></p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Using pyvenv with virtualenvwrapper</h1>
+                        <p class="post-meta">
+                        category: <a href="http://railslide.io/category/dev.html">/dev</a>, date: 07-06-2016
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="http://railslide.io/tag/virtualenvwrapper.html">virtualenvwrapper</a>
+                                <a class="post-category" href="http://railslide.io/tag/virtualenv.html">virtualenv</a>
+                                <a class="post-category" href="http://railslide.io/tag/python3.html">python3</a>
+                                <a class="post-category" href="http://railslide.io/tag/pyvenv.html">pyvenv</a>
+                </header>
+            </section>
+            <p>Python 3 ships with pyvenv, a built-in virtualenv manager. Although I welcomed the news as a definitely good one, the absence of a virtualenvwrapper-like tool for pyvenv has always stopped me from giving it a try. I consider virtualenvwrapper to be a super neat tool (I even wrote a plugin for it!) and I don't see why I would want to type the path to my virtual environment activation script every time I want to activate it, when I can just use a way more pythonic <code>workon my_venv</code>.</p>
+<p>I happened, however, to stumble into <a href="https://groups.google.com/forum/#!msg/virtualenvwrapper/bkpwkfyIppM/9M9mz3pB0RQJ">a conversation</a> in the virtualenvwrapper google group, where Dough Hellman (aka the guy behind virtualenvwrapper) wrote that <em>in theory</em> it should be possible to use virtualenvwrapper with pyvenv. So I immediately fired up a couple of virtual machines and started playing around in order to see whether it was possible to turn that <em>in theory</em> into an <em>in practice</em>.</p>
+<h2>The Ubuntu mess</h2>
+<p>According to Python documentation I should be able to invoke pyvenv by simply calling <code>pyvenv [args]</code>. However, that is not the case for Ubuntu. Thus, my first attempt to set my <code>VIRTUALENVWRAPPER_VIRTUALENV</code> variable equal to <code>pyvenv</code> resulted in my vagrant machine complaining because it could not find it in my path. Setting it to <code>pyvenv-3.4</code> solved it (I was initially testing on Ubuntu 14.04, which ships with Python 3.4). Though having to manually change it whenever I decide to update my Python version is far from optimal.</p>
+<p>So I set <code>pyvenv-3.4</code> as <code>VIRTUALENVWRAPPER_VIRTUALENV</code>, created a new virtualenv and...</p>
+<div class="highlight"><pre>Error: Command <span class="s1">&#39;[&#39;</span>/home/vagrant/.virtualenvs/test/bin/python3.4<span class="s1">&#39;, &#39;</span>-Im<span class="s1">&#39;, &#39;</span>ensurepip<span class="s1">&#39;, &#39;</span>--upgrade<span class="s1">&#39;, &#39;</span>--default-pip<span class="s1">&#39;]&#39;</span> returned non-zero <span class="nb">exit </span>status 1
+</pre></div>
+
+
+<p>Ok, not exactly what I was hoping for.</p>
+<p>After a bit of digging, it came out that it is due <a href="https://bugs.launchpad.net/ubuntu/+source/python3.4/+bug/1290847">to a bug with ensurepip</a> in the first release of Ubuntu 14.04. However, it is possible to bypass the problem by first creating the virtualenv without pip and then manually installing it once inside it.</p>
+<div class="highlight"><pre><span class="nv">$ </span>mkvirtualenv --without-pip my_venv
+<span class="o">(</span>my_venv<span class="o">)</span><span class="nv">$ </span>curl https://bootstrap.pypa.io/get-pip.py <span class="p">|</span> python
+</pre></div>
+
+
+<p>Quite a lot to type, plus you have to wait for Pip to install. Definitely not optimal.</p>
+<p>Fortunately the issue has been solved in Ubuntu 14.04.2 (which allowed me to perform my tests), but for some reason the whole pyvenv package has been <a href="http://askubuntu.com/questions/682612/pyvenv-3-4-disappeared-in-ubuntu-14-04-3">removed in Ubuntu 14.04.03</a>.</p>
+<p>Ok, not exactly an encouraging scenario... but hey! Ubuntu 16.04 has been released in the meanwhile and it ships with Python 3.5! Maybe things have changed in the new LTS? Well, apparently not, since getting an image with a working pyvenv package looks pretty much like a lottery: you pick one and hope for the best.</p>
+<p>The vagrant box <code>20160521.0.0</code> shipped with a working pyvenv, but then it disappeared from the catalog. The <code>20160528.0.0</code> one brings back to the good old ensurepip bug, while in the <code>20160606.1.0</code> pyvenv seems to work again. For the sake honesty, it might be a problem related to the vagrant boxes only, since this wasn't the <a href="https://github.com/mitchellh/vagrant/issues/7288">only</a> <a href="https://groups.google.com/d/msg/vagrant-up/cUXVwSDi4vc/OhyXR-G7CAAJ">issue</a> I encountered. But at this point I already started to wonder whether the pyvenv package will be ever stable enough to be used in everyday development.</p>
+<p>The only good news is that in 16.04 the package can also be installed and invoked through a more generic alias (<code>python3-venv</code> for installing and <code>pyvenv</code> for invoking), so that - if it will ever become stable - you will have no longer to worry about manually updating your pyvenv version in your shell start file.</p>
+<h2>What doesn't work when it works</h2>
+<p>Leaving Ubuntu peculiarities apart, the initial question remains: assuming a working pyvenv package, is it possible to use it as a replacement for virtualenv in virtualenwrapper?</p>
+<p>The answer is yes, but with some gotchas.</p>
+<p>All the site packages related commands, i.e</p>
+<ul>
+<li><code>lssitepackages</code></li>
+<li><code>toogleglobalsitepackages</code></li>
+<li><code>cdsitepackages</code></li>
+<li><code>add2virtualenv</code></li>
+</ul>
+<p>don't work and they all raise</p>
+<div class="highlight"><pre><span class="sb">`AttributeError: &#39;module&#39; object has no attribute &#39;sysconfig&#39;`</span>
+</pre></div>
+
+
+<p><code>cpvirtualenv</code> is instead a bit weird, since it does copy the virtualenv, but it displays the name of the original one in front of the prompt of all its copies. Even making copies of a copy doesn't change the result: it still shows the name of the first original. The <code>$VIRTUAL_ENV</code> variable and the interpreter point to the correct folder tho...</p>
+<p>Last but not least, is probably worthy mentioning that - by design - pyvenv doesn't offer the possibility to specify a Python interpreter for virtual environments, so</p>
+<div class="highlight"><pre><span class="nv">$ </span>mkvirtualenv -p /path/to/python/intepreter my_venv
+</pre></div>
+
+
+<p>no longer works, which means no way to get a Python 2.7 virtualenv out of it.</p>
+<p>All the rest work as expected.</p>
+<h2>Summing up</h2>
+<p>Before I started experiment with it, I was seriously tinkering with the idea of dropping virtualenv altogether and use pyvenv instead. However, after seeing the results, it looks like it's not going to be the case. Not much for the site packages commands - I think this was the first time I ever used them - but rather for the impossibility to switch to Python 2.7 when needed.</p>
+<p>Also, the whole Ubuntu situation is quite a show-stopper for me, since I don't really want to rely on hoping that everything still works every time I run an <code>apt update</code>.</p>
+<p>So, at the current status, replacing virtualenv with pyvenv is definitely a no-op for me. However, if you want to give it a try, I uploaded the Vagrantfiles for the virtual machines in a <a href="https://github.com/Railslide/pyvenvwrapper">GitHub repo</a>. They're provisioned with a shell script, so that there's no need to install any fancy tool for running them. Feel free to play with them and don't forget to give me a shout if you find a way to fix those issues!</p>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+    <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+        try {
+            var pageTracker = _gat._getTracker("UA-69748538-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+    </script>
+
+</body>
+</html>
