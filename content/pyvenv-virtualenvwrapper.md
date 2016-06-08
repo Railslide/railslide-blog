@@ -56,7 +56,7 @@ All the site packages related commands, i.e
 don't work and they all raise
 
     :::python
-    `AttributeError: 'module' object has no attribute 'sysconfig'`
+    AttributeError: 'module' object has no attribute 'sysconfig'
 
 `cpvirtualenv` is instead a bit weird, since it does copy the virtualenv, but it displays the name of the original one in front of the prompt of all its copies. Even making copies of a copy doesn't change the result: it still shows the name of the first original. The `$VIRTUAL_ENV` variable and the interpreter point to the correct folder tho...
 
