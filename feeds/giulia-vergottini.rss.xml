@@ -31,7 +31,7 @@
 &lt;li&gt;&lt;code&gt;add2virtualenv&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;don't work and they all raise&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="sb"&gt;`AttributeError: &amp;#39;module&amp;#39; object has no attribute &amp;#39;sysconfig&amp;#39;`&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="ne"&gt;AttributeError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;module&amp;#39;&lt;/span&gt; &lt;span class="nb"&gt;object&lt;/span&gt; &lt;span class="n"&gt;has&lt;/span&gt; &lt;span class="n"&gt;no&lt;/span&gt; &lt;span class="n"&gt;attribute&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;sysconfig&amp;#39;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
