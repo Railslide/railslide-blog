@@ -260,6 +260,15 @@ pre {
     font-size: 75%;
 }
 
+.pgp-block {
+    box-shadow: none;
+}
+
+.invisible-spacer {
+    color: transparent;
+    margin: 2em 0;
+}
+
 /* LAYOUT CSS */
 #layout {
     padding-left: 25%; /* "left col (nav + list)" width */
