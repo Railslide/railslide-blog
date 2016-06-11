@@ -17,9 +17,8 @@ CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
 
 # Social widget
-SOCIAL = (('github-square', 'https://github.com/Railslide/'),
-          ('google-plus-square', 'https://plus.google.com/+GiuliaVergottini'),
-          ('rss-square', 'feeds/all.atom.xml'),)
+SOCIAL = (('github', 'https://github.com/Railslide/'),
+          ('rss', 'feeds/all.atom.xml'),)
 
 DEFAULT_PAGINATION = 10
 
