@@ -5,7 +5,7 @@ Tags: django, pytest, pytest-django, environment variables
 Slug: how-to-override-pytest-django-settings-discovery-order
 Author: Giulia Vergottini
 Summary: The order pytest-django uses for determining which settings file should be used for running tests might not be the most optimal when using environment variables. However, it is still possible to override it so that it picks up the correct file without recurring to extra typing.
-Status: draft
+
 
 If you want to use Pytest for running the test suite in your Django project, all you need to do is to install pytest-django, tell it where to look for the Django settings file - usually by placing a `pytest.ini` file in the project root folder - and you're ready to go. However, even though the `pytest.ini` file is probably the most common way to point pytest-django to the settings file, it also the last place in which pytest-django will look for it. In fact, every time you run `pytest`, pytest-django will check for the `DJANGO_SETTINGS_MODULE` variable in the following order:
 
