@@ -63,7 +63,7 @@ don't work and they all raise
 Last but not least, is probably worthy mentioning that - by design - pyvenv doesn't offer the possibility to specify a Python interpreter for virtual environments, so
 
     :::bash
-    $ mkvirtualenv -p /path/to/python/intepreter my_venv
+    $ mkvirtualenv -p /path/to/python/interpreter my_venv
 
 no longer works, which means no way to get a Python 2.7 virtualenv out of it.
 
