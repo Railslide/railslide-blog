@@ -8,7 +8,7 @@ Summary: After reading that it might be possible to use virtualenvwrapper with p
 
 Python 3 ships with pyvenv, a built-in virtualenv manager. Although I welcomed the news as a definitely good one, the absence of a virtualenvwrapper-like tool for pyvenv has always stopped me from giving it a try. I consider virtualenvwrapper to be a super neat tool (I even wrote a plugin for it!) and I don't see why I would want to type the path to my virtual environment activation script every time I want to activate it, when I can just use a way more pythonic `workon my_venv`.
 
-I happened, however, to stumble into [a conversation](https://groups.google.com/forum/#!msg/virtualenvwrapper/bkpwkfyIppM/9M9mz3pB0RQJ) in the virtualenvwrapper google group, where Dough Hellman (aka the guy behind virtualenvwrapper) wrote that _in theory_ it should be possible to use virtualenvwrapper with pyvenv. So I immediately fired up a couple of virtual machines and started playing around in order to see whether it was possible to turn that _in theory_ into an _in practice_.
+I happened, however, to stumble into [a conversation](https://groups.google.com/forum/#!msg/virtualenvwrapper/bkpwkfyIppM/9M9mz3pB0RQJ) in the virtualenvwrapper google group, where Doug Hellman (aka the guy behind virtualenvwrapper) wrote that _in theory_ it should be possible to use virtualenvwrapper with pyvenv. So I immediately fired up a couple of virtual machines and started playing around in order to see whether it was possible to turn that _in theory_ into an _in practice_.
 
 The Ubuntu mess
 ---------------
@@ -63,7 +63,7 @@ don't work and they all raise
 Last but not least, is probably worthy mentioning that - by design - pyvenv doesn't offer the possibility to specify a Python interpreter for virtual environments, so
 
     :::bash
-    $ mkvirtualenv -p /path/to/python/intepreter my_venv
+    $ mkvirtualenv -p /path/to/python/interpreter my_venv
 
 no longer works, which means no way to get a Python 2.7 virtualenv out of it.
 
