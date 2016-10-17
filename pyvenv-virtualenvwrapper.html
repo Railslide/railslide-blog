@@ -63,7 +63,7 @@
                 </header>
             </section>
             <p>Python 3 ships with pyvenv, a built-in virtualenv manager. Although I welcomed the news as a definitely good one, the absence of a virtualenvwrapper-like tool for pyvenv has always stopped me from giving it a try. I consider virtualenvwrapper to be a super neat tool (I even wrote a plugin for it!) and I don't see why I would want to type the path to my virtual environment activation script every time I want to activate it, when I can just use a way more pythonic <code>workon my_venv</code>.</p>
-<p>I happened, however, to stumble into <a href="https://groups.google.com/forum/#!msg/virtualenvwrapper/bkpwkfyIppM/9M9mz3pB0RQJ">a conversation</a> in the virtualenvwrapper google group, where Dough Hellman (aka the guy behind virtualenvwrapper) wrote that <em>in theory</em> it should be possible to use virtualenvwrapper with pyvenv. So I immediately fired up a couple of virtual machines and started playing around in order to see whether it was possible to turn that <em>in theory</em> into an <em>in practice</em>.</p>
+<p>I happened, however, to stumble into <a href="https://groups.google.com/forum/#!msg/virtualenvwrapper/bkpwkfyIppM/9M9mz3pB0RQJ">a conversation</a> in the virtualenvwrapper google group, where Doug Hellman (aka the guy behind virtualenvwrapper) wrote that <em>in theory</em> it should be possible to use virtualenvwrapper with pyvenv. So I immediately fired up a couple of virtual machines and started playing around in order to see whether it was possible to turn that <em>in theory</em> into an <em>in practice</em>.</p>
 <h2>The Ubuntu mess</h2>
 <p>According to Python documentation I should be able to invoke pyvenv by simply calling <code>pyvenv [args]</code>. However, that is not the case for Ubuntu. Thus, my first attempt to set my <code>VIRTUALENVWRAPPER_VIRTUALENV</code> variable equal to <code>pyvenv</code> resulted in my vagrant machine complaining because it could not find it in my path. Setting it to <code>pyvenv-3.4</code> solved it (I was initially testing on Ubuntu 14.04, which ships with Python 3.4). Though having to manually change it whenever I decide to update my Python version is far from optimal.</p>
 <p>So I set <code>pyvenv-3.4</code> as <code>VIRTUALENVWRAPPER_VIRTUALENV</code>, created a new virtualenv and...</p>
@@ -100,7 +100,7 @@
 
 <p><code>cpvirtualenv</code> is instead a bit weird, since it does copy the virtualenv, but it displays the name of the original one in front of the prompt of all its copies. Even making copies of a copy doesn't change the result: it still shows the name of the first original. The <code>$VIRTUAL_ENV</code> variable and the interpreter point to the correct folder tho...</p>
 <p>Last but not least, is probably worthy mentioning that - by design - pyvenv doesn't offer the possibility to specify a Python interpreter for virtual environments, so</p>
-<div class="highlight"><pre><span class="nv">$ </span>mkvirtualenv -p /path/to/python/intepreter my_venv
+<div class="highlight"><pre><span class="nv">$ </span>mkvirtualenv -p /path/to/python/interpreter my_venv
 </pre></div>
 
 
