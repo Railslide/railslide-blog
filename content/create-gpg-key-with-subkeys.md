@@ -1,10 +1,10 @@
 Title: How to create a GPG key with subkeys
-Date: 2017-04-17
+Date: 2017-04-19
 Category: Cryptography
 Tags: GPG, cryptography, howto
 Slug: create-gpg-key-with-subkeys
 Author: Giulia Vergottini
-Summary: A series of posts illustrating how I set my GPG workflow up.
+Summary: A step to step guide for creating a GPG key with subkeys.
 Status: draft
 
 I wanted to create a GPG key - so far so good. The problem is that I also wanted to use GPG on multiple devices, ideally even on my phone. I could have - _in theory_ - copied the key over to all the needed machines, but that would have been a terrible ide. What if I lose my phone/laptop? My key would be compromised and I'd be left with no other choice than revoking it and losing all the previous signatures.
@@ -109,7 +109,7 @@ Congratulations! The master key has been created!
 Set your key to prefer strong hashes
 ------------------------------------
 
-In theory, if hash preferences were set in the `gpg.conf` file before creating the key, this step should not be necessary. However, better safe than sorry:
+In theory, if hash preferences were set in the `gpg.conf` file before creating the key, this step should not be necessary. But better safe than sorry.
 
     :::bash
     $ gpg --edit-key [your email address]
@@ -210,13 +210,107 @@ When creating a key GPG automatically creates an encryption subkey as well, whic
 
     gpg> # save <--
 
-<!-- Resources
-https://keyring.debian.org/creating-key.html
-http://ekaia.org/blog/2009/05/10/creating-new-gpgkey/
-https://debian-administration.org/users/dkg/weblog/48
-http://blog.clusterlabs.org/blog/2013/gpg-quickstart
-https://riseup.net/en/security/message-security/openpgp/best-practices
-https://www.void.gr/kargig/blog/2013/12/02/creating-a-new-gpg-key-with-subkeys/
-https://alexcabal.com/creating-the-perfect-gpg-keypair/
-https://wiki.debian.org/Subkeys?action=show&redirect=subkeys
--->
+
+Create a revocation certificate
+-------------------------------
+
+If the master key gets lost or compromised, the revocation certificate is going to be your emergency brake.
+
+    :::bash
+    $ gpg --output revoke.asc --gen-revoke [your email address]
+    Create a revocation certificate for this key? (y/N) # y <--
+    Please select the reason for the revocation:
+      0 = No reason specified
+      1 = Key has been compromised
+      2 = Key is superseded
+      3 = Key is no longer used
+      Q = Cancel
+    (Probably you want to select 1 here)
+    Your decision? # 1 <--
+    Enter an optional description; end it with an empty line:
+    > # Empty line will do fine here <--
+    Reason for revocation: Key has been compromised
+    (No description given)
+    Is this okay? (y/N) # y <--
+
+    You need a passphrase to unlock the secret key for
+    user: [Your name] <[your email address]>
+    4096-bit RSA key, ID [Your key ID], created 2017-04-17
+    # Enter passphrase <--
+
+    Revocation certificate created.
+
+Make several copies of it and save it in a safe place (ideally not the same one as the master key!)
+
+Remove the master key
+---------------------
+
+Before proceeding, make sure to have backups of the `.gpg` folder (perhaps on an encrypted media)
+
+Temporarily export the subkeys:
+
+    :::bash
+    $ gpg --export-secret-subkeys [your email address] > /media/encrypted-media/subkeys
+
+Delete the master key:
+
+    ::: bash
+    $ gpg --delete-secret-key 0x6F87F32E2234961E
+
+Re-import the subkeys and remove the temporary export:
+
+    :::bash
+    $ gpg --import /media/encrypted-usb/subkeys
+    $ shred -u /media/encrypted-usb/subkeys
+
+Check that everything worked as intended - the hash (#) next to the `sec` line means that the master key is missing.
+
+    :::bash
+    $ gpg -K [your email address]
+
+    /home/username/.gnupg/secring.gpg
+    -----------------------------
+    sec#  4096R/[Your key ID] 2017-04-17
+    uid                  [Your name] <[your email address]>
+    ssb   4096R/[Subkey ID]   2017-04-17
+    ssb   4096R/[Subkey ID]   2017-04-17
+
+
+Upload the key to a keyserver
+-----------------------------
+
+Keyservers forward keys to each other, so any keyserver would do.
+
+    :::bash
+    $ gpg --keyserver pgp.mit.edu --send-key [your key ID]
+
+
+Using your master key
+---------------------
+
+Assuming that the `.gpg` folder is on some kind of encrypted media:
+
+    :::bash
+    $ gpg --home=/media/encrypted-media/.gnupg/ [gpg command]
+
+
+Parting thoughts
+----------------
+
+That's it!
+
+There is probably a lot more to say, but this seems quite enough stuff to read already. Below there's a list of links for further reading/source of inspiration.
+
+
+
+
+### Resources
+* [OpenPGP Best Practices](https://riseup.net/en/security/message-security/openpgp/best-practices)
+* [The GNU Privacy handbook](https://www.gnupg.org/gph/en/manual/book1.html)
+* [Subkeys - Debian wiki](https://wiki.debian.org/Subkeys?action=show&redirect=subkeys)
+* [HOWTO prep for migration off of SHA-1 in OpenPGP](https://debian-administration.org/users/dkg/weblog/48)
+* [Creating a new GPG key with subkeys](https://www.void.gr/kargig/blog/2013/12/02/creating-a-new-gpg-key-with-subkeys/)
+* [Creating the perfect GPG keypair](https://alexcabal.com/creating-the-perfect-gpg-keypair/)
+* [Creating a new GPG key](http://ekaia.org/blog/2009/05/10/creating-new-gpgkey/)
+* [GPG Quickstart](http://blog.clusterlabs.org/blog/2013/gpg-quickstart)
+* [Generating More Secure GPG Keys: A Step-by-Step Guide](https://spin.atomicobject.com/2013/11/24/secure-gpg-keys-guide/)
