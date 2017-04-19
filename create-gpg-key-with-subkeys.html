@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="http://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>How to create a GPG key with subkeys // Railslide // Code, experiments, and thoughts</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/puremorning.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="links"><a href="about.html">About</a></p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>How to create a GPG key with subkeys</h1>
+                        <p class="post-meta">
+                        category: <a href="http://railslide.io/category/cryptography.html">Cryptography</a>, date: 19-04-2017
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="http://railslide.io/tag/gpg.html">GPG</a>
+                                <a class="post-category" href="http://railslide.io/tag/cryptography.html">cryptography</a>
+                                <a class="post-category" href="http://railslide.io/tag/howto.html">howto</a>
+                </header>
+            </section>
+            <p>I wanted to create a GPG key - so far so good. The problem is that I also wanted to use GPG on multiple devices, ideally even on my phone. I could have - <em>in theory</em> - copied the key over to all the needed machines, but that would have been a terrible ide. What if I lose my phone/laptop? My key would be compromised and I'd be left with no other choice than revoking it and losing all the previous signatures.</p>
+<p>That's when subkeys come in.</p>
+<p>Subkeys are almost identical to normal key pairs, except they can't be used for signing other people's keys, they're bound to a master key pair, and - here comes the interesting part! - they can be revoked independently from the master key.</p>
+<p>So, in practical terms, they allow me to do the following: create a master key pair, create a subkey pair, remove the master key from my laptop, store it in a safe place, move on with my encrypting/decrypting life as usual. If catastrophe strikes, I retrieve my master key from its safe place, revoke the subkey, create a new subkey pair and I'm ready to go - and since each link of the Web of Trust is connected to the UID of the master key, my reputation stays untouched.</p>
+<p>The only problem with all this workflow is that it requires a bunch of steps and I have the tendency to forget them pretty quickly. So, for the sake of my future self (or anyone else who might found them useful) here it is the whole process.</p>
+<h2>Set GPG to prefer SHA2</h2>
+<p>GPG defaults to SHA1 as preferred hash, so let's set it to prefer SHA2 instead.
+Check if the following lines are present in <code>~/.gnupg/gpg.conf</code>:</p>
+<div class="highlight"><pre>personal-digest-preferences SHA512 SHA384 SHA256 SHA224
+default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 BZIP2 ZLIB ZIP Uncompressed
+cert-digest-algo SHA512
+</pre></div>
+
+
+<p>If not, add them.</p>
+<h2>Create a master key</h2>
+<p>Create the master key - I'm going to mark user inputs with <code># [input value] &lt;--</code>.</p>
+<div class="highlight"><pre><span class="nv">$ </span>gpg --gen-key
+gpg <span class="o">(</span>GnuPG<span class="o">)</span> 1.4.11<span class="p">;</span> Copyright <span class="o">(</span>C<span class="o">)</span> <span class="m">2010</span> Free Software Foundation, Inc.
+This is free software: you are free to change and  redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Please <span class="k">select</span> what kind of key you want:
+    <span class="o">(</span>1<span class="o">)</span> RSA and RSA <span class="o">(</span>default<span class="o">)</span>
+    <span class="o">(</span>2<span class="o">)</span> DSA and Elgamal
+    <span class="o">(</span>3<span class="o">)</span> DSA <span class="o">(</span>sign only<span class="o">)</span>
+    <span class="o">(</span>4<span class="o">)</span> RSA <span class="o">(</span>sign only<span class="o">)</span>
+    Your selection? <span class="c"># 1 &lt;--</span>
+</pre></div>
+
+
+<p>When it comes to choosing the length make sure to choose the longest available option (4096 at the time of writing).</p>
+<div class="highlight"><pre>RSA keys may be between <span class="m">1024</span> and <span class="m">4096</span> bits long.
+What keysize <span class="k">do</span> you want? <span class="o">(</span>2048<span class="o">)</span>  <span class="c"># 4096 &lt;-- (the longer the better!)</span>
+
+Requested keysize is <span class="m">4096</span> bits
+Please specify how long the key should be valid.
+    <span class="nv">0</span> <span class="o">=</span> key does not expire
+    &lt;n&gt;  <span class="o">=</span> key expires in n days
+    &lt;n&gt;w <span class="o">=</span> key expires in n weeks
+    &lt;n&gt;m <span class="o">=</span> key expires in n months
+    &lt;n&gt;y <span class="o">=</span> key expires in n years
+Key is valid <span class="k">for</span>? <span class="o">(</span>0<span class="o">)</span> <span class="c"># 0 &lt;--</span>
+
+Key does not expire at all
+Is this correct? <span class="o">(</span>y/N<span class="o">)</span> <span class="c"># y &lt;--</span>
+
+You need a user ID to identify your key<span class="p">;</span> the software constructs the user ID
+from the Real Name, Comment and E-mail Address in this form:
+    <span class="s2">&quot;Heinrich Heine (Der Dichter) &lt;heinrichh@duesseldorf.de&gt;&quot;</span>
+
+Real name: <span class="c"># [Your name] &lt;--</span>
+
+E-mail address: <span class="c"># [Your email address] &lt;--</span>
+
+Comment:
+You selected this USER-ID:
+    <span class="s2">&quot;[Your name] &lt;[your email address]&gt;&quot;</span>
+
+Change <span class="o">(</span>N<span class="o">)</span>ame, <span class="o">(</span>C<span class="o">)</span>omment, <span class="o">(</span>E<span class="o">)</span>-mail or <span class="o">(</span>O<span class="o">)</span>kay/<span class="o">(</span>Q<span class="o">)</span>uit? <span class="c"># o &lt;--</span>
+</pre></div>
+
+
+<p>When prompted for a passphrase, make sure to choose a strong one - ideally long and hard to guess. If someone gets access to the secret key, the passphrase would be the only thing left to prevent them from using it.</p>
+<div class="highlight"><pre>You need a Passphrase to protect your secret key.
+<span class="c"># Enter passphrase &lt;--</span>
+
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action <span class="o">(</span><span class="nb">type </span>on the keyboard, move the mouse, utilize the
+disks<span class="o">)</span> during the prime generation<span class="p">;</span> this gives the random number
+generator a better chance to gain enough entropy.
+.............+++++
+..+++++
+
+gpg: key <span class="o">[</span>your key ID<span class="o">]</span> marked as ultimately trusted
+public and secret key created and signed.
+
+gpg: checking the trustdb
+gpg: <span class="m">3</span> marginal<span class="o">(</span>s<span class="o">)</span> needed, <span class="m">1</span> <span class="nb">complete</span><span class="o">(</span>s<span class="o">)</span> needed, PGP trust model
+gpg: depth: <span class="m">0</span>  valid:   <span class="m">1</span>  signed:   <span class="m">0</span>  trust: 0-, 0q, 0n, 0m, 0f, 1u
+pub   4096R/<span class="o">[</span>your key ID<span class="o">]</span> 2017-04-17
+      Key <span class="nv">fingerprint</span> <span class="o">=</span> <span class="o">[</span>Key fingerprint<span class="o">]</span>
+uid                  <span class="o">[</span>Your name<span class="o">]</span> &lt;<span class="o">[</span>your email address<span class="o">]</span>&gt;
+sub   4096R/<span class="o">[</span>Sub ID<span class="o">]</span> 2017-04-17
+</pre></div>
+
+
+<p>Congratulations! The master key has been created!</p>
+<h2>Set your key to prefer strong hashes</h2>
+<p>In theory, if hash preferences were set in the <code>gpg.conf</code> file before creating the key, this step should not be necessary. But better safe than sorry.</p>
+<div class="highlight"><pre><span class="nv">$ </span>gpg --edit-key <span class="o">[</span>your email address<span class="o">]</span>
+gpg <span class="o">(</span>GnuPG<span class="o">)</span> 1.4.11<span class="p">;</span> Copyright <span class="o">(</span>C<span class="o">)</span> <span class="m">2010</span> Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Secret key is available.
+
+gpg: checking the trustdb
+gpg: <span class="m">3</span> marginal<span class="o">(</span>s<span class="o">)</span> needed, <span class="m">1</span> <span class="nb">complete</span><span class="o">(</span>s<span class="o">)</span> needed, PGP trust model
+gpg: depth: <span class="m">0</span>  valid:   <span class="m">1</span>  signed:   <span class="m">0</span>  trust: 0-, 0q, 0n, 0m, 0f, 1u
+pub  4096R/<span class="o">[</span>Your key ID<span class="o">]</span>  created: 2017-04-17  expires: never       usage: SC
+                     trust: ultimate      validity: ultimate
+sub  4096R/<span class="o">[</span>Sub ID<span class="o">]</span>  created: 2017-04-17  expires: never       usage: E
+
+gpg&gt; <span class="c"># setpref SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 ZLIB BZIP2 ZIP Uncompressed &lt;--</span>
+
+Set preference list to:
+     Cypher: AES256, AES192, AES, CAST5, 3DES
+     Digest: SHA512, SHA384, SHA256, SHA224, SHA1
+     Compression: ZLIB, BZIP2, ZIP, Uncompressed
+     Features: MDC, Keyserver no-modify
+Really update the preferences? <span class="o">(</span>y/N<span class="o">)</span> <span class="c"># y &lt;--</span>
+
+
+You need a passphrase to unlock the secret key <span class="k">for</span>
+user: <span class="o">[</span>Your name<span class="o">]</span> &lt;<span class="o">[</span>your email address<span class="o">]</span>&gt;
+4096-bit RSA key, ID <span class="o">[</span>You key ID<span class="o">]</span>, created 2017-04-17
+
+<span class="c"># Enter passphrase &lt;--</span>
+
+pub  4096R/<span class="o">[</span>Your key ID<span class="o">]</span>  created: 2017-04-17  expires: never       usage: SC
+                     trust: ultimate      validity: ultimate
+sub  4096R/<span class="o">[</span>Sub ID<span class="o">]</span>  created: 2017-04-17  expires: never       usage: E   <span class="o">]</span>
+
+gpg&gt; <span class="c"># save</span>
+</pre></div>
+
+
+<h2>Create a signing subkey</h2>
+<p>When creating a key GPG automatically creates an encryption subkey as well, which means that only the signing subkey needs manual creation.</p>
+<div class="highlight"><pre><span class="nv">$ </span>gpg --edit-key <span class="o">[</span>Your email address<span class="o">]</span>
+gpg <span class="o">(</span>GnuPG<span class="o">)</span> 1.4.11<span class="p">;</span> Copyright <span class="o">(</span>C<span class="o">)</span> <span class="m">2010</span> Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Secret key is available.
+
+gpg: checking the trustdb
+gpg: <span class="m">3</span> marginal<span class="o">(</span>s<span class="o">)</span> needed, <span class="m">1</span> <span class="nb">complete</span><span class="o">(</span>s<span class="o">)</span> needed, PGP trust model
+gpg: depth: <span class="m">0</span>  valid:   <span class="m">1</span>  signed:   <span class="m">0</span>  trust: 0-, 0q, 0n, 0m, 0f, 1u
+pub  4096R/<span class="o">[</span>Your key ID<span class="o">]</span>  created: 2017-04-17  expires: never       usage: SC
+                         trust: ultimate      validity: ultimate
+sub  4096R/<span class="o">[</span>Sub ID<span class="o">]</span>  created: 2017-04-17  expires: never       usage: E   <span class="o">]</span>
+
+gpg&gt; <span class="c"># addkey &lt;--</span>
+
+Key is protected.
+
+You need a passphrase to unlock the secret key <span class="k">for</span>
+user: <span class="o">[</span>Your name<span class="o">]</span> &lt;<span class="o">[</span>your email address<span class="o">]</span>&gt;
+4096-bit RSA key, ID <span class="o">[</span>Your key ID<span class="o">]</span>, created 2017-04-17
+<span class="c"># Enter passphrase &lt;--</span>
+
+Please <span class="k">select</span> what kind of key you want:
+    <span class="o">(</span>3<span class="o">)</span> DSA <span class="o">(</span>sign only<span class="o">)</span>
+    <span class="o">(</span>4<span class="o">)</span> RSA <span class="o">(</span>sign only<span class="o">)</span>
+    <span class="o">(</span>5<span class="o">)</span> Elgamal <span class="o">(</span>encrypt only<span class="o">)</span>
+    <span class="o">(</span>6<span class="o">)</span> RSA <span class="o">(</span>encrypt only<span class="o">)</span>
+Your selection? <span class="c"># 4 &lt;--</span>
+
+RSA keys may be between <span class="m">1024</span> and <span class="m">4096</span> bits long.
+What keysize <span class="k">do</span> you want? <span class="o">(</span>2048<span class="o">)</span> <span class="c"># 4096 &lt;-- (the longer the better!)</span>
+
+Requested keysize is <span class="m">4096</span> bits
+Please specify how long the key should be valid.
+    <span class="nv">0</span> <span class="o">=</span> key does not expire
+    &lt;n&gt;  <span class="o">=</span> key expires in n days
+    &lt;n&gt;w <span class="o">=</span> key expires in n weeks
+    &lt;n&gt;m <span class="o">=</span> key expires in n months
+    &lt;n&gt;y <span class="o">=</span> key expires in n years
+Key is valid <span class="k">for</span>? <span class="o">(</span>0<span class="o">)</span> <span class="c"># 0 &lt;--</span>
+
+Key does not expire at all
+Is this correct? <span class="o">(</span>y/N<span class="o">)</span> <span class="c"># y &lt;--</span>
+
+Really create? <span class="o">(</span>y/N<span class="o">)</span> <span class="c"># y &lt;--</span>
+
+
+pub  4096R/<span class="o">[</span>Your key ID<span class="o">]</span>  created: 2017-04-17  expires: never       usage: SC
+                         trust: ultimate      validity: ultimate
+sub  4096R/<span class="o">[</span>Sub ID<span class="o">]</span>  created: 2017-04-17  expires: never       usage: E   <span class="o">]</span>
+sub  4096R/<span class="o">[</span>Sub ID<span class="o">]</span>  created: 2017-04-17  expires: never       usage: S
+
+gpg&gt; <span class="c"># save &lt;--</span>
+</pre></div>
+
+
+<h2>Create a revocation certificate</h2>
+<p>If the master key gets lost or compromised, the revocation certificate is going to be your emergency brake.</p>
+<div class="highlight"><pre><span class="nv">$ </span>gpg --output revoke.asc --gen-revoke <span class="o">[</span>your email address<span class="o">]</span>
+Create a revocation certificate <span class="k">for</span> this key? <span class="o">(</span>y/N<span class="o">)</span> <span class="c"># y &lt;--</span>
+Please <span class="k">select</span> the reason <span class="k">for</span> the revocation:
+  <span class="nv">0</span> <span class="o">=</span> No reason specified
+  <span class="nv">1</span> <span class="o">=</span> Key has been compromised
+  <span class="nv">2</span> <span class="o">=</span> Key is superseded
+  <span class="nv">3</span> <span class="o">=</span> Key is no longer used
+  <span class="nv">Q</span> <span class="o">=</span> Cancel
+<span class="o">(</span>Probably you want to <span class="k">select</span> <span class="m">1</span> here<span class="o">)</span>
+Your decision? <span class="c"># 1 &lt;--</span>
+Enter an optional description<span class="p">;</span> end it with an empty line:
+&gt; <span class="c"># Empty line will do fine here &lt;--</span>
+Reason <span class="k">for</span> revocation: Key has been compromised
+<span class="o">(</span>No description given<span class="o">)</span>
+Is this okay? <span class="o">(</span>y/N<span class="o">)</span> <span class="c"># y &lt;--</span>
+
+You need a passphrase to unlock the secret key <span class="k">for</span>
+user: <span class="o">[</span>Your name<span class="o">]</span> &lt;<span class="o">[</span>your email address<span class="o">]</span>&gt;
+4096-bit RSA key, ID <span class="o">[</span>Your key ID<span class="o">]</span>, created 2017-04-17
+<span class="c"># Enter passphrase &lt;--</span>
+
+Revocation certificate created.
+</pre></div>
+
+
+<p>Make several copies of it and save it in a safe place (ideally not the same one as the master key!)</p>
+<h2>Remove the master key</h2>
+<p>Before proceeding, make sure to have backups of the <code>.gpg</code> folder (perhaps on an encrypted media)</p>
+<p>Temporarily export the subkeys:</p>
+<div class="highlight"><pre><span class="nv">$ </span>gpg --export-secret-subkeys <span class="o">[</span>your email address<span class="o">]</span> &gt; /media/encrypted-media/subkeys
+</pre></div>
+
+
+<p>Delete the master key:</p>
+<div class="highlight"><pre><span class="nv">$ </span>gpg --delete-secret-key 0x6F87F32E2234961E
+</pre></div>
+
+
+<p>Re-import the subkeys and remove the temporary export:</p>
+<div class="highlight"><pre><span class="nv">$ </span>gpg --import /media/encrypted-usb/subkeys
+<span class="nv">$ </span>shred -u /media/encrypted-usb/subkeys
+</pre></div>
+
+
+<p>Check that everything worked as intended - the hash (#) next to the <code>sec</code> line means that the master key is missing.</p>
+<div class="highlight"><pre><span class="nv">$ </span>gpg -K <span class="o">[</span>your email address<span class="o">]</span>
+
+/home/username/.gnupg/secring.gpg
+-----------------------------
+sec#  4096R/<span class="o">[</span>Your key ID<span class="o">]</span> 2017-04-17
+uid                  <span class="o">[</span>Your name<span class="o">]</span> &lt;<span class="o">[</span>your email address<span class="o">]</span>&gt;
+ssb   4096R/<span class="o">[</span>Subkey ID<span class="o">]</span>   2017-04-17
+ssb   4096R/<span class="o">[</span>Subkey ID<span class="o">]</span>   2017-04-17
+</pre></div>
+
+
+<h2>Upload the key to a keyserver</h2>
+<p>Keyservers syncs keys with each other, so any keyserver would do.</p>
+<div class="highlight"><pre><span class="nv">$ </span>gpg --keyserver pgp.mit.edu --send-key <span class="o">[</span>your key ID<span class="o">]</span>
+</pre></div>
+
+
+<h2>Using your master key</h2>
+<p>Assuming that the <code>.gpg</code> folder is on some kind of encrypted media:</p>
+<div class="highlight"><pre><span class="nv">$ </span>gpg --home<span class="o">=</span>/media/encrypted-media/.gnupg/ <span class="o">[</span>gpg <span class="nb">command</span><span class="o">]</span>
+</pre></div>
+
+
+<h2>Parting thoughts</h2>
+<p>That's it!</p>
+<p>There is probably a lot more to say, but this seems quite enough stuff to read already. Below there's a list of links that are worthed reading and/or served me as source of inspiration.</p>
+<p>Also, I am not an expert at this, so corrections to any mistake I might have made are more than welcome!</p>
+<h3>Resources</h3>
+<ul>
+<li><a href="https://riseup.net/en/security/message-security/openpgp/best-practices">OpenPGP Best Practices</a></li>
+<li><a href="https://www.gnupg.org/gph/en/manual/book1.html">The GNU Privacy handbook</a></li>
+<li><a href="https://wiki.debian.org/Subkeys?action=show&amp;redirect=subkeys">Subkeys - Debian wiki</a></li>
+<li><a href="https://debian-administration.org/users/dkg/weblog/48">HOWTO prep for migration off of SHA-1 in OpenPGP</a></li>
+<li><a href="https://www.void.gr/kargig/blog/2013/12/02/creating-a-new-gpg-key-with-subkeys/">Creating a new GPG key with subkeys</a></li>
+<li><a href="https://alexcabal.com/creating-the-perfect-gpg-keypair/">Creating the perfect GPG keypair</a></li>
+<li><a href="http://ekaia.org/blog/2009/05/10/creating-new-gpgkey/">Creating a new GPG key</a></li>
+<li><a href="http://blog.clusterlabs.org/blog/2013/gpg-quickstart">GPG Quickstart</a></li>
+<li><a href="https://spin.atomicobject.com/2013/11/24/secure-gpg-keys-guide/">Generating More Secure GPG Keys: A Step-by-Step Guide</a></li>
+</ul>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+    <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+        try {
+            var pageTracker = _gat._getTracker("UA-69748538-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+    </script>
+
+</body>
+</html>

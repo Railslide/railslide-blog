@@ -1,5 +1,277 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Railslide</title><link>http://railslide.io/</link><description></description><atom:link href="http://railslide.io/feeds/giulia-vergottini.rss.xml" rel="self"></atom:link><lastBuildDate>Thu, 29 Sep 2016 00:00:00 +0200</lastBuildDate><item><title>How to override pytest-django settings discovery order</title><link>http://railslide.io/how-to-override-pytest-django-settings-discovery-order.html</link><description>&lt;p&gt;If you want to use Pytest for running the test suite in your Django project, all you need to do is to install pytest-django, tell it where to look for the Django settings file - usually by placing a &lt;code&gt;pytest.ini&lt;/code&gt; file in the project root folder - and you're ready to go. However, even though the &lt;code&gt;pytest.ini&lt;/code&gt; file is probably the most common way to point pytest-django to the settings file, it also the last place in which pytest-django will look for it. In fact, every time you run &lt;code&gt;pytest&lt;/code&gt;, pytest-django will check for the &lt;code&gt;DJANGO_SETTINGS_MODULE&lt;/code&gt; variable in the following order:&lt;/p&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Railslide</title><link>http://railslide.io/</link><description></description><atom:link href="http://railslide.io/feeds/giulia-vergottini.rss.xml" rel="self"></atom:link><lastBuildDate>Wed, 19 Apr 2017 00:00:00 +0200</lastBuildDate><item><title>How to create a GPG key with subkeys</title><link>http://railslide.io/create-gpg-key-with-subkeys.html</link><description>&lt;p&gt;I wanted to create a GPG key - so far so good. The problem is that I also wanted to use GPG on multiple devices, ideally even on my phone. I could have - &lt;em&gt;in theory&lt;/em&gt; - copied the key over to all the needed machines, but that would have been a terrible ide. What if I lose my phone/laptop? My key would be compromised and I'd be left with no other choice than revoking it and losing all the previous signatures.&lt;/p&gt;
+&lt;p&gt;That's when subkeys come in.&lt;/p&gt;
+&lt;p&gt;Subkeys are almost identical to normal key pairs, except they can't be used for signing other people's keys, they're bound to a master key pair, and - here comes the interesting part! - they can be revoked independently from the master key.&lt;/p&gt;
+&lt;p&gt;So, in practical terms, they allow me to do the following: create a master key pair, create a subkey pair, remove the master key from my laptop, store it in a safe place, move on with my encrypting/decrypting life as usual. If catastrophe strikes, I retrieve my master key from its safe place, revoke the subkey, create a new subkey pair and I'm ready to go - and since each link of the Web of Trust is connected to the UID of the master key, my reputation stays untouched.&lt;/p&gt;
+&lt;p&gt;The only problem with all this workflow is that it requires a bunch of steps and I have the tendency to forget them pretty quickly. So, for the sake of my future self (or anyone else who might found them useful) here it is the whole process.&lt;/p&gt;
+&lt;h2&gt;Set GPG to prefer SHA2&lt;/h2&gt;
+&lt;p&gt;GPG defaults to SHA1 as preferred hash, so let's set it to prefer SHA2 instead.
+Check if the following lines are present in &lt;code&gt;~/.gnupg/gpg.conf&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;personal-digest-preferences SHA512 SHA384 SHA256 SHA224
+default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 BZIP2 ZLIB ZIP Uncompressed
+cert-digest-algo SHA512
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If not, add them.&lt;/p&gt;
+&lt;h2&gt;Create a master key&lt;/h2&gt;
+&lt;p&gt;Create the master key - I'm going to mark user inputs with &lt;code&gt;# [input value] &amp;lt;--&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;gpg --gen-key
+gpg &lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt; 1.4.11&lt;span class="p"&gt;;&lt;/span&gt; Copyright &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;2010&lt;/span&gt; Free Software Foundation, Inc.
+This is free software: you are free to change and  redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Please &lt;span class="k"&gt;select&lt;/span&gt; what kind of key you want:
+    &lt;span class="o"&gt;(&lt;/span&gt;1&lt;span class="o"&gt;)&lt;/span&gt; RSA and RSA &lt;span class="o"&gt;(&lt;/span&gt;default&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;(&lt;/span&gt;2&lt;span class="o"&gt;)&lt;/span&gt; DSA and Elgamal
+    &lt;span class="o"&gt;(&lt;/span&gt;3&lt;span class="o"&gt;)&lt;/span&gt; DSA &lt;span class="o"&gt;(&lt;/span&gt;sign only&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;(&lt;/span&gt;4&lt;span class="o"&gt;)&lt;/span&gt; RSA &lt;span class="o"&gt;(&lt;/span&gt;sign only&lt;span class="o"&gt;)&lt;/span&gt;
+    Your selection? &lt;span class="c"&gt;# 1 &amp;lt;--&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When it comes to choosing the length make sure to choose the longest available option (4096 at the time of writing).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;RSA keys may be between &lt;span class="m"&gt;1024&lt;/span&gt; and &lt;span class="m"&gt;4096&lt;/span&gt; bits long.
+What keysize &lt;span class="k"&gt;do&lt;/span&gt; you want? &lt;span class="o"&gt;(&lt;/span&gt;2048&lt;span class="o"&gt;)&lt;/span&gt;  &lt;span class="c"&gt;# 4096 &amp;lt;-- (the longer the better!)&lt;/span&gt;
+
+Requested keysize is &lt;span class="m"&gt;4096&lt;/span&gt; bits
+Please specify how long the key should be valid.
+    &lt;span class="nv"&gt;0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; key does not expire
+    &amp;lt;n&amp;gt;  &lt;span class="o"&gt;=&lt;/span&gt; key expires in n days
+    &amp;lt;n&amp;gt;w &lt;span class="o"&gt;=&lt;/span&gt; key expires in n weeks
+    &amp;lt;n&amp;gt;m &lt;span class="o"&gt;=&lt;/span&gt; key expires in n months
+    &amp;lt;n&amp;gt;y &lt;span class="o"&gt;=&lt;/span&gt; key expires in n years
+Key is valid &lt;span class="k"&gt;for&lt;/span&gt;? &lt;span class="o"&gt;(&lt;/span&gt;0&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# 0 &amp;lt;--&lt;/span&gt;
+
+Key does not expire at all
+Is this correct? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# y &amp;lt;--&lt;/span&gt;
+
+You need a user ID to identify your key&lt;span class="p"&gt;;&lt;/span&gt; the software constructs the user ID
+from the Real Name, Comment and E-mail Address in this form:
+    &lt;span class="s2"&gt;&amp;quot;Heinrich Heine (Der Dichter) &amp;lt;heinrichh@duesseldorf.de&amp;gt;&amp;quot;&lt;/span&gt;
+
+Real name: &lt;span class="c"&gt;# [Your name] &amp;lt;--&lt;/span&gt;
+
+E-mail address: &lt;span class="c"&gt;# [Your email address] &amp;lt;--&lt;/span&gt;
+
+Comment:
+You selected this USER-ID:
+    &lt;span class="s2"&gt;&amp;quot;[Your name] &amp;lt;[your email address]&amp;gt;&amp;quot;&lt;/span&gt;
+
+Change &lt;span class="o"&gt;(&lt;/span&gt;N&lt;span class="o"&gt;)&lt;/span&gt;ame, &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt;omment, &lt;span class="o"&gt;(&lt;/span&gt;E&lt;span class="o"&gt;)&lt;/span&gt;-mail or &lt;span class="o"&gt;(&lt;/span&gt;O&lt;span class="o"&gt;)&lt;/span&gt;kay/&lt;span class="o"&gt;(&lt;/span&gt;Q&lt;span class="o"&gt;)&lt;/span&gt;uit? &lt;span class="c"&gt;# o &amp;lt;--&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When prompted for a passphrase, make sure to choose a strong one - ideally long and hard to guess. If someone gets access to the secret key, the passphrase would be the only thing left to prevent them from using it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;You need a Passphrase to protect your secret key.
+&lt;span class="c"&gt;# Enter passphrase &amp;lt;--&lt;/span&gt;
+
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;type &lt;/span&gt;on the keyboard, move the mouse, utilize the
+disks&lt;span class="o"&gt;)&lt;/span&gt; during the prime generation&lt;span class="p"&gt;;&lt;/span&gt; this gives the random number
+generator a better chance to gain enough entropy.
+.............+++++
+..+++++
+
+gpg: key &lt;span class="o"&gt;[&lt;/span&gt;your key ID&lt;span class="o"&gt;]&lt;/span&gt; marked as ultimately trusted
+public and secret key created and signed.
+
+gpg: checking the trustdb
+gpg: &lt;span class="m"&gt;3&lt;/span&gt; marginal&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="nb"&gt;complete&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, PGP trust model
+gpg: depth: &lt;span class="m"&gt;0&lt;/span&gt;  valid:   &lt;span class="m"&gt;1&lt;/span&gt;  signed:   &lt;span class="m"&gt;0&lt;/span&gt;  trust: 0-, 0q, 0n, 0m, 0f, 1u
+pub   4096R/&lt;span class="o"&gt;[&lt;/span&gt;your key ID&lt;span class="o"&gt;]&lt;/span&gt; 2017-04-17
+      Key &lt;span class="nv"&gt;fingerprint&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;Key fingerprint&lt;span class="o"&gt;]&lt;/span&gt;
+uid                  &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
+sub   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt; 2017-04-17
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Congratulations! The master key has been created!&lt;/p&gt;
+&lt;h2&gt;Set your key to prefer strong hashes&lt;/h2&gt;
+&lt;p&gt;In theory, if hash preferences were set in the &lt;code&gt;gpg.conf&lt;/code&gt; file before creating the key, this step should not be necessary. But better safe than sorry.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;gpg --edit-key &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;
+gpg &lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt; 1.4.11&lt;span class="p"&gt;;&lt;/span&gt; Copyright &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;2010&lt;/span&gt; Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Secret key is available.
+
+gpg: checking the trustdb
+gpg: &lt;span class="m"&gt;3&lt;/span&gt; marginal&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="nb"&gt;complete&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, PGP trust model
+gpg: depth: &lt;span class="m"&gt;0&lt;/span&gt;  valid:   &lt;span class="m"&gt;1&lt;/span&gt;  signed:   &lt;span class="m"&gt;0&lt;/span&gt;  trust: 0-, 0q, 0n, 0m, 0f, 1u
+pub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;  created: 2017-04-17  expires: never       usage: SC
+                     trust: ultimate      validity: ultimate
+sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt;  created: 2017-04-17  expires: never       usage: E
+
+gpg&amp;gt; &lt;span class="c"&gt;# setpref SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 ZLIB BZIP2 ZIP Uncompressed &amp;lt;--&lt;/span&gt;
+
+Set preference list to:
+     Cypher: AES256, AES192, AES, CAST5, 3DES
+     Digest: SHA512, SHA384, SHA256, SHA224, SHA1
+     Compression: ZLIB, BZIP2, ZIP, Uncompressed
+     Features: MDC, Keyserver no-modify
+Really update the preferences? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# y &amp;lt;--&lt;/span&gt;
+
+
+You need a passphrase to unlock the secret key &lt;span class="k"&gt;for&lt;/span&gt;
+user: &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
+4096-bit RSA key, ID &lt;span class="o"&gt;[&lt;/span&gt;You key ID&lt;span class="o"&gt;]&lt;/span&gt;, created 2017-04-17
+
+&lt;span class="c"&gt;# Enter passphrase &amp;lt;--&lt;/span&gt;
+
+pub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;  created: 2017-04-17  expires: never       usage: SC
+                     trust: ultimate      validity: ultimate
+sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt;  created: 2017-04-17  expires: never       usage: E   &lt;span class="o"&gt;]&lt;/span&gt;
+
+gpg&amp;gt; &lt;span class="c"&gt;# save&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Create a signing subkey&lt;/h2&gt;
+&lt;p&gt;When creating a key GPG automatically creates an encryption subkey as well, which means that only the signing subkey needs manual creation.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;gpg --edit-key &lt;span class="o"&gt;[&lt;/span&gt;Your email address&lt;span class="o"&gt;]&lt;/span&gt;
+gpg &lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt; 1.4.11&lt;span class="p"&gt;;&lt;/span&gt; Copyright &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;2010&lt;/span&gt; Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Secret key is available.
+
+gpg: checking the trustdb
+gpg: &lt;span class="m"&gt;3&lt;/span&gt; marginal&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="nb"&gt;complete&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, PGP trust model
+gpg: depth: &lt;span class="m"&gt;0&lt;/span&gt;  valid:   &lt;span class="m"&gt;1&lt;/span&gt;  signed:   &lt;span class="m"&gt;0&lt;/span&gt;  trust: 0-, 0q, 0n, 0m, 0f, 1u
+pub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;  created: 2017-04-17  expires: never       usage: SC
+                         trust: ultimate      validity: ultimate
+sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt;  created: 2017-04-17  expires: never       usage: E   &lt;span class="o"&gt;]&lt;/span&gt;
+
+gpg&amp;gt; &lt;span class="c"&gt;# addkey &amp;lt;--&lt;/span&gt;
+
+Key is protected.
+
+You need a passphrase to unlock the secret key &lt;span class="k"&gt;for&lt;/span&gt;
+user: &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
+4096-bit RSA key, ID &lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;, created 2017-04-17
+&lt;span class="c"&gt;# Enter passphrase &amp;lt;--&lt;/span&gt;
+
+Please &lt;span class="k"&gt;select&lt;/span&gt; what kind of key you want:
+    &lt;span class="o"&gt;(&lt;/span&gt;3&lt;span class="o"&gt;)&lt;/span&gt; DSA &lt;span class="o"&gt;(&lt;/span&gt;sign only&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;(&lt;/span&gt;4&lt;span class="o"&gt;)&lt;/span&gt; RSA &lt;span class="o"&gt;(&lt;/span&gt;sign only&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;(&lt;/span&gt;5&lt;span class="o"&gt;)&lt;/span&gt; Elgamal &lt;span class="o"&gt;(&lt;/span&gt;encrypt only&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;(&lt;/span&gt;6&lt;span class="o"&gt;)&lt;/span&gt; RSA &lt;span class="o"&gt;(&lt;/span&gt;encrypt only&lt;span class="o"&gt;)&lt;/span&gt;
+Your selection? &lt;span class="c"&gt;# 4 &amp;lt;--&lt;/span&gt;
+
+RSA keys may be between &lt;span class="m"&gt;1024&lt;/span&gt; and &lt;span class="m"&gt;4096&lt;/span&gt; bits long.
+What keysize &lt;span class="k"&gt;do&lt;/span&gt; you want? &lt;span class="o"&gt;(&lt;/span&gt;2048&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# 4096 &amp;lt;-- (the longer the better!)&lt;/span&gt;
+
+Requested keysize is &lt;span class="m"&gt;4096&lt;/span&gt; bits
+Please specify how long the key should be valid.
+    &lt;span class="nv"&gt;0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; key does not expire
+    &amp;lt;n&amp;gt;  &lt;span class="o"&gt;=&lt;/span&gt; key expires in n days
+    &amp;lt;n&amp;gt;w &lt;span class="o"&gt;=&lt;/span&gt; key expires in n weeks
+    &amp;lt;n&amp;gt;m &lt;span class="o"&gt;=&lt;/span&gt; key expires in n months
+    &amp;lt;n&amp;gt;y &lt;span class="o"&gt;=&lt;/span&gt; key expires in n years
+Key is valid &lt;span class="k"&gt;for&lt;/span&gt;? &lt;span class="o"&gt;(&lt;/span&gt;0&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# 0 &amp;lt;--&lt;/span&gt;
+
+Key does not expire at all
+Is this correct? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# y &amp;lt;--&lt;/span&gt;
+
+Really create? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# y &amp;lt;--&lt;/span&gt;
+
+
+pub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;  created: 2017-04-17  expires: never       usage: SC
+                         trust: ultimate      validity: ultimate
+sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt;  created: 2017-04-17  expires: never       usage: E   &lt;span class="o"&gt;]&lt;/span&gt;
+sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt;  created: 2017-04-17  expires: never       usage: S
+
+gpg&amp;gt; &lt;span class="c"&gt;# save &amp;lt;--&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Create a revocation certificate&lt;/h2&gt;
+&lt;p&gt;If the master key gets lost or compromised, the revocation certificate is going to be your emergency brake.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;gpg --output revoke.asc --gen-revoke &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;
+Create a revocation certificate &lt;span class="k"&gt;for&lt;/span&gt; this key? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# y &amp;lt;--&lt;/span&gt;
+Please &lt;span class="k"&gt;select&lt;/span&gt; the reason &lt;span class="k"&gt;for&lt;/span&gt; the revocation:
+  &lt;span class="nv"&gt;0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; No reason specified
+  &lt;span class="nv"&gt;1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; Key has been compromised
+  &lt;span class="nv"&gt;2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; Key is superseded
+  &lt;span class="nv"&gt;3&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; Key is no longer used
+  &lt;span class="nv"&gt;Q&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; Cancel
+&lt;span class="o"&gt;(&lt;/span&gt;Probably you want to &lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; here&lt;span class="o"&gt;)&lt;/span&gt;
+Your decision? &lt;span class="c"&gt;# 1 &amp;lt;--&lt;/span&gt;
+Enter an optional description&lt;span class="p"&gt;;&lt;/span&gt; end it with an empty line:
+&amp;gt; &lt;span class="c"&gt;# Empty line will do fine here &amp;lt;--&lt;/span&gt;
+Reason &lt;span class="k"&gt;for&lt;/span&gt; revocation: Key has been compromised
+&lt;span class="o"&gt;(&lt;/span&gt;No description given&lt;span class="o"&gt;)&lt;/span&gt;
+Is this okay? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# y &amp;lt;--&lt;/span&gt;
+
+You need a passphrase to unlock the secret key &lt;span class="k"&gt;for&lt;/span&gt;
+user: &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
+4096-bit RSA key, ID &lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;, created 2017-04-17
+&lt;span class="c"&gt;# Enter passphrase &amp;lt;--&lt;/span&gt;
+
+Revocation certificate created.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Make several copies of it and save it in a safe place (ideally not the same one as the master key!)&lt;/p&gt;
+&lt;h2&gt;Remove the master key&lt;/h2&gt;
+&lt;p&gt;Before proceeding, make sure to have backups of the &lt;code&gt;.gpg&lt;/code&gt; folder (perhaps on an encrypted media)&lt;/p&gt;
+&lt;p&gt;Temporarily export the subkeys:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;gpg --export-secret-subkeys &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt; &amp;gt; /media/encrypted-media/subkeys
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Delete the master key:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;gpg --delete-secret-key 0x6F87F32E2234961E
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Re-import the subkeys and remove the temporary export:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;gpg --import /media/encrypted-usb/subkeys
+&lt;span class="nv"&gt;$ &lt;/span&gt;shred -u /media/encrypted-usb/subkeys
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Check that everything worked as intended - the hash (#) next to the &lt;code&gt;sec&lt;/code&gt; line means that the master key is missing.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;gpg -K &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;
+
+/home/username/.gnupg/secring.gpg
+-----------------------------
+sec#  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt; 2017-04-17
+uid                  &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
+ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]&lt;/span&gt;   2017-04-17
+ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]&lt;/span&gt;   2017-04-17
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Upload the key to a keyserver&lt;/h2&gt;
+&lt;p&gt;Keyservers syncs keys with each other, so any keyserver would do.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;gpg --keyserver pgp.mit.edu --send-key &lt;span class="o"&gt;[&lt;/span&gt;your key ID&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Using your master key&lt;/h2&gt;
+&lt;p&gt;Assuming that the &lt;code&gt;.gpg&lt;/code&gt; folder is on some kind of encrypted media:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;gpg --home&lt;span class="o"&gt;=&lt;/span&gt;/media/encrypted-media/.gnupg/ &lt;span class="o"&gt;[&lt;/span&gt;gpg &lt;span class="nb"&gt;command&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Parting thoughts&lt;/h2&gt;
+&lt;p&gt;That's it!&lt;/p&gt;
+&lt;p&gt;There is probably a lot more to say, but this seems quite enough stuff to read already. Below there's a list of links that are worthed reading and/or served me as source of inspiration.&lt;/p&gt;
+&lt;p&gt;Also, I am not an expert at this, so corrections to any mistake I might have made are more than welcome!&lt;/p&gt;
+&lt;h3&gt;Resources&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://riseup.net/en/security/message-security/openpgp/best-practices"&gt;OpenPGP Best Practices&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.gnupg.org/gph/en/manual/book1.html"&gt;The GNU Privacy handbook&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://wiki.debian.org/Subkeys?action=show&amp;amp;redirect=subkeys"&gt;Subkeys - Debian wiki&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://debian-administration.org/users/dkg/weblog/48"&gt;HOWTO prep for migration off of SHA-1 in OpenPGP&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.void.gr/kargig/blog/2013/12/02/creating-a-new-gpg-key-with-subkeys/"&gt;Creating a new GPG key with subkeys&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://alexcabal.com/creating-the-perfect-gpg-keypair/"&gt;Creating the perfect GPG keypair&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://ekaia.org/blog/2009/05/10/creating-new-gpgkey/"&gt;Creating a new GPG key&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.clusterlabs.org/blog/2013/gpg-quickstart"&gt;GPG Quickstart&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://spin.atomicobject.com/2013/11/24/secure-gpg-keys-guide/"&gt;Generating More Secure GPG Keys: A Step-by-Step Guide&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giulia Vergottini</dc:creator><pubDate>Wed, 19 Apr 2017 00:00:00 +0200</pubDate><guid>tag:railslide.io,2017-04-19:create-gpg-key-with-subkeys.html</guid><category>GPG</category><category>cryptography</category><category>howto</category></item><item><title>How to override pytest-django settings discovery order</title><link>http://railslide.io/how-to-override-pytest-django-settings-discovery-order.html</link><description>&lt;p&gt;If you want to use Pytest for running the test suite in your Django project, all you need to do is to install pytest-django, tell it where to look for the Django settings file - usually by placing a &lt;code&gt;pytest.ini&lt;/code&gt; file in the project root folder - and you're ready to go. However, even though the &lt;code&gt;pytest.ini&lt;/code&gt; file is probably the most common way to point pytest-django to the settings file, it also the last place in which pytest-django will look for it. In fact, every time you run &lt;code&gt;pytest&lt;/code&gt;, pytest-django will check for the &lt;code&gt;DJANGO_SETTINGS_MODULE&lt;/code&gt; variable in the following order:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;command line option with &lt;code&gt;--ds&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;environment variables&lt;/li&gt;
