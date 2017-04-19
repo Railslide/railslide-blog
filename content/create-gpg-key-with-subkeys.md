@@ -5,7 +5,7 @@ Tags: GPG, cryptography, howto
 Slug: create-gpg-key-with-subkeys
 Author: Giulia Vergottini
 Summary: A step to step guide for creating a GPG key with subkeys.
-Status: draft
+
 
 I wanted to create a GPG key - so far so good. The problem is that I also wanted to use GPG on multiple devices, ideally even on my phone. I could have - _in theory_ - copied the key over to all the needed machines, but that would have been a terrible ide. What if I lose my phone/laptop? My key would be compromised and I'd be left with no other choice than revoking it and losing all the previous signatures.
 
@@ -16,6 +16,7 @@ Subkeys are almost identical to normal key pairs, except they can't be used for 
 So, in practical terms, they allow me to do the following: create a master key pair, create a subkey pair, remove the master key from my laptop, store it in a safe place, move on with my encrypting/decrypting life as usual. If catastrophe strikes, I retrieve my master key from its safe place, revoke the subkey, create a new subkey pair and I'm ready to go - and since each link of the Web of Trust is connected to the UID of the master key, my reputation stays untouched.
 
 The only problem with all this workflow is that it requires a bunch of steps and I have the tendency to forget them pretty quickly. So, for the sake of my future self (or anyone else who might found them useful) here it is the whole process.
+
 
 Set GPG to prefer SHA2
 ----------------------
@@ -254,7 +255,7 @@ Temporarily export the subkeys:
 
 Delete the master key:
 
-    ::: bash
+    :::bash
     $ gpg --delete-secret-key 0x6F87F32E2234961E
 
 Re-import the subkeys and remove the temporary export:
@@ -279,7 +280,7 @@ Check that everything worked as intended - the hash (#) next to the `sec` line m
 Upload the key to a keyserver
 -----------------------------
 
-Keyservers forward keys to each other, so any keyserver would do.
+Keyservers syncs keys with each other, so any keyserver would do.
 
     :::bash
     $ gpg --keyserver pgp.mit.edu --send-key [your key ID]
@@ -299,10 +300,9 @@ Parting thoughts
 
 That's it!
 
-There is probably a lot more to say, but this seems quite enough stuff to read already. Below there's a list of links for further reading/source of inspiration.
+There is probably a lot more to say, but this seems quite enough stuff to read already. Below there's a list of links that are worthed reading and/or served me as source of inspiration.
 
-
-
+Also, I am not an expert at this, so corrections to any mistake I might have made are more than welcome!
 
 ### Resources
 * [OpenPGP Best Practices](https://riseup.net/en/security/message-security/openpgp/best-practices)
