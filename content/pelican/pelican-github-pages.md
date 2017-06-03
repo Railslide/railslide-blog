@@ -30,7 +30,7 @@ Although it could sounds overly complicated - especially the `gh-pages` branch p
 
 Before installing Pelican, I would recommend to create a new virtualenv. It is not mandatory, but it is definitely a good practice and would prevent the risk of conflicts between installed packages.
 
-NOTE: Pelican documentation recommends to use Pelican with Python 2.7. I am keeping up with [my pledge of using Python 3 whenever possible]({filename}/virtualenwrapper-ubuntu-python3.md), as well as giving a try with Python 3.4 (Ubuntu 14.04 default version). Everything works fine so far and anyways these instructions are version agnostic - just be aware of it and choose your Python version accordingly.
+NOTE: Pelican documentation recommends to use Pelican with Python 2.7. I am keeping up with [my pledge of using Python 3 whenever possible]({filename}/dev/virtualenwrapper-ubuntu-python3.md), as well as giving a try with Python 3.4 (Ubuntu 14.04 default version). Everything works fine so far and anyways these instructions are version agnostic - just be aware of it and choose your Python version accordingly.
 
 Install pelican and ghp-import
 
