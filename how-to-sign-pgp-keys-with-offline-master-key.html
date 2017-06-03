@@ -7,14 +7,21 @@
 
         <link rel="alternate"  href="http://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
 
-        <title>GPG tag // Railslide // Code, experiments, and thoughts</title>
+        <title>How to sign PGP keys with an offline master key // Railslide // Code, experiments, and thoughts</title>
 
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="http://railslide.io/theme/css/puremorning.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/pygments.css">
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
 </head>
 
 <body>
@@ -40,55 +47,41 @@
                 </div>
             </div>
         </div>
-    <div class="pure-u-1">
+    <div class="pure-u">
         <div class="content">
-            <!-- A wrapper for all the blog posts -->
-            <div class="posts">
-                <h1 class="content-subhead">
-Posts tagged 'GPG'                </h1>
-                    <section class="post">
-                        <header class="post-header">
-                            <h3><a class="post-title" href="http://railslide.io/how-to-sign-pgp-keys-with-offline-master-key.html">How to sign PGP keys with an offline master key</a></h3>
-                            <p class="post-meta"><p>Signing other people keys with an offline master key is not super straightforward. Here's how to do it in an almost pain-free way.</p></p>
-                            <p class="post-meta">
-                                category: <a href="http://railslide.io/category/cryptography.html">Cryptography</a>, date: 03-06-2017
-                            </p>
-                        </header>
-                    </section>
-                    <section class="post">
-                        <header class="post-header">
-                            <h3><a class="post-title" href="http://railslide.io/create-gpg-key-with-subkeys.html">How to create a GPG key with subkeys</a></h3>
-                            <p class="post-meta"><p>A step by step guide for creating a GPG key with subkeys.</p></p>
-                            <p class="post-meta">
-                                category: <a href="http://railslide.io/category/cryptography.html">Cryptography</a>, date: 19-04-2017
-                            </p>
-                        </header>
-                    </section>
-                    <section class="post">
-                        <header class="post-header">
-                            <h3><a class="post-title" href="http://railslide.io/gpg-reading-resources.html">Some great reading resources about GPG</a></h3>
-                            <p class="post-meta"><p>A bunch of pretty awesome reading resources about GPG and cryptography.</p></p>
-                            <p class="post-meta">
-                                category: <a href="http://railslide.io/category/cryptography.html">Cryptography</a>, date: 17-06-2015
-                            </p>
-                        </header>
-                    </section>
-<div class="pagination-wrapper content-subhead">
-    <div class="pagination">
-        <div class="pagination-left">
-                &nbsp;
-        </div>
-        <span>Page 1 / 1</span>
-        <div class="pagination-right">
-        </div>
-    </div>
-</div><footer class="footer">
+            <section class="post">
+                <header class="post-header">
+                    <h1>How to sign PGP keys with an offline master key</h1>
+                        <p class="post-meta">
+                        category: <a href="http://railslide.io/category/cryptography.html">Cryptography</a>, date: 03-06-2017
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="http://railslide.io/tag/gpg.html">GPG</a>
+                                <a class="post-category" href="http://railslide.io/tag/cryptography.html">cryptography</a>
+                                <a class="post-category" href="http://railslide.io/tag/howto.html">howto</a>
+                </header>
+            </section>
+            <p>Lately I wanted to sign a coworker's key, so after having gone through the all in-real-life verification shebang together, all that was left was me performing the actual signing. However, since I <a href="http://railslide.io/create-gpg-key-with-subkeys.html">use subkeys on my laptop</a>, I first needed to get out my master key from its secret dungeon and tell GPG to use that one instead of the usual subkey. For doing that I used the handy <code>--homedir</code> option.</p>
+<div class="highlight"><pre><span class="nv">$ </span>gpg --homedir<span class="o">=</span>/path/to/my/master/gnupg/folder --sign-key mycoworker@myjob.com
+gpg: key <span class="s2">&quot;mycoworker@myjob.com&quot;</span> not found: public key not found
+</pre></div>
+
+
+<p>How's that possible? I am positive that I've imported my coworker's key - we have even exchanged encrypted email with each other!</p>
+<p>Well, the fact is that I imported the key, yes, but I did it in my local keyring which is the one located at <code>~/.gnupg</code> and thus not the one my master key refers to. Pretty much as when using GPG on multiple computers: you have to re-import all the public keys from scratch.</p>
+<p>Ok, so what are the options? Export the key I want to sign, import it into the master keyring, sign it, export it from the master keyiring, and finally import it into the local keyring? Sure, you could do that, but it's quite cumbersome. Fortunately, gpg has a better solution for that: the <code>--keyring</code> option!</p>
+<div class="highlight"><pre><span class="nv">$ </span>gpg --homedir<span class="o">=</span>/path/to/my/master/gnupg/folder --keyring ~/.gnupg/pubring.gpg --sign-key mycoworker@myjob.com
+</pre></div>
+
+
+<p>And voilà! Now you can proceed signing the key.</p>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
     <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
         Built with <a href="http://blog.getpelican.com/">Pelican</a>
         and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
     </p>
-</footer>            </div>
-        </div>
+</footer>        </div>
     </div>
     </div>
     <script>
