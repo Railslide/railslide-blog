@@ -292,7 +292,7 @@ Using your master key
 Assuming that the `.gpg` folder is on some kind of encrypted media:
 
     :::bash
-    $ gpg --home=/media/encrypted-media/.gnupg/ [gpg command]
+    $ gpg --homedir=/media/encrypted-media/.gnupg/ [gpg command]
 
 
 Parting thoughts
