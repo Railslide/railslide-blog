@@ -1,6 +1,5 @@
 Title: Up and running!
 Date: 2014-06-03
-Category: Pelican
 Tags: pelican, publishing, github pages
 Slug: up-and-running
 Author: Giulia Vergottini

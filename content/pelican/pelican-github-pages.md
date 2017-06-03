@@ -1,6 +1,5 @@
 Title: How to set up Pelican on GitHub pages
 Date: 2014-06-09
-Category: Pelican
 Tags: pelican, publishing, github pages
 Slug: pelican-github-pages
 Author: Giulia Vergottini

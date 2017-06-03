@@ -1,6 +1,5 @@
 Title: How to create a GPG key with subkeys
 Date: 2017-04-19
-Category: Cryptography
 Tags: GPG, cryptography, howto
 Slug: create-gpg-key-with-subkeys
 Author: Giulia Vergottini

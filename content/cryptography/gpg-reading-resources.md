@@ -1,6 +1,5 @@
 Title: Some great reading resources about GPG
 Date: 2015-06-17
-Category: Cryptography
 Tags: GPG, cryptography
 Slug: gpg-reading-resources
 Author: Giulia Vergottini

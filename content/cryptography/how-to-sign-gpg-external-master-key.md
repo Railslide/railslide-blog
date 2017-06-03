@@ -1,6 +1,5 @@
 Title: How to sign PGP keys with an offline master key
 Date: 2017-06-03
-Category: Cryptography
 Tags: GPG, cryptography, howto
 Slug: how-to-sign-pgp-keys-with-offline-master-key
 Author: Giulia Vergottini
