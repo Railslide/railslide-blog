@@ -13,7 +13,7 @@ output/
 
 &lt;h1&gt;2. Installing the needed packages&lt;/h1&gt;
 &lt;p&gt;Before installing Pelican, I would recommend to create a new virtualenv. It is not mandatory, but it is definitely a good practice and would prevent the risk of conflicts between installed packages.&lt;/p&gt;
-&lt;p&gt;NOTE: Pelican documentation recommends to use Pelican with Python 2.7. I am keeping up with &lt;a href="{filename}/virtualenwrapper-ubuntu-python3.md"&gt;my pledge of using Python 3 whenever possible&lt;/a&gt;, as well as giving a try with Python 3.4 (Ubuntu 14.04 default version). Everything works fine so far and anyways these instructions are version agnostic - just be aware of it and choose your Python version accordingly.&lt;/p&gt;
+&lt;p&gt;NOTE: Pelican documentation recommends to use Pelican with Python 2.7. I am keeping up with &lt;a href="http://railslide.io/virtualenvwrapper-python3.html"&gt;my pledge of using Python 3 whenever possible&lt;/a&gt;, as well as giving a try with Python 3.4 (Ubuntu 14.04 default version). Everything works fine so far and anyways these instructions are version agnostic - just be aware of it and choose your Python version accordingly.&lt;/p&gt;
 &lt;p&gt;Install pelican and ghp-import&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install pelican
 pip install -e git+git://github.com/davisp/ghp-import.git#egg&lt;span class="o"&gt;=&lt;/span&gt;ghp-import

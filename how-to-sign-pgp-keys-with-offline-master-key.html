@@ -61,7 +61,7 @@
                                 <a class="post-category" href="http://railslide.io/tag/howto.html">howto</a>
                 </header>
             </section>
-            <p>Lately I wanted to sign a coworker's key, so after having gone through the all in-real-life verification shebang together, all that was left was me performing the actual signing. However, since I <a href="{filename}/create-gpg-key-with-subkeys.md">use subkeys on my laptop</a>, I first needed to get out my master key from its secret dungeon and tell GPG to use that one instead of the usual subkey. For doing that I used the handy <code>--homedir</code> option.</p>
+            <p>Lately I wanted to sign a coworker's key, so after having gone through the all in-real-life verification shebang together, all that was left was me performing the actual signing. However, since I <a href="http://railslide.io/create-gpg-key-with-subkeys.html">use subkeys on my laptop</a>, I first needed to get out my master key from its secret dungeon and tell GPG to use that one instead of the usual subkey. For doing that I used the handy <code>--homedir</code> option.</p>
 <div class="highlight"><pre><span></span>$ gpg --homedir<span class="o">=</span>/path/to/my/master/gnupg/folder --sign-key mycoworker@myjob.com
 gpg: key <span class="s2">&quot;mycoworker@myjob.com&quot;</span> not found: public key not found
 </pre></div>
