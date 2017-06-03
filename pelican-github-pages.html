@@ -67,7 +67,7 @@
 <p>GitHub offers the possibility to host your site in the cloud through either <a href="https://help.github.com/articles/user-organization-and-project-pages">personal or project pages</a>. Although it is possible to use both for hosting a Pelican powered blog, project pages make your life so much easier when it comes both to publish your blog content and to put blog source under revision control.</p>
 <p>For creating project pages, all we need to do is to create a repository as usual and put the content we wish to publish (i.e. the HTML static files) into a branch named <code>gh-pages</code>. Once done that, your page will show up at username.github.io/repository.</p>
 <p>Although it could sounds overly complicated - especially the <code>gh-pages</code> branch part - you don't have to worry since an awesome program called <a href="https://github.com/davisp/ghp-import">ghp-import</a> will take care of it for us. For now, simply create a new repository as you would do for any other project and set up a <code>.gitignore</code> file with the following content:</p>
-<div class="highlight"><pre>*.pid
+<div class="highlight"><pre><span></span>*.pid
 *.pyc
 output/
 </pre></div>
@@ -77,51 +77,51 @@ output/
 <p>Before installing Pelican, I would recommend to create a new virtualenv. It is not mandatory, but it is definitely a good practice and would prevent the risk of conflicts between installed packages.</p>
 <p>NOTE: Pelican documentation recommends to use Pelican with Python 2.7. I am keeping up with <a href="http://railslide.io/virtualenvwrapper-python3.html">my pledge of using Python 3 whenever possible</a>, as well as giving a try with Python 3.4 (Ubuntu 14.04 default version). Everything works fine so far and anyways these instructions are version agnostic - just be aware of it and choose your Python version accordingly.</p>
 <p>Install pelican and ghp-import</p>
-<div class="highlight"><pre>pip install pelican
+<div class="highlight"><pre><span></span>pip install pelican
 pip install -e git+git://github.com/davisp/ghp-import.git#egg<span class="o">=</span>ghp-import
 </pre></div>
 
 
 <p>Next run <code>pelican-quickstart</code> and get ready to answer to a bunch of questions. Most of them are pretty straightforward and anyway you'll be able to change them later in your settings files. These are the only ones you need to care about for the moment:</p>
-<div class="highlight"><pre>Where <span class="k">do</span> you want to create your new web site? <span class="o">[</span>.<span class="o">]</span> <span class="c"># Press enter</span>
-Do you want to specify a URL prefix? e.g., http://example.com <span class="o">(</span>Y/n<span class="o">)</span> <span class="c"># y</span>
-What is your URL prefix? <span class="o">(</span>see above example<span class="p">;</span> no trailing slash<span class="o">)</span> <span class="c"># http://username.github.io/repository</span>
-Do you want to generate a Fabfile/Makefile to automate generation and publishing? <span class="o">(</span>Y/n<span class="o">)</span> <span class="c"># y</span>
+<div class="highlight"><pre><span></span>Where <span class="k">do</span> you want to create your new web site? <span class="o">[</span>.<span class="o">]</span> <span class="c1"># Press enter</span>
+Do you want to specify a URL prefix? e.g., http://example.com <span class="o">(</span>Y/n<span class="o">)</span> <span class="c1"># y</span>
+What is your URL prefix? <span class="o">(</span>see above example<span class="p">;</span> no trailing slash<span class="o">)</span> <span class="c1"># http://username.github.io/repository</span>
+Do you want to generate a Fabfile/Makefile to automate generation and publishing? <span class="o">(</span>Y/n<span class="o">)</span> <span class="c1"># y</span>
 </pre></div>
 
 
 <p>Answer <code>n</code> to all the questions about uploading your website and you are ready to go.</p>
 <h1>3. Writing content</h1>
 <p>Fire up your favorite text editor and write your blog content in either Markdown or reStructuredText. Once you have done, save it in the content folder. For previewing it:</p>
-<div class="highlight"><pre>make devserver
-<span class="c"># go to http://localhost:8000 and check if everything looks good</span>
-^C <span class="c"># note that CTRL+C won&#39;t stop dev server</span>
-./develop_server.sh stop <span class="c"># manually stop the dev server</span>
+<div class="highlight"><pre><span></span>make devserver
+<span class="c1"># go to http://localhost:8000 and check if everything looks good</span>
+^C <span class="c1"># note that CTRL+C won&#39;t stop dev server</span>
+./develop_server.sh stop <span class="c1"># manually stop the dev server</span>
 </pre></div>
 
 
 <h1>4. Publishing and pushing</h1>
 <p>Ok this is the easy part.</p>
-<div class="highlight"><pre><span class="c"># pushing the source repo</span>
+<div class="highlight"><pre><span></span><span class="c1"># pushing the source repo</span>
 git push origin master
 
-<span class="c"># push the output folder to GitHub pages</span>
+<span class="c1"># push the output folder to GitHub pages</span>
 make github
 
-<span class="c"># celebrate!</span>
+<span class="c1"># celebrate!</span>
 </pre></div>
 
 
 <p>Congrats! Your blog is now up and running!</p>
 <h1>5. Setting up your custom domain</h1>
 <p>Create a CNAME file containing your bare domain:</p>
-<div class="highlight"><pre>mydomain.com
+<div class="highlight"><pre><span></span>mydomain.com
 </pre></div>
 
 
 <p>Add the following lines to your pelicanconf.py, in order to make Pelican copying it to your output folder on every publish.</p>
-<div class="highlight"><pre><span class="n">STATIC_PATHS</span> <span class="o">=</span> <span class="p">[</span>
-<span class="s">&#39;CNAME&#39;</span>
+<div class="highlight"><pre><span></span><span class="n">STATIC_PATHS</span> <span class="o">=</span> <span class="p">[</span>
+<span class="s1">&#39;CNAME&#39;</span>
 <span class="p">]</span>
 </pre></div>
 
@@ -136,7 +136,7 @@ make github
 <li><a href="http://stackoverflow.com/a/22374542/2926113">This answer</a> from Stack Overflow provides great step-by-step instructions for using GitHub project pages with a custom domain</li>
 </ol>
 <p>Here are the lines taking care of the magic in my case:</p>
-<div class="highlight"><pre>www 10800 IN CNAME railslide.github.io.
+<div class="highlight"><pre><span></span>www 10800 IN CNAME railslide.github.io.
 @ 10800 IN A 192.30.252.153
 @ 10800 IN A 192.30.252.154
 </pre></div>

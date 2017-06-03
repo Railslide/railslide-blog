@@ -67,14 +67,14 @@
 <h2>The Ubuntu mess</h2>
 <p>According to Python documentation I should be able to invoke pyvenv by simply calling <code>pyvenv [args]</code>. However, that is not the case for Ubuntu. Thus, my first attempt to set my <code>VIRTUALENVWRAPPER_VIRTUALENV</code> variable equal to <code>pyvenv</code> resulted in my vagrant machine complaining because it could not find it in my path. Setting it to <code>pyvenv-3.4</code> solved it (I was initially testing on Ubuntu 14.04, which ships with Python 3.4). Though having to manually change it whenever I decide to update my Python version is far from optimal.</p>
 <p>So I set <code>pyvenv-3.4</code> as <code>VIRTUALENVWRAPPER_VIRTUALENV</code>, created a new virtualenv and...</p>
-<div class="highlight"><pre>Error: Command <span class="s1">&#39;[&#39;</span>/home/vagrant/.virtualenvs/test/bin/python3.4<span class="s1">&#39;, &#39;</span>-Im<span class="s1">&#39;, &#39;</span>ensurepip<span class="s1">&#39;, &#39;</span>--upgrade<span class="s1">&#39;, &#39;</span>--default-pip<span class="s1">&#39;]&#39;</span> returned non-zero <span class="nb">exit </span>status 1
+<div class="highlight"><pre><span></span>Error: Command <span class="s1">&#39;[&#39;</span>/home/vagrant/.virtualenvs/test/bin/python3.4<span class="s1">&#39;, &#39;</span>-Im<span class="s1">&#39;, &#39;</span>ensurepip<span class="s1">&#39;, &#39;</span>--upgrade<span class="s1">&#39;, &#39;</span>--default-pip<span class="s1">&#39;]&#39;</span> returned non-zero <span class="nb">exit</span> status <span class="m">1</span>
 </pre></div>
 
 
 <p>Ok, not exactly what I was hoping for.</p>
 <p>After a bit of digging, it came out that it is due <a href="https://bugs.launchpad.net/ubuntu/+source/python3.4/+bug/1290847">to a bug with ensurepip</a> in the first release of Ubuntu 14.04. However, it is possible to bypass the problem by first creating the virtualenv without pip and then manually installing it once inside it.</p>
-<div class="highlight"><pre><span class="nv">$ </span>mkvirtualenv --without-pip my_venv
-<span class="o">(</span>my_venv<span class="o">)</span><span class="nv">$ </span>curl https://bootstrap.pypa.io/get-pip.py <span class="p">|</span> python
+<div class="highlight"><pre><span></span>$ mkvirtualenv --without-pip my_venv
+<span class="o">(</span>my_venv<span class="o">)</span>$ curl https://bootstrap.pypa.io/get-pip.py <span class="p">|</span> python
 </pre></div>
 
 
@@ -94,13 +94,13 @@
 <li><code>add2virtualenv</code></li>
 </ul>
 <p>don't work and they all raise</p>
-<div class="highlight"><pre><span class="ne">AttributeError</span><span class="p">:</span> <span class="s">&#39;module&#39;</span> <span class="nb">object</span> <span class="n">has</span> <span class="n">no</span> <span class="n">attribute</span> <span class="s">&#39;sysconfig&#39;</span>
+<div class="highlight"><pre><span></span><span class="ne">AttributeError</span><span class="p">:</span> <span class="s1">&#39;module&#39;</span> <span class="nb">object</span> <span class="n">has</span> <span class="n">no</span> <span class="n">attribute</span> <span class="s1">&#39;sysconfig&#39;</span>
 </pre></div>
 
 
 <p><code>cpvirtualenv</code> is instead a bit weird, since it does copy the virtualenv, but it displays the name of the original one in front of the prompt of all its copies. Even making copies of a copy doesn't change the result: it still shows the name of the first original. The <code>$VIRTUAL_ENV</code> variable and the interpreter point to the correct folder tho...</p>
 <p>Last but not least, is probably worthy mentioning that - by design - pyvenv doesn't offer the possibility to specify a Python interpreter for virtual environments, so</p>
-<div class="highlight"><pre><span class="nv">$ </span>mkvirtualenv -p /path/to/python/interpreter my_venv
+<div class="highlight"><pre><span></span>$ mkvirtualenv -p /path/to/python/interpreter my_venv
 </pre></div>
 
 

@@ -66,14 +66,14 @@
 <p>Michael Smalley wrote an <a href="http://blog.smalleycreative.com/tutorials/using-git-and-github-to-manage-your-dotfiles/">amazing tutorial</a> for managing dotfiles and creating a script for automagically installing them (go and check it out!), which provided me with a great starting point. However, his script handles only dotfiles housed in the home directory and that didn't really get together with my goal of adding Sublime Text settings to my dotfiles repo. So I fired up Nano and extended the script in order to make it do exactly what I needed.</p>
 <p>First of all, I needed to to move Sublime configuration files to my dotfiles folder. Thankfully <a href="http://zanshin.net/2013/01/21/sublime-text-2-dotfiles-simplified/">Mark Nichols' post</a> tipped me that I the only folder I needed to care about was the User one. So, after cleaning it up from some experiments leftovers, I moved to my dotfiles folder and placed a symlink in its previous location.</p>
 <p>Then I added a variable holding the path to the User directory:</p>
-<div class="highlight"><pre><span class="nv">sublimedir</span><span class="o">=</span>~/.config/sublime-text-3/Packages/User
+<div class="highlight"><pre><span></span><span class="nv">sublimedir</span><span class="o">=</span>~/.config/sublime-text-3/Packages/User
 </pre></div>
 
 
 <p>and at the end of the file the lines taking care of the magic:</p>
-<div class="highlight"><pre><span class="c"># move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks</span>
+<div class="highlight"><pre><span></span><span class="c1"># move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks</span>
 <span class="k">for</span> file in <span class="nv">$files</span><span class="p">;</span> <span class="k">do</span>
-    <span class="k">if</span> <span class="o">[</span> -a ~/.<span class="nv">$file</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>    <span class="c"># check if a dotfile already exists</span>
+    <span class="k">if</span> <span class="o">[</span> -a ~/.<span class="nv">$file</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>    <span class="c1"># check if a dotfile already exists</span>
         <span class="nb">echo</span> <span class="s2">&quot;Moving any existing dotfiles from ~ to </span><span class="nv">$olddir</span><span class="s2">&quot;</span>
         mv ~/.<span class="nv">$file</span> <span class="nv">$olddir</span>
     <span class="k">fi</span>
@@ -83,8 +83,8 @@
 
 <span class="nb">echo</span> <span class="s2">&quot;...done&quot;</span>
 
-<span class="c"># Create symlink for Sublime Text User directory</span>
-<span class="k">if</span> <span class="o">[</span> -d <span class="nv">$sublimedir</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> <span class="c"># check whether the directory already exists</span>
+<span class="c1"># Create symlink for Sublime Text User directory</span>
+<span class="k">if</span> <span class="o">[</span> -d <span class="nv">$sublimedir</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> <span class="c1"># check whether the directory already exists</span>
 
     <span class="k">if</span> <span class="o">[</span> -L <span class="nv">$sublimedir</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
         <span class="nb">echo</span> <span class="s2">&quot;Removing old symlink&quot;</span>

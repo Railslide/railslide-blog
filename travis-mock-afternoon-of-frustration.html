@@ -67,7 +67,7 @@
 <h2>There's always a first time (for a failure)</h2>
 <p>Ok, you know the old adage: <em>if it compiles the first time, there must be something wrong</em>. And in a similar fashion, this first failure didn't come at all as a surprise. Not a big deal. Also, the build for Python 3.4 succeeded, which is good.</p>
 <p>I checked out the error messages and - of course - it complains because it couldn't find the <code>unittest.mock</code> module in Python 2. Since I'd rather not add dependencies that are not strictly necessary for setting up the development environment, I was quite happy to read that Travis CI automatically installs mock in its testing environments. So, I wrapped my import statement in a try-except block as such:</p>
-<div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">unittest.mock</span> <span class="kn">import</span> <span class="n">patch</span><span class="p">,</span> <span class="n">mock_open</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">mock</span> <span class="kn">import</span> <span class="n">patch</span><span class="p">,</span> <span class="n">mock_open</span>
@@ -78,12 +78,12 @@
 <p>Ok so, commit my hack, push, and hold my breath for a handful of seconds. Does it work? Nope.</p>
 <h2>Builtins, __builtin__, and better mocking decisions</h2>
 <p>Since Subvenv relies on I/O operations for doing its job, I made sure to mock them away when writing my tests. However, since I use Python 3 as my default, I had initially mocked the <code>open</code> function like this:</p>
-<div class="highlight"><pre><span class="n">patch</span><span class="p">(</span><span class="s">&#39;builtins.open&#39;</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="n">patch</span><span class="p">(</span><span class="s1">&#39;builtins.open&#39;</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 
 
 <p>That of course didn't work in Python 2, since there the module is called <code>__builtin__</code>. So, after a hacky and unsuccessful attempt, I ended up in rewriting my mock in a more specific and robust way. Instead of patching the function within the Builtins module, I patched the function <em>call</em> made inside my module:</p>
-<div class="highlight"><pre><span class="n">patch</span><span class="p">(</span><span class="s">&#39;subvenv.core.open&#39;</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="n">patch</span><span class="p">(</span><span class="s1">&#39;subvenv.core.open&#39;</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 
 
@@ -95,10 +95,10 @@
 <h2>Which mock?</h2>
 <p>Ok, so back to my mocks! Now they get imported and patch what they need to patch, but still don't seem to work as expected. Or rather, it looks like there's something off with the <code>mock_open</code> helper, since for some reason it returns a <code>MagicMock</code> instance instead of the specified <code>read_data</code>.</p>
 <p>After a bit of head scratching and googling, I found a <a href="https://github.com/travis-ci/travis-ci/issues/5849">feature request</a> to Travis that shaded light over my own problem. Thanks to it I got to discover that Travis runs an old version of Mock (I haven't figured out which one exactly, but for sure older than 1.3.0) which does not implement <code>mock_open</code> as later versions do. Thankfully the same issue suggested also a workaround for it, i.e. to add an explicit install command for the desired version to the configuration file:</p>
-<div class="highlight"><pre><span class="l-Scalar-Plain">install</span><span class="p-Indicator">:</span>
-  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">pip install .</span>
-  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">pip install mock==2.0</span>
-  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">pip install -r requirements.txt</span>
+<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">install</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">pip install .</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">pip install mock==2.0</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">pip install -r requirements.txt</span>
 </pre></div>
 
 
@@ -106,7 +106,7 @@
 <p>Ok, after the latest changes, I managed to add Python 2.7 to the list of successful builds. However, Python 3.3 shows up still in red and the error message is basically the same one I got when I add the Mock version issue in Python 2.7. That's weird!</p>
 <p>Just to be sure, I double checked: yes, Mock is already part of the Unittest module in Python 3.3 and yes, its implementation of the <code>mock_open</code> does take <code>read_data</code> as an argument. However, as the documentation specifies, the <code>readline</code> and <code>readlines</code> method have been added in version 3.4, hence my error.</p>
 <p>Ok, let's flip the imports then, so that the external library gets tried first:</p>
-<div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">mock</span> <span class="kn">import</span> <span class="n">patch</span><span class="p">,</span> <span class="n">mock_open</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">unittest.mock</span> <span class="kn">import</span> <span class="n">patch</span><span class="p">,</span> <span class="n">mock_open</span>
