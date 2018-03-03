@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="http://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>Tips and tricks for developing locally with Docker // Railslide // Code, experiments, and thoughts</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/puremorning.css">
+    <link rel="stylesheet" href="http://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="links"><a href="about.html">About</a></p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Tips and tricks for developing locally with Docker</h1>
+                        <p class="post-meta">
+                        category: <a href="http://railslide.io/category/dev.html">/dev</a>, date: 03-03-2018
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="http://railslide.io/tag/docker.html">docker</a>
+                                <a class="post-category" href="http://railslide.io/tag/dev-env.html">dev env</a>
+                </header>
+            </section>
+            <p>One of the perks of Docker is that it gives</p>
+<h2>Use Docker Compose</h2>
+<h2>Leverage cache</h2>
+<p>Docker caches layer while building and chances are that you want to leverage that cache as much as possible (we all love fast builds!). But, in order to do that, you need to keep in mind how caching works in Docker.</p>
+<h2>Use Docker Compose for overriding Dockerfiles</h2>
+<p>Another good reason for using Docker Compose is that it gets priority over Dockerfiles, giving you the power to override their specification while developing.</p>
+<p>For example, you might want uWSGI to watch and automatically reload when detecting changes to the source code in dev, but not in production. In that case, you'd have your production command in your Dockerfile:</p>
+<div class="highlight"><pre><span></span>CMD [&quot;uwsgi&quot;, \
+     &quot;-s&quot;, &quot;0.0.0.0:5000&quot;, \
+     &quot;--master&quot;, \
+     &quot;--manage-script-name&quot;, \
+     &quot;--mount&quot;, &quot;/=app:app&quot;]
+</pre></div>
+
+
+<p>and the overriding dev command in your docker-compose.yml</p>
+<div class="highlight"><pre><span></span>command: &quot;uwsgi \
+          --s 0.0.0.0:5000 \
+          --master \
+          --manage-script-name \
+          --mount /=app:app \
+          --python-autoreload 1&quot;
+</pre></div>
+
+
+<h2>Use a volume for the source code</h2>
+<p>If you happen to be working with dynamic languages, you might get frustrated by having to wait for the build to complete in order to see your code changes applied. Thankfully there's workaround for it: use Docker Compose to override the Dockerfile and add your source folder as a volume. By doing so, changes to the code will immediately propagate to the container.</p>
+<div class="highlight"><pre><span></span><span class="n">my_app</span><span class="o">:</span>
+  <span class="n">volumes</span><span class="o">:</span>
+    <span class="o">-</span> <span class="o">./</span><span class="n">src</span><span class="o">:/</span><span class="n">src</span><span class="o">/</span>
+</pre></div>
+
+
+<h2>Use a .dockerignore file</h2>
+<p>Since fast builds and lightweight are good things, you should definitely be picky when it comes to choose which files and directory should go in your container and which ones should not.</p>
+<p>In order to avoid bloating your own images, you should create a .dockerignore file. (The syntax for it is similar to the .gitignore one, but not quite the same, so make sure to check the <a href="https://docs.docker.com/engine/reference/builder/#dockerignore-file">docs</a>).</p>
+<p>Last but not least, remember to add Dockerfile, docker-compose.yml and even the .dockerignore itself to it.</p>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+    <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+        try {
+            var pageTracker = _gat._getTracker("UA-69748538-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+    </script>
+
+</body>
+</html>
