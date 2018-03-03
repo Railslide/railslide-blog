@@ -1,7 +1,7 @@
 Title: Hello Vagrant! (aka development environment made easy)
 Date: 2014-09-14
 Category: /dev
-Tags: vagrant, virtual machine, utilities, development environment
+Tags: vagrant, virtual machine, utilities, dev env
 Slug: hello-vagrant
 Author: Giulia Vergottini
 Summary: If you don't use Vagrant yet, you should. Here's why.
