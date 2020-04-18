@@ -69,9 +69,9 @@
 <h2>Set GPG to prefer SHA2</h2>
 <p>GPG defaults to SHA1 as preferred hash, so let's set it to prefer SHA2 instead.
 Check if the following lines are present in <code>~/.gnupg/gpg.conf</code>:</p>
-<div class="highlight"><pre><span></span>personal-digest-preferences SHA512 SHA384 SHA256 SHA224
-default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 BZIP2 ZLIB ZIP Uncompressed
-cert-digest-algo SHA512
+<div class="highlight"><pre><span></span><span class="err">personal-digest-preferences SHA512 SHA384 SHA256 SHA224</span>
+<span class="err">default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 BZIP2 ZLIB ZIP Uncompressed</span>
+<span class="err">cert-digest-algo SHA512</span>
 </pre></div>
 
 

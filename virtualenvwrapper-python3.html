@@ -83,8 +83,8 @@
 
 
 <p>Add the following lines to ~/.bashrc:</p>
-<div class="highlight"><pre><span></span>VIRTUALENVWRAPPER_PYTHON=&#39;/usr/bin/python3&#39; # This needs to be placed before the virtualenvwrapper command
-source /usr/local/bin/virtualenvwrapper.sh
+<div class="highlight"><pre><span></span><span class="err">VIRTUALENVWRAPPER_PYTHON=&#39;/usr/bin/python3&#39; # This needs to be placed before the virtualenvwrapper command</span>
+<span class="err">source /usr/local/bin/virtualenvwrapper.sh</span>
 </pre></div>
 
 
@@ -100,9 +100,9 @@ deactivate virtualenv_name <span class="c1"># Deactivate virtualenv</span>
 <p><em><strong>EDIT</strong>: in a previous version of this article, I suggested to use the postactivate script to automatically navigate to the project folder when activating the virtualenv. However, since I discovered that such a task is automatically performed by the projects plugin, I updated the post accordingly.</em></p>
 <p>While the possibility to have isolated virtual environments just a <code>mkvirtualenv</code> away had immediately convinced me of the usefulness of Virtualenvwrapper, projects made me falling in love for it.</p>
 <p>My typical workflow is to create a virtualenv and then create a project folder with the same name. So why not setting up Virtualenvwrapper to automatically do it for me every time I create a new virtualenv? Specify PROJECT_HOME in ~/.bashrc will do the trick:</p>
-<div class="highlight"><pre><span></span>VIRTUALENVWRAPPER_PYTHON=&#39;/usr/bin/python3&#39;
-PROJECT_HOME=&#39;/path/to/where/you/want/your/project/folder/to/be/created&#39; # This needs to be placed before the virtualenvwrapper command as well
-source /usr/local/bin/virtualenvwrapper.sh
+<div class="highlight"><pre><span></span><span class="err">VIRTUALENVWRAPPER_PYTHON=&#39;/usr/bin/python3&#39;</span>
+<span class="err">PROJECT_HOME=&#39;/path/to/where/you/want/your/project/folder/to/be/created&#39; # This needs to be placed before the virtualenvwrapper command as well</span>
+<span class="err">source /usr/local/bin/virtualenvwrapper.sh</span>
 </pre></div>
 
 

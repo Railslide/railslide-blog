@@ -5,9 +5,9 @@
 &lt;p&gt;GitHub offers the possibility to host your site in the cloud through either &lt;a href="https://help.github.com/articles/user-organization-and-project-pages"&gt;personal or project pages&lt;/a&gt;. Although it is possible to use both for hosting a Pelican powered blog, project pages make your life so much easier when it comes both to publish your blog content and to put blog source under revision control.&lt;/p&gt;
 &lt;p&gt;For creating project pages, all we need to do is to create a repository as usual and put the content we wish to publish (i.e. the HTML static files) into a branch named &lt;code&gt;gh-pages&lt;/code&gt;. Once done that, your page will show up at username.github.io/repository.&lt;/p&gt;
 &lt;p&gt;Although it could sounds overly complicated - especially the &lt;code&gt;gh-pages&lt;/code&gt; branch part - you don't have to worry since an awesome program called &lt;a href="https://github.com/davisp/ghp-import"&gt;ghp-import&lt;/a&gt; will take care of it for us. For now, simply create a new repository as you would do for any other project and set up a &lt;code&gt;.gitignore&lt;/code&gt; file with the following content:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;*.pid
-*.pyc
-output/
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;*.pid&lt;/span&gt;
+&lt;span class="err"&gt;*.pyc&lt;/span&gt;
+&lt;span class="err"&gt;output/&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -53,7 +53,7 @@ make github
 &lt;p&gt;Congrats! Your blog is now up and running!&lt;/p&gt;
 &lt;h1&gt;5. Setting up your custom domain&lt;/h1&gt;
 &lt;p&gt;Create a CNAME file containing your bare domain:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mydomain.com
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;mydomain.com&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -74,13 +74,13 @@ make github
 &lt;li&gt;&lt;a href="http://stackoverflow.com/a/22374542/2926113"&gt;This answer&lt;/a&gt; from Stack Overflow provides great step-by-step instructions for using GitHub project pages with a custom domain&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Here are the lines taking care of the magic in my case:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;www 10800 IN CNAME railslide.github.io.
-@ 10800 IN A 192.30.252.153
-@ 10800 IN A 192.30.252.154
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;www 10800 IN CNAME railslide.github.io.&lt;/span&gt;
+&lt;span class="err"&gt;@ 10800 IN A 192.30.252.153&lt;/span&gt;
+&lt;span class="err"&gt;@ 10800 IN A 192.30.252.154&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;After that, wait some hours for the DNS to propagate and you should be done.&lt;/p&gt;</content><category term="pelican"></category><category term="publishing"></category><category term="github pages"></category></entry><entry><title>Up and running!</title><link href="http://railslide.io/up-and-running.html" rel="alternate"></link><published>2014-06-03T00:00:00+02:00</published><updated>2014-06-03T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2014-06-03:/up-and-running.html</id><summary type="html">&lt;p&gt;Celebrating the first post of the blog and what to do next.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Ok, my Pelican and GitHub pages powered blog seems to be up and running! Yay!&lt;/p&gt;
+&lt;p&gt;After that, wait some hours for the DNS to propagate and you should be done.&lt;/p&gt;</content><category term="pelican"></category><category term="pelican"></category><category term="publishing"></category><category term="github pages"></category></entry><entry><title>Up and running!</title><link href="http://railslide.io/up-and-running.html" rel="alternate"></link><published>2014-06-03T00:00:00+02:00</published><updated>2014-06-03T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2014-06-03:/up-and-running.html</id><summary type="html">&lt;p&gt;Celebrating the first post of the blog and what to do next.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Ok, my Pelican and GitHub pages powered blog seems to be up and running! Yay!&lt;/p&gt;
 &lt;p&gt;Since I plan to write a dedicated post about the setup, I'll use this one to throw some ideas about what to do next.&lt;/p&gt;
 &lt;h2&gt;TO DO (not necessarily in this order)&lt;/h2&gt;
 &lt;ul&gt;
@@ -89,4 +89,4 @@ make github
 &lt;li&gt;Fix an about page&lt;/li&gt;
 &lt;li&gt;Setting up a comment system&lt;/li&gt;
 &lt;li&gt;Write stuff&lt;/li&gt;
-&lt;/ul&gt;</content><category term="pelican"></category><category term="publishing"></category><category term="github pages"></category></entry></feed>
+&lt;/ul&gt;</content><category term="pelican"></category><category term="pelican"></category><category term="publishing"></category><category term="github pages"></category></entry></feed>

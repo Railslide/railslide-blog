@@ -67,9 +67,9 @@
 <p>GitHub offers the possibility to host your site in the cloud through either <a href="https://help.github.com/articles/user-organization-and-project-pages">personal or project pages</a>. Although it is possible to use both for hosting a Pelican powered blog, project pages make your life so much easier when it comes both to publish your blog content and to put blog source under revision control.</p>
 <p>For creating project pages, all we need to do is to create a repository as usual and put the content we wish to publish (i.e. the HTML static files) into a branch named <code>gh-pages</code>. Once done that, your page will show up at username.github.io/repository.</p>
 <p>Although it could sounds overly complicated - especially the <code>gh-pages</code> branch part - you don't have to worry since an awesome program called <a href="https://github.com/davisp/ghp-import">ghp-import</a> will take care of it for us. For now, simply create a new repository as you would do for any other project and set up a <code>.gitignore</code> file with the following content:</p>
-<div class="highlight"><pre><span></span>*.pid
-*.pyc
-output/
+<div class="highlight"><pre><span></span><span class="err">*.pid</span>
+<span class="err">*.pyc</span>
+<span class="err">output/</span>
 </pre></div>
 
 
@@ -115,7 +115,7 @@ make github
 <p>Congrats! Your blog is now up and running!</p>
 <h1>5. Setting up your custom domain</h1>
 <p>Create a CNAME file containing your bare domain:</p>
-<div class="highlight"><pre><span></span>mydomain.com
+<div class="highlight"><pre><span></span><span class="err">mydomain.com</span>
 </pre></div>
 
 
@@ -136,9 +136,9 @@ make github
 <li><a href="http://stackoverflow.com/a/22374542/2926113">This answer</a> from Stack Overflow provides great step-by-step instructions for using GitHub project pages with a custom domain</li>
 </ol>
 <p>Here are the lines taking care of the magic in my case:</p>
-<div class="highlight"><pre><span></span>www 10800 IN CNAME railslide.github.io.
-@ 10800 IN A 192.30.252.153
-@ 10800 IN A 192.30.252.154
+<div class="highlight"><pre><span></span><span class="err">www 10800 IN CNAME railslide.github.io.</span>
+<span class="err">@ 10800 IN A 192.30.252.153</span>
+<span class="err">@ 10800 IN A 192.30.252.154</span>
 </pre></div>
 
 

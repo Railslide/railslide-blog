@@ -67,21 +67,21 @@
 <h2>Use Docker Compose for overriding Dockerfiles</h2>
 <p>Another good reason for using Docker Compose is that it gets priority over Dockerfiles, giving you the power to override their specification while developing.</p>
 <p>For example, you might want uWSGI to watch and automatically reload when detecting changes to the source code in dev, but not in production. In that case, you'd have your production command in your Dockerfile:</p>
-<div class="highlight"><pre><span></span>CMD [&quot;uwsgi&quot;, \
-     &quot;-s&quot;, &quot;0.0.0.0:5000&quot;, \
-     &quot;--master&quot;, \
-     &quot;--manage-script-name&quot;, \
-     &quot;--mount&quot;, &quot;/=app:app&quot;]
+<div class="highlight"><pre><span></span><span class="err">CMD [&quot;uwsgi&quot;, \</span>
+<span class="err">     &quot;-s&quot;, &quot;0.0.0.0:5000&quot;, \</span>
+<span class="err">     &quot;--master&quot;, \</span>
+<span class="err">     &quot;--manage-script-name&quot;, \</span>
+<span class="err">     &quot;--mount&quot;, &quot;/=app:app&quot;]</span>
 </pre></div>
 
 
 <p>and the overriding dev command in your docker-compose.yml</p>
-<div class="highlight"><pre><span></span>command: &quot;uwsgi \
-          --s 0.0.0.0:5000 \
-          --master \
-          --manage-script-name \
-          --mount /=app:app \
-          --python-autoreload 1&quot;
+<div class="highlight"><pre><span></span><span class="c">command: &quot;uwsgi \</span>
+<span class="c">          --s 0.0.0.0:5000 \</span>
+<span class="c">          --master \</span>
+<span class="c">          --manage-script-name \</span>
+<span class="c">          --mount /=app:app \</span>
+<span class="c">          --python-autoreload 1&quot;</span>
 </pre></div>
 
 
