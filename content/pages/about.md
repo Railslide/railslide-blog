@@ -5,7 +5,7 @@ Slug: about
 
 Hi, I'm Giulia!
 
-A software developer with a MA in History and a passion for Python.
+A software developer with a MA in History and a soft spot for security.
 
 <hr class="invisible-spacer">
 
