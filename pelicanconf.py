@@ -41,4 +41,7 @@ THEME = 'themes/puremorning'
 PAGE_URL = PAGE_SAVE_AS = '{slug}.html'
 
 # Sidebar menu
-MENUITEMS = [('About', 'about.html')]
+MENUITEMS = [
+    ('About', '/about.html'),
+    ('Categories', '/categories.html'),
+]
