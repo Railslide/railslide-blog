@@ -1,5 +1,5 @@
 Title: My super title
-Date: 2017-06-01
+Date: 2020-04-18
 Category: /dev
 Tags: pelican, publishing
 Slug: draft-template
