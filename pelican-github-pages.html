@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Railslide, Code, experiments, and thoughts">
 
-        <link rel="alternate"  href="http://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+        <link rel="alternate"  href="https://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
 
         <title>How to set up Pelican on GitHub pages // Railslide // Code, experiments, and thoughts</title>
 
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="http://railslide.io/theme/css/puremorning.css">
-    <link rel="stylesheet" href="http://railslide.io/theme/css/pygments.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/puremorning.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/pygments.css">
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
@@ -34,6 +34,7 @@
                             <h1 class="brand-main"><a href="/">Railslide</a></h1>
                             <p class="tagline">Code, experiments, and thoughts</p>
                                 <p class="links"><a href="about.html">About</a></p>
+                                <p class="links"><a href="categories.html">Categories</a></p>
                                 <p class="social">
                                     <a href="https://github.com/Railslide/">
                                         <i class="fa fa-github fa-3x"></i>
@@ -53,12 +54,12 @@
                 <header class="post-header">
                     <h1>How to set up Pelican on GitHub pages</h1>
                         <p class="post-meta">
-                        category: <a href="http://railslide.io/category/pelican.html">pelican</a>, date: 09-06-2014
+                        category: <a href="https://railslide.io/category/pelican.html">pelican</a>, date: 09-06-2014
                         </p>
                         <p class="post-meta">
-                            tags =                                 <a class="post-category" href="http://railslide.io/tag/pelican.html">pelican</a>
-                                <a class="post-category" href="http://railslide.io/tag/publishing.html">publishing</a>
-                                <a class="post-category" href="http://railslide.io/tag/github-pages.html">github pages</a>
+                            tags =                                 <a class="post-category" href="https://railslide.io/tag/pelican.html">pelican</a>
+                                <a class="post-category" href="https://railslide.io/tag/publishing.html">publishing</a>
+                                <a class="post-category" href="https://railslide.io/tag/github-pages.html">github pages</a>
                 </header>
             </section>
             <p>Although the web is plenty of blog posts about how to set up a Pelican powered blog on GitHub pages, I still had to glean information from several sources and mix it with a bit of experimentation before being able to have my blog up and running. So hopefully this post will make someone's life easier, other than being a future reference for myself.</p>
@@ -75,7 +76,7 @@
 
 <h1>2. Installing the needed packages</h1>
 <p>Before installing Pelican, I would recommend to create a new virtualenv. It is not mandatory, but it is definitely a good practice and would prevent the risk of conflicts between installed packages.</p>
-<p>NOTE: Pelican documentation recommends to use Pelican with Python 2.7. I am keeping up with <a href="http://railslide.io/virtualenvwrapper-python3.html">my pledge of using Python 3 whenever possible</a>, as well as giving a try with Python 3.4 (Ubuntu 14.04 default version). Everything works fine so far and anyways these instructions are version agnostic - just be aware of it and choose your Python version accordingly.</p>
+<p>NOTE: Pelican documentation recommends to use Pelican with Python 2.7. I am keeping up with <a href="https://railslide.io/virtualenvwrapper-python3.html">my pledge of using Python 3 whenever possible</a>, as well as giving a try with Python 3.4 (Ubuntu 14.04 default version). Everything works fine so far and anyways these instructions are version agnostic - just be aware of it and choose your Python version accordingly.</p>
 <p>Install pelican and ghp-import</p>
 <div class="highlight"><pre><span></span>pip install pelican
 pip install -e git+git://github.com/davisp/ghp-import.git#egg<span class="o">=</span>ghp-import
