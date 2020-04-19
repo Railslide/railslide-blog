@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="https://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>TG:HACK 2020 Writeup - A game of keys // Railslide // Code, experiments, and thoughts</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/puremorning.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="links"><a href="/about.html">About</a></p>
+                                <p class="links"><a href="/categories.html">Categories</a></p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>TG:HACK 2020 Writeup - A game of keys</h1>
+                        <p class="post-meta">
+                        category: <a href="https://railslide.io/category/ctf.html">CTF</a>, date: 18-04-2020
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="https://railslide.io/tag/ctf.html">ctf</a>
+                                <a class="post-category" href="https://railslide.io/tag/reverse.html">reverse</a>
+                </header>
+            </section>
+            <blockquote>
+<p>Download this file and get the flag. You will also need this wordlist.</p>
+</blockquote>
+<p>The provided files are a python compiled file (keygame.pyc) and a txt file with a list of gibberish words (wordlist.txt). The wordlist didn't seem very interesting, so I proceeded to decompile the python file</p>
+<div class="highlight"><pre><span></span>$ uncompyle6 keygame.pyc &gt; keygame.py
+</pre></div>
+
+
+<p>And had a look at the source code</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">cycle</span>
+
+<span class="k">class</span> <span class="nc">myGame</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xdim</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ydim</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">xdim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">ydim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">):</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">):</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">make_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;wordlist.txt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="p">(</span><span class="n">f</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">words</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">)]</span>
+
+        <span class="n">keyArray</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">keyArray</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="n">keyArray</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]][</span><span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keyArray</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">key</span>
+
+    <span class="k">def</span> <span class="nf">checkdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="s1">&#39;NSYDUhoVWQ8SQVcOAAYRFQkORA4FQVMDQQ5fQhUEWUYMDl4MHA==&#39;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="nb">chr</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">^</span> <span class="nb">ord</span><span class="p">(</span><span class="n">k</span><span class="p">))</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cycle</span><span class="p">(</span><span class="n">key</span><span class="p">))))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> ^ </span><span class="si">%s</span><span class="s1"> = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">mgame</span> <span class="o">=</span> <span class="n">myGame</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;input a number: &#39;</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;input a number: &#39;</span><span class="p">)</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;input a number: &#39;</span><span class="p">)</span>
+    <span class="n">y1</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;input a number: &#39;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">mgame</span><span class="o">.</span><span class="n">make_keys</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">x1</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y1</span><span class="p">))</span>
+    <span class="n">mgame</span><span class="o">.</span><span class="n">checkdata</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+
+<p>My take from it was that the programs takes four inputs and uses them for creating a key based on a matrix and on the wordlist. If the resulting key is the correct one, the <code>checkdata</code> function is going to print out the flag.</p>
+<p>Running the program confirmed my theory</p>
+<div class="highlight"><pre><span></span>$ python keygame.py
+input a number: <span class="m">1</span>
+input a number: <span class="m">1</span>
+input a number: <span class="m">1</span>
+input a number: <span class="m">1</span>
+aa0caa0c
+<span class="m">5</span><span class="p">&amp;</span>RYAW   DASA_BYF
+                           ^
+                             ^ <span class="nv">aa0caa0c</span> <span class="o">=</span> TG31<span class="o">{</span>tils gmag!vhotmd c<span class="sb">`</span> oo!tei%mono<span class="o">}</span>
+</pre></div>
+
+
+<p>Now, how to figure out what are the correct inputs? The sources shows that the game is created with a 25x25 matrix (<code>mgame = myGame(25, 25)</code>) and since the inputs are used as indexes for the matrix, any input greater than 24 should be invalid.</p>
+<p>A quick run of the program confirmed this theory as well</p>
+<div class="highlight"><pre><span></span>$ python keygame.py
+input a number: <span class="m">25</span>
+input a number: <span class="m">25</span>
+input a number: <span class="m">25</span>
+input a number: <span class="m">25</span>
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">&quot;keygame.py&quot;</span>, line <span class="m">56</span>, in &lt;module&gt;
+    <span class="nv">data</span> <span class="o">=</span> mgame.make_keys<span class="o">(</span>int<span class="o">(</span>x<span class="o">)</span>, int<span class="o">(</span>y<span class="o">)</span>, int<span class="o">(</span>x1<span class="o">)</span>, int<span class="o">(</span>y1<span class="o">))</span>
+  File <span class="s2">&quot;keygame.py&quot;</span>, line <span class="m">34</span>, in make_keys
+    keyArray.append<span class="o">(</span>self.matrix<span class="o">[</span>args<span class="o">[</span><span class="m">0</span><span class="o">]][</span>args<span class="o">[</span><span class="m">1</span><span class="o">]])</span>
+IndexError: list index out of range
+</pre></div>
+
+
+<p>So, I needed a way to test all the possible combinations of four inputs ranging from 0 to 24 and it turned out that python has a built-in way for doing just that. Enter <code>itertools.products</code></p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">from</span> <span class="nn">keygame</span> <span class="kn">import</span> <span class="n">myGame</span>
+
+<span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">)]</span>
+<span class="n">possibilities</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)]</span>
+
+<span class="n">mgame</span> <span class="o">=</span> <span class="n">myGame</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">possibilities</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">mgame</span><span class="o">.</span><span class="n">make_keys</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">mgame</span><span class="o">.</span><span class="n">checkdata</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;TG20{&#39;</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+</pre></div>
+
+
+<p>I commented out the <code>print</code> statements from keygame.py to reduce the noise, and then waited for my script to spit out the flag</p>
+<div class="highlight"><pre><span></span><span class="s1">&#39;TG20{this flag should be on teh moon}&#39;</span>
+</pre></div>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>

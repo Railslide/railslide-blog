@@ -269,6 +269,14 @@ pre {
     margin: 2em 0;
 }
 
+blockquote {
+    /* using a lighter shade than the sidebar, otherwise it looks blackish */
+    border-left: 5px solid #25807a;
+    font-style: italic;
+    padding: 0 1em;
+    margin: auto;
+}
+
 /* LAYOUT CSS */
 #layout {
     padding-left: 25%; /* "left col (nav + list)" width */
