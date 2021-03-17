@@ -68,30 +68,30 @@
 <h2>Use Docker Compose for overriding Dockerfiles</h2>
 <p>Another good reason for using Docker Compose is that it gets priority over Dockerfiles, giving you the power to override their specification while developing.</p>
 <p>For example, you might want uWSGI to watch and automatically reload when detecting changes to the source code in dev, but not in production. In that case, you'd have your production command in your Dockerfile:</p>
-<div class="highlight"><pre><span></span><span class="err">CMD [&quot;uwsgi&quot;, \</span>
+<div class="highlight"><pre><span></span><code><span class="err">CMD [&quot;uwsgi&quot;, \</span>
 <span class="err">     &quot;-s&quot;, &quot;0.0.0.0:5000&quot;, \</span>
 <span class="err">     &quot;--master&quot;, \</span>
 <span class="err">     &quot;--manage-script-name&quot;, \</span>
 <span class="err">     &quot;--mount&quot;, &quot;/=app:app&quot;]</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>and the overriding dev command in your docker-compose.yml</p>
-<div class="highlight"><pre><span></span><span class="c">command: &quot;uwsgi \</span>
+<div class="highlight"><pre><span></span><code><span class="c">command: &quot;uwsgi \</span>
 <span class="c">          --s 0.0.0.0:5000 \</span>
 <span class="c">          --master \</span>
 <span class="c">          --manage-script-name \</span>
 <span class="c">          --mount /=app:app \</span>
 <span class="c">          --python-autoreload 1&quot;</span>
-</pre></div>
+</code></pre></div>
 
 
 <h2>Use a volume for the source code</h2>
 <p>If you happen to be working with dynamic languages, you might get frustrated by having to wait for the build to complete in order to see your code changes applied. Thankfully there's workaround for it: use Docker Compose to override the Dockerfile and add your source folder as a volume. By doing so, changes to the code will immediately propagate to the container.</p>
-<div class="highlight"><pre><span></span><span class="n">my_app</span><span class="o">:</span>
+<div class="highlight"><pre><span></span><code><span class="n">my_app</span><span class="o">:</span>
   <span class="n">volumes</span><span class="o">:</span>
     <span class="o">-</span> <span class="o">./</span><span class="n">src</span><span class="o">:/</span><span class="n">src</span><span class="o">/</span>
-</pre></div>
+</code></pre></div>
 
 
 <h2>Use a .dockerignore file</h2>

