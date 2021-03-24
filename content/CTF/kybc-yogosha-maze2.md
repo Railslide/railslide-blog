@@ -7,7 +7,7 @@ Author: Giulia Vergottini
 Summary: Writeup for Maze 2 challenge at KYBC CTF
 
 
-_In order to start this challenge it was necessary to complete the [Maze 1]({filename}/CTF/kybc-yogosha-maze1.md) first_
+_In order to start this challenge it was necessary to complete [Maze 1]({filename}/CTF/kybc-yogosha-maze1.md) first_
 
 After catching the first flag, let's check what's in `home/ctf_user2`. There is a flag file, but this time concatenating it doesn't work since the current user (`ctf_user1`) doesn't have read permissions to it. The only other interesting thing is a file called `sysadmin.c`. Permissions are in my favor this time, so let's have a look at the content:
 

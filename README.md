@@ -21,4 +21,4 @@ Use `pipenv run ./develop_server.sh stop` to stop the development server.
 Deployment
 ----------
 
-Push your updated master branch and then run `pipenv run make github`
+Push the updated master branch and then run `pipenv run make github`
