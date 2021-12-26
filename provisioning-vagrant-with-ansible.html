@@ -73,7 +73,6 @@
   <span class="nt">apt</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pkg=git state=latest</span>
 </code></pre></div>
 
-
 <p>Pretty easy to figure out what it does! On top of that, Ansible outputs the name of your tasks when running them, making it trivial for you to keep track of what's going on behind the scenes.</p>
 <p>Then there are modules, like <code>apt</code> in the example above, which are basically wrappers for the most common operations. There are lots of them, so there's a very high chance that you'll find a module for the command you need to run. And in case you don't, you can always use the shell module to run your command as you would type it in the terminal.</p>
 <p>Besides making your life easier when it comes to write provision scripts, Ansible also makes the process of running them way faster. In fact, <em>idempotency</em> is one of the key concept of Ansible modules, which basically means that they won't execute if their target state has already been reached. So, if you resume a partial provisioning, Ansible will skip all the previously performed tasks.</p>

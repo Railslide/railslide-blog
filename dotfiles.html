@@ -70,10 +70,9 @@
 <div class="highlight"><pre><span></span><code><span class="nv">sublimedir</span><span class="o">=</span>~/.config/sublime-text-3/Packages/User
 </code></pre></div>
 
-
 <p>and at the end of the file the lines taking care of the magic:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks</span>
-<span class="k">for</span> file in <span class="nv">$files</span><span class="p">;</span> <span class="k">do</span>
+<span class="k">for</span> file <span class="k">in</span> <span class="nv">$files</span><span class="p">;</span> <span class="k">do</span>
     <span class="k">if</span> <span class="o">[</span> -a ~/.<span class="nv">$file</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>    <span class="c1"># check if a dotfile already exists</span>
         <span class="nb">echo</span> <span class="s2">&quot;Moving any existing dotfiles from ~ to </span><span class="nv">$olddir</span><span class="s2">&quot;</span>
         mv ~/.<span class="nv">$file</span> <span class="nv">$olddir</span>
@@ -101,7 +100,6 @@
 ln -s <span class="nv">$dir</span>/sublime/User <span class="nv">$sublimedir</span>
 <span class="nb">echo</span> <span class="s2">&quot;...done&quot;</span>
 </code></pre></div>
-
 
 <p>The full script can be found on <a href="https://github.com/Railslide/dotfiles/blob/master/installdotfiles.sh">github</a>.</p>
 <p>Finally, since Package Control updates regularly some of the files in the User folder, I added them to a <code>.gitignore</code> file in order to avoid to much noise in my version control. A list of those files can be found in the <a href="https://sublime.wbond.net/docs/syncing">docs</a> of Package Control.</p>

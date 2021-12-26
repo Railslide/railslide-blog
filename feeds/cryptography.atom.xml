@@ -4,13 +4,11 @@
 gpg: key &lt;span class="s2"&gt;&amp;quot;mycoworker@myjob.com&amp;quot;&lt;/span&gt; not found: public key not found
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;How's that possible? I am positive that I've imported my coworker's key - we have even exchanged encrypted email with each other!&lt;/p&gt;
 &lt;p&gt;Well, the fact is that I imported the key, yes, but I did it in my local keyring which is the one located at &lt;code&gt;~/.gnupg&lt;/code&gt; and thus not the one my master key refers to. Pretty much as when using GPG on multiple computers: you have to re-import all the public keys from scratch.&lt;/p&gt;
 &lt;p&gt;Ok, so what are the options? Export the key I want to sign, import it into the master keyring, sign it, export it from the master keyiring, and finally import it into the local keyring? Sure, you could do that, but it's quite cumbersome. Fortunately, gpg has a better solution for that: the &lt;code&gt;--keyring&lt;/code&gt; option!&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --homedir&lt;span class="o"&gt;=&lt;/span&gt;/path/to/my/master/gnupg/folder --keyring ~/.gnupg/pubring.gpg --sign-key mycoworker@myjob.com
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;And voilà! Now you can proceed signing the key.&lt;/p&gt;</content><category term="cryptography"></category><category term="GPG"></category><category term="cryptography"></category><category term="howto"></category></entry><entry><title>How to create a GPG key with subkeys</title><link href="https://railslide.io/create-gpg-key-with-subkeys.html" rel="alternate"></link><published>2017-04-19T00:00:00+02:00</published><updated>2017-04-19T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2017-04-19:/create-gpg-key-with-subkeys.html</id><summary type="html">&lt;p&gt;A step by step guide for creating a GPG key with subkeys.&lt;/p&gt;</summary><content type="html">&lt;p&gt;I wanted to create a GPG key - so far so good. The problem is that I also wanted to use GPG on multiple devices, ideally even on my phone. I could have - &lt;em&gt;in theory&lt;/em&gt; - copied the key over to all the needed machines, but that would have been a terrible ide. What if I lose my phone/laptop? My key would be compromised and I'd be left with no other choice than revoking it and losing all the previous signatures.&lt;/p&gt;
 &lt;p&gt;That's when subkeys come in.&lt;/p&gt;
@@ -20,11 +18,10 @@ gpg: key &lt;span class="s2"&gt;&amp;quot;mycoworker@myjob.com&amp;quot;&lt;/spa
 &lt;h2&gt;Set GPG to prefer SHA2&lt;/h2&gt;
 &lt;p&gt;GPG defaults to SHA1 as preferred hash, so let's set it to prefer SHA2 instead.
 Check if the following lines are present in &lt;code&gt;~/.gnupg/gpg.conf&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;personal-digest-preferences SHA512 SHA384 SHA256 SHA224&lt;/span&gt;
-&lt;span class="err"&gt;default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 BZIP2 ZLIB ZIP Uncompressed&lt;/span&gt;
-&lt;span class="err"&gt;cert-digest-algo SHA512&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;personal-digest-preferences SHA512 SHA384 SHA256 SHA224
+default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 BZIP2 ZLIB ZIP Uncompressed
+cert-digest-algo SHA512
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If not, add them.&lt;/p&gt;
 &lt;h2&gt;Create a master key&lt;/h2&gt;
@@ -42,7 +39,6 @@ Please &lt;span class="k"&gt;select&lt;/span&gt; what kind of key you want:
     Your selection? &lt;span class="c1"&gt;# 1 &amp;lt;--&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;When it comes to choosing the length make sure to choose the longest available option (4096 at the time of writing).&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;RSA keys may be between &lt;span class="m"&gt;1024&lt;/span&gt; and &lt;span class="m"&gt;4096&lt;/span&gt; bits long.
 What keysize &lt;span class="k"&gt;do&lt;/span&gt; you want? &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2048&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;  &lt;span class="c1"&gt;# 4096 &amp;lt;-- (the longer the better!)&lt;/span&gt;
@@ -50,17 +46,17 @@ What keysize &lt;span class="k"&gt;do&lt;/span&gt; you want? &lt;span class="o"&
 Requested keysize is &lt;span class="m"&gt;4096&lt;/span&gt; bits
 Please specify how long the key should be valid.
     &lt;span class="nv"&gt;0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; key does not expire
-    &amp;lt;n&amp;gt;  &lt;span class="o"&gt;=&lt;/span&gt; key expires in n days
-    &amp;lt;n&amp;gt;w &lt;span class="o"&gt;=&lt;/span&gt; key expires in n weeks
-    &amp;lt;n&amp;gt;m &lt;span class="o"&gt;=&lt;/span&gt; key expires in n months
-    &amp;lt;n&amp;gt;y &lt;span class="o"&gt;=&lt;/span&gt; key expires in n years
+    &amp;lt;n&amp;gt;  &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n days
+    &amp;lt;n&amp;gt;w &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n weeks
+    &amp;lt;n&amp;gt;m &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n months
+    &amp;lt;n&amp;gt;y &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n years
 Key is valid &lt;span class="k"&gt;for&lt;/span&gt;? &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# 0 &amp;lt;--&lt;/span&gt;
 
 Key does not expire at all
 Is this correct? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
 
 You need a user ID to identify your key&lt;span class="p"&gt;;&lt;/span&gt; the software constructs the user ID
-from the Real Name, Comment and E-mail Address in this form:
+from the Real Name, Comment and E-mail Address &lt;span class="k"&gt;in&lt;/span&gt; this form:
     &lt;span class="s2"&gt;&amp;quot;Heinrich Heine (Der Dichter) &amp;lt;heinrichh@duesseldorf.de&amp;gt;&amp;quot;&lt;/span&gt;
 
 Real name: &lt;span class="c1"&gt;# [Your name] &amp;lt;--&lt;/span&gt;
@@ -73,7 +69,6 @@ You selected this USER-ID:
 
 Change &lt;span class="o"&gt;(&lt;/span&gt;N&lt;span class="o"&gt;)&lt;/span&gt;ame, &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt;omment, &lt;span class="o"&gt;(&lt;/span&gt;E&lt;span class="o"&gt;)&lt;/span&gt;-mail or &lt;span class="o"&gt;(&lt;/span&gt;O&lt;span class="o"&gt;)&lt;/span&gt;kay/&lt;span class="o"&gt;(&lt;/span&gt;Q&lt;span class="o"&gt;)&lt;/span&gt;uit? &lt;span class="c1"&gt;# o &amp;lt;--&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;When prompted for a passphrase, make sure to choose a strong one - ideally long and hard to guess. If someone gets access to the secret key, the passphrase would be the only thing left to prevent them from using it.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;You need a Passphrase to protect your secret key.
@@ -97,7 +92,6 @@ pub   4096R/&lt;span class="o"&gt;[&lt;/span&gt;your key ID&lt;span class="o"&gt
 uid                  &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
 sub   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Congratulations! The master key has been created!&lt;/p&gt;
 &lt;h2&gt;Set your key to prefer strong hashes&lt;/h2&gt;
@@ -139,7 +133,6 @@ sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;
 gpg&amp;gt; &lt;span class="c1"&gt;# save&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;h2&gt;Create a signing subkey&lt;/h2&gt;
 &lt;p&gt;When creating a key GPG automatically creates an encryption subkey as well, which means that only the signing subkey needs manual creation.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --edit-key &lt;span class="o"&gt;[&lt;/span&gt;Your email address&lt;span class="o"&gt;]&lt;/span&gt;
@@ -178,10 +171,10 @@ What keysize &lt;span class="k"&gt;do&lt;/span&gt; you want? &lt;span class="o"&
 Requested keysize is &lt;span class="m"&gt;4096&lt;/span&gt; bits
 Please specify how long the key should be valid.
     &lt;span class="nv"&gt;0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; key does not expire
-    &amp;lt;n&amp;gt;  &lt;span class="o"&gt;=&lt;/span&gt; key expires in n days
-    &amp;lt;n&amp;gt;w &lt;span class="o"&gt;=&lt;/span&gt; key expires in n weeks
-    &amp;lt;n&amp;gt;m &lt;span class="o"&gt;=&lt;/span&gt; key expires in n months
-    &amp;lt;n&amp;gt;y &lt;span class="o"&gt;=&lt;/span&gt; key expires in n years
+    &amp;lt;n&amp;gt;  &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n days
+    &amp;lt;n&amp;gt;w &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n weeks
+    &amp;lt;n&amp;gt;m &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n months
+    &amp;lt;n&amp;gt;y &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n years
 Key is valid &lt;span class="k"&gt;for&lt;/span&gt;? &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# 0 &amp;lt;--&lt;/span&gt;
 
 Key does not expire at all
@@ -197,7 +190,6 @@ sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;
 
 gpg&amp;gt; &lt;span class="c1"&gt;# save &amp;lt;--&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;h2&gt;Create a revocation certificate&lt;/h2&gt;
 &lt;p&gt;If the master key gets lost or compromised, the revocation certificate is going to be your emergency brake.&lt;/p&gt;
@@ -225,7 +217,6 @@ user: &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/s
 Revocation certificate created.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Make several copies of it and save it in a safe place (ideally not the same one as the master key!)&lt;/p&gt;
 &lt;h2&gt;Remove the master key&lt;/h2&gt;
 &lt;p&gt;Before proceeding, make sure to have backups of the &lt;code&gt;.gpg&lt;/code&gt; folder (perhaps on an encrypted media)&lt;/p&gt;
@@ -233,17 +224,14 @@ Revocation certificate created.
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --export-secret-subkeys &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt; &amp;gt; /media/encrypted-media/subkeys
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Delete the master key:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --delete-secret-key 0x6F87F32E2234961E
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Re-import the subkeys and remove the temporary export:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --import /media/encrypted-usb/subkeys
 $ shred -u /media/encrypted-usb/subkeys
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Check that everything worked as intended - the hash (#) next to the &lt;code&gt;sec&lt;/code&gt; line means that the master key is missing.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg -K &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;
@@ -256,18 +244,15 @@ ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]
 ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]&lt;/span&gt;   &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;h2&gt;Upload the key to a keyserver&lt;/h2&gt;
 &lt;p&gt;Keyservers syncs keys with each other, so any keyserver would do.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --keyserver pgp.mit.edu --send-key &lt;span class="o"&gt;[&lt;/span&gt;your key ID&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;h2&gt;Using your master key&lt;/h2&gt;
 &lt;p&gt;Assuming that the &lt;code&gt;.gpg&lt;/code&gt; folder is on some kind of encrypted media:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --homedir&lt;span class="o"&gt;=&lt;/span&gt;/media/encrypted-media/.gnupg/ &lt;span class="o"&gt;[&lt;/span&gt;gpg command&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;h2&gt;Parting thoughts&lt;/h2&gt;
 &lt;p&gt;That's it!&lt;/p&gt;
@@ -311,7 +296,6 @@ ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]
 &lt;p&gt;The first thing you need to do is to install &lt;code&gt;cryptsetup&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo apt-get install cryptsetup
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;You can also install it from the Software center if you feel more comfortable with a graphical interface.&lt;/p&gt;
 &lt;h2&gt;2. Disks manager&lt;/h2&gt;

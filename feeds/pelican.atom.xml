@@ -5,11 +5,10 @@
 &lt;p&gt;GitHub offers the possibility to host your site in the cloud through either &lt;a href="https://help.github.com/articles/user-organization-and-project-pages"&gt;personal or project pages&lt;/a&gt;. Although it is possible to use both for hosting a Pelican powered blog, project pages make your life so much easier when it comes both to publish your blog content and to put blog source under revision control.&lt;/p&gt;
 &lt;p&gt;For creating project pages, all we need to do is to create a repository as usual and put the content we wish to publish (i.e. the HTML static files) into a branch named &lt;code&gt;gh-pages&lt;/code&gt;. Once done that, your page will show up at username.github.io/repository.&lt;/p&gt;
 &lt;p&gt;Although it could sounds overly complicated - especially the &lt;code&gt;gh-pages&lt;/code&gt; branch part - you don't have to worry since an awesome program called &lt;a href="https://github.com/davisp/ghp-import"&gt;ghp-import&lt;/a&gt; will take care of it for us. For now, simply create a new repository as you would do for any other project and set up a &lt;code&gt;.gitignore&lt;/code&gt; file with the following content:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;*.pid&lt;/span&gt;
-&lt;span class="err"&gt;*.pyc&lt;/span&gt;
-&lt;span class="err"&gt;output/&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;*.pid
+*.pyc
+output/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;h1&gt;2. Installing the needed packages&lt;/h1&gt;
 &lt;p&gt;Before installing Pelican, I would recommend to create a new virtualenv. It is not mandatory, but it is definitely a good practice and would prevent the risk of conflicts between installed packages.&lt;/p&gt;
@@ -19,14 +18,12 @@
 pip install -e git+git://github.com/davisp/ghp-import.git#egg&lt;span class="o"&gt;=&lt;/span&gt;ghp-import
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Next run &lt;code&gt;pelican-quickstart&lt;/code&gt; and get ready to answer to a bunch of questions. Most of them are pretty straightforward and anyway you'll be able to change them later in your settings files. These are the only ones you need to care about for the moment:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Where &lt;span class="k"&gt;do&lt;/span&gt; you want to create your new web site? &lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="c1"&gt;# Press enter&lt;/span&gt;
 Do you want to specify a URL prefix? e.g., http://example.com &lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y&lt;/span&gt;
 What is your URL prefix? &lt;span class="o"&gt;(&lt;/span&gt;see above example&lt;span class="p"&gt;;&lt;/span&gt; no trailing slash&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# http://username.github.io/repository&lt;/span&gt;
 Do you want to generate a Fabfile/Makefile to automate generation and publishing? &lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Answer &lt;code&gt;n&lt;/code&gt; to all the questions about uploading your website and you are ready to go.&lt;/p&gt;
 &lt;h1&gt;3. Writing content&lt;/h1&gt;
@@ -36,7 +33,6 @@ Do you want to generate a Fabfile/Makefile to automate generation and publishing
 ^C &lt;span class="c1"&gt;# note that CTRL+C won&amp;#39;t stop dev server&lt;/span&gt;
 ./develop_server.sh stop &lt;span class="c1"&gt;# manually stop the dev server&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;h1&gt;4. Publishing and pushing&lt;/h1&gt;
 &lt;p&gt;Ok this is the easy part.&lt;/p&gt;
@@ -49,20 +45,17 @@ make github
 &lt;span class="c1"&gt;# celebrate!&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Congrats! Your blog is now up and running!&lt;/p&gt;
 &lt;h1&gt;5. Setting up your custom domain&lt;/h1&gt;
 &lt;p&gt;Create a CNAME file containing your bare domain:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;mydomain.com&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mydomain.com
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Add the following lines to your pelicanconf.py, in order to make Pelican copying it to your output folder on every publish.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;STATIC_PATHS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
 &lt;span class="s1"&gt;&amp;#39;CNAME&amp;#39;&lt;/span&gt;
 &lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Then, assuming that you want both mydomain.com and www.mydomain.com to point at your blog, you need to set &lt;strong&gt;both the CNAME and the A-records&lt;/strong&gt; of your domain to point at github.&lt;/p&gt;
 &lt;p&gt;Since this has been the most problematic step for me, here's a couple of extra thoughts regarding my domain registrar (Gandi):&lt;/p&gt;
@@ -74,11 +67,10 @@ make github
 &lt;li&gt;&lt;a href="http://stackoverflow.com/a/22374542/2926113"&gt;This answer&lt;/a&gt; from Stack Overflow provides great step-by-step instructions for using GitHub project pages with a custom domain&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Here are the lines taking care of the magic in my case:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;www 10800 IN CNAME railslide.github.io.&lt;/span&gt;
-&lt;span class="err"&gt;@ 10800 IN A 192.30.252.153&lt;/span&gt;
-&lt;span class="err"&gt;@ 10800 IN A 192.30.252.154&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;www 10800 IN CNAME railslide.github.io.
+@ 10800 IN A 192.30.252.153
+@ 10800 IN A 192.30.252.154
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;After that, wait some hours for the DNS to propagate and you should be done.&lt;/p&gt;</content><category term="pelican"></category><category term="pelican"></category><category term="publishing"></category><category term="github pages"></category></entry><entry><title>Up and running!</title><link href="https://railslide.io/up-and-running.html" rel="alternate"></link><published>2014-06-03T00:00:00+02:00</published><updated>2014-06-03T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2014-06-03:/up-and-running.html</id><summary type="html">&lt;p&gt;Celebrating the first post of the blog and what to do next.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Ok, my Pelican and GitHub pages powered blog seems to be up and running! Yay!&lt;/p&gt;
 &lt;p&gt;Since I plan to write a dedicated post about the setup, I'll use this one to throw some ideas about what to do next.&lt;/p&gt;

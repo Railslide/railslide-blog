@@ -74,7 +74,6 @@
     <span class="kn">from</span> <span class="nn">mock</span> <span class="kn">import</span> <span class="n">patch</span><span class="p">,</span> <span class="n">mock_open</span>
 </code></pre></div>
 
-
 <p>To be honest, I am not super glad about an import that relies on a non-mandatory dependency, but let's play along for now and let's get Travis up and running - I can always come up with something better on a later moment.</p>
 <p>Ok so, commit my hack, push, and hold my breath for a handful of seconds. Does it work? Nope.</p>
 <h2>Builtins, __builtin__, and better mocking decisions</h2>
@@ -82,11 +81,9 @@
 <div class="highlight"><pre><span></span><code><span class="n">patch</span><span class="p">(</span><span class="s1">&#39;builtins.open&#39;</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 
-
 <p>That of course didn't work in Python 2, since there the module is called <code>__builtin__</code>. So, after a hacky and unsuccessful attempt, I ended up in rewriting my mock in a more specific and robust way. Instead of patching the function within the Builtins module, I patched the function <em>call</em> made inside my module:</p>
 <div class="highlight"><pre><span></span><code><span class="n">patch</span><span class="p">(</span><span class="s1">&#39;subvenv.core.open&#39;</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-
 
 <p>In this way, there's no need to worry about where the function comes from, since all it matters is that it gets called within my module's namespace.</p>
 <h2>Python 2.6 and Unittest, Python 3.2 and Pip</h2>
@@ -102,7 +99,6 @@
   <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">pip install -r requirements.txt</span>
 </code></pre></div>
 
-
 <h2>Mock and Python 3.3</h2>
 <p>Ok, after the latest changes, I managed to add Python 2.7 to the list of successful builds. However, Python 3.3 shows up still in red and the error message is basically the same one I got when I add the Mock version issue in Python 2.7. That's weird!</p>
 <p>Just to be sure, I double checked: yes, Mock is already part of the Unittest module in Python 3.3 and yes, its implementation of the <code>mock_open</code> does take <code>read_data</code> as an argument. However, as the documentation specifies, the <code>readline</code> and <code>readlines</code> method have been added in version 3.4, hence my error.</p>
@@ -112,7 +108,6 @@
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">unittest.mock</span> <span class="kn">import</span> <span class="n">patch</span><span class="p">,</span> <span class="n">mock_open</span>
 </code></pre></div>
-
 
 <p>And finally, all green!</p>
 <h2>All in all</h2>

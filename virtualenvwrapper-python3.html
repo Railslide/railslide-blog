@@ -70,11 +70,9 @@
 <div class="highlight"><pre><span></span><code>sudo apt-get install python3-pip
 </code></pre></div>
 
-
 <p>Install Virtualenvwrapper for Python 3:</p>
 <div class="highlight"><pre><span></span><code>sudo pip3 install virtualenvwrapper
 </code></pre></div>
-
 
 <p>So far so good. Now it is time to configure Virtualenvwrapper.</p>
 <p>Create a folder for your virtualenvs (I use ~/.virtualenvs) and set it as WORKON_HOME:</p>
@@ -82,12 +80,10 @@
 <span class="nb">export</span> <span class="nv">WORKON_HOME</span><span class="o">=</span>~/.virtualenvs
 </code></pre></div>
 
-
 <p>Add the following lines to ~/.bashrc:</p>
-<div class="highlight"><pre><span></span><code><span class="err">VIRTUALENVWRAPPER_PYTHON=&#39;/usr/bin/python3&#39; # This needs to be placed before the virtualenvwrapper command</span>
-<span class="err">source /usr/local/bin/virtualenvwrapper.sh</span>
+<div class="highlight"><pre><span></span><code>VIRTUALENVWRAPPER_PYTHON=&#39;/usr/bin/python3&#39; # This needs to be placed before the virtualenvwrapper command
+source /usr/local/bin/virtualenvwrapper.sh
 </code></pre></div>
-
 
 <p>Close and re-open your shell and you're ready to go. Here are the basic commands for using virtualenvwrapper:</p>
 <div class="highlight"><pre><span></span><code>mkvirtualenv virtualenv_name <span class="c1"># Create virtualenv</span>
@@ -95,28 +91,24 @@ workon virtualenv_name <span class="c1"># Activate/switch to a virtualenv</span>
 deactivate virtualenv_name <span class="c1"># Deactivate virtualenv</span>
 </code></pre></div>
 
-
 <p>Congratulations! Your Virtualenvwrapper for Python 3 is now ready to use.</p>
 <h2>Projects</h2>
 <p><em><strong>EDIT</strong>: in a previous version of this article, I suggested to use the postactivate script to automatically navigate to the project folder when activating the virtualenv. However, since I discovered that such a task is automatically performed by the projects plugin, I updated the post accordingly.</em></p>
 <p>While the possibility to have isolated virtual environments just a <code>mkvirtualenv</code> away had immediately convinced me of the usefulness of Virtualenvwrapper, projects made me falling in love for it.</p>
 <p>My typical workflow is to create a virtualenv and then create a project folder with the same name. So why not setting up Virtualenvwrapper to automatically do it for me every time I create a new virtualenv? Specify PROJECT_HOME in ~/.bashrc will do the trick:</p>
-<div class="highlight"><pre><span></span><code><span class="err">VIRTUALENVWRAPPER_PYTHON=&#39;/usr/bin/python3&#39;</span>
-<span class="err">PROJECT_HOME=&#39;/path/to/where/you/want/your/project/folder/to/be/created&#39; # This needs to be placed before the virtualenvwrapper command as well</span>
-<span class="err">source /usr/local/bin/virtualenvwrapper.sh</span>
+<div class="highlight"><pre><span></span><code>VIRTUALENVWRAPPER_PYTHON=&#39;/usr/bin/python3&#39;
+PROJECT_HOME=&#39;/path/to/where/you/want/your/project/folder/to/be/created&#39; # This needs to be placed before the virtualenvwrapper command as well
+source /usr/local/bin/virtualenvwrapper.sh
 </code></pre></div>
-
 
 <p>Now, when typing</p>
 <div class="highlight"><pre><span></span><code>mkproject my_project
 </code></pre></div>
 
-
 <p>Virtualenvwrapper will automatically create a virtualenv and a folder called <em>my_project</em>.</p>
 <p>Cherry on top, projects automaticatilly navigates to the project folder when activating the virtualenv. Thus, when typing</p>
 <div class="highlight"><pre><span></span><code>workon my_project
 </code></pre></div>
-
 
 <p>Virtualenvwrapper activates the virtualenv and teleports me to ~/Projects/my_project. Neat!</p>
             <a href="#" class="go-top">Go Top</a>

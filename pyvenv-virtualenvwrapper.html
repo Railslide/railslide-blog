@@ -71,13 +71,11 @@
 <div class="highlight"><pre><span></span><code>Error: Command <span class="s1">&#39;[&#39;</span>/home/vagrant/.virtualenvs/test/bin/python3.4<span class="s1">&#39;, &#39;</span>-Im<span class="s1">&#39;, &#39;</span>ensurepip<span class="s1">&#39;, &#39;</span>--upgrade<span class="s1">&#39;, &#39;</span>--default-pip<span class="s1">&#39;]&#39;</span> returned non-zero <span class="nb">exit</span> status <span class="m">1</span>
 </code></pre></div>
 
-
 <p>Ok, not exactly what I was hoping for.</p>
 <p>After a bit of digging, it came out that it is due <a href="https://bugs.launchpad.net/ubuntu/+source/python3.4/+bug/1290847">to a bug with ensurepip</a> in the first release of Ubuntu 14.04. However, it is possible to bypass the problem by first creating the virtualenv without pip and then manually installing it once inside it.</p>
 <div class="highlight"><pre><span></span><code>$ mkvirtualenv --without-pip my_venv
 <span class="o">(</span>my_venv<span class="o">)</span>$ curl https://bootstrap.pypa.io/get-pip.py <span class="p">|</span> python
 </code></pre></div>
-
 
 <p>Quite a lot to type, plus you have to wait for Pip to install. Definitely not optimal.</p>
 <p>Fortunately the issue has been solved in Ubuntu 14.04.2 (which allowed me to perform my tests), but for some reason the whole pyvenv package has been <a href="http://askubuntu.com/questions/682612/pyvenv-3-4-disappeared-in-ubuntu-14-04-3">removed in Ubuntu 14.04.03</a>.</p>
@@ -98,12 +96,10 @@
 <div class="highlight"><pre><span></span><code><span class="ne">AttributeError</span><span class="p">:</span> <span class="s1">&#39;module&#39;</span> <span class="nb">object</span> <span class="n">has</span> <span class="n">no</span> <span class="n">attribute</span> <span class="s1">&#39;sysconfig&#39;</span>
 </code></pre></div>
 
-
 <p><code>cpvirtualenv</code> is instead a bit weird, since it does copy the virtualenv, but it displays the name of the original one in front of the prompt of all its copies. Even making copies of a copy doesn't change the result: it still shows the name of the first original. The <code>$VIRTUAL_ENV</code> variable and the interpreter point to the correct folder tho...</p>
 <p>Last but not least, is probably worthy mentioning that - by design - pyvenv doesn't offer the possibility to specify a Python interpreter for virtual environments, so</p>
 <div class="highlight"><pre><span></span><code>$ mkvirtualenv -p /path/to/python/interpreter my_venv
 </code></pre></div>
-
 
 <p>no longer works, which means no way to get a Python 2.7 virtualenv out of it.</p>
 <p>All the rest work as expected.</p>

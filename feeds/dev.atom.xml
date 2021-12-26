@@ -12,7 +12,6 @@
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pytest --ds&lt;span class="o"&gt;=&lt;/span&gt;project_folder.settings_folder.settings_file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Certainly not something I'd like to do every time I want to run the test suite.&lt;/p&gt;
 &lt;h2&gt;Setting the environment variable&lt;/h2&gt;
 &lt;p&gt;Another way around the issue is to set the environment variable to the test settings file before every test run and the setting it back to its original value once you're finished.&lt;/p&gt;
@@ -21,22 +20,19 @@
 &lt;p&gt;Wouldn't be awesome if you could just use the &lt;code&gt;pytest.ini&lt;/code&gt; file, set all the necessary settings in there, and not have to worry ever again? Actually you can, thanks to &lt;a href="http://doc.pytest.org/en/3.0.2/customize.html#confval-addopts"&gt;&lt;code&gt;addopts&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;What &lt;code&gt;addopts&lt;/code&gt; does is to add options (hence the double d!) to your test run as if they were specified via command line. So, for example, if you want to update and export coverage every time you run the suite, you would write this in the &lt;code&gt;pytest.ini&lt;/code&gt; file&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[pytest]&lt;/span&gt;
-&lt;span class="na"&gt;addopts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&lt;/span&gt;
-&lt;span class="s"&gt;    --cov=.&lt;/span&gt;
-&lt;span class="s"&gt;    --cov-report=html&lt;/span&gt;
+&lt;span class="na"&gt;addopts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;
+    &lt;span class="na"&gt;--cov&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;.&lt;/span&gt;
+    &lt;span class="na"&gt;--cov-report&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;html&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;and every time you run &lt;code&gt;pytest&lt;/code&gt; it will, behind the scene, be interpreted as if you have run&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pytest --cov&lt;span class="o"&gt;=&lt;/span&gt;. --cov-report&lt;span class="o"&gt;=&lt;/span&gt;html
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Thus, by adding &lt;code&gt;--ds=project_folder.settings_folder.settings_file&lt;/code&gt; to &lt;code&gt;addopts&lt;/code&gt; it is possible to override pytest-django discovery order and make sure that the value in the &lt;code&gt;pytest.ini&lt;/code&gt; file gets read instead of environment variable.&lt;/p&gt;
 &lt;p&gt;Ok, but what if you want to point pytest to a different settings file for one run only? No problem! One of the perks of this method is that you can esplicitly pass the &lt;code&gt;--ds&lt;/code&gt; option from the command line to override the one in the &lt;code&gt;pytest.ini&lt;/code&gt; file. So running&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pytest --ds&lt;span class="o"&gt;=&lt;/span&gt;other_settings_file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;will just work as usual. Neat!&lt;/p&gt;</content><category term="/dev"></category><category term="django"></category><category term="pytest"></category><category term="pytest-django"></category><category term="environment variables"></category></entry><entry><title>Using pyvenv with virtualenvwrapper</title><link href="https://railslide.io/pyvenv-virtualenvwrapper.html" rel="alternate"></link><published>2016-06-07T00:00:00+02:00</published><updated>2016-06-07T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2016-06-07:/pyvenv-virtualenvwrapper.html</id><summary type="html">&lt;p&gt;After reading that it might be possible to use virtualenvwrapper with pyvenv, I decided to fire up a couple of virtual machines and to find it out.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Python 3 ships with pyvenv, a built-in virtualenv manager. Although I welcomed the news as a definitely good one, the absence of a virtualenvwrapper-like tool for pyvenv has always stopped me from giving it a try. I consider virtualenvwrapper to be a super neat tool (I even wrote a plugin for it!) and I don't see why I would want to type the path to my virtual environment activation script every time I want to activate it, when I can just use a way more pythonic &lt;code&gt;workon my_venv&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;I happened, however, to stumble into &lt;a href="https://groups.google.com/forum/#!msg/virtualenvwrapper/bkpwkfyIppM/9M9mz3pB0RQJ"&gt;a conversation&lt;/a&gt; in the virtualenvwrapper google group, where Doug Hellman (aka the guy behind virtualenvwrapper) wrote that &lt;em&gt;in theory&lt;/em&gt; it should be possible to use virtualenvwrapper with pyvenv. So I immediately fired up a couple of virtual machines and started playing around in order to see whether it was possible to turn that &lt;em&gt;in theory&lt;/em&gt; into an &lt;em&gt;in practice&lt;/em&gt;.&lt;/p&gt;
@@ -46,13 +42,11 @@
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Error: Command &lt;span class="s1"&gt;&amp;#39;[&amp;#39;&lt;/span&gt;/home/vagrant/.virtualenvs/test/bin/python3.4&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;-Im&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;ensurepip&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;--upgrade&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;--default-pip&lt;span class="s1"&gt;&amp;#39;]&amp;#39;&lt;/span&gt; returned non-zero &lt;span class="nb"&gt;exit&lt;/span&gt; status &lt;span class="m"&gt;1&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Ok, not exactly what I was hoping for.&lt;/p&gt;
 &lt;p&gt;After a bit of digging, it came out that it is due &lt;a href="https://bugs.launchpad.net/ubuntu/+source/python3.4/+bug/1290847"&gt;to a bug with ensurepip&lt;/a&gt; in the first release of Ubuntu 14.04. However, it is possible to bypass the problem by first creating the virtualenv without pip and then manually installing it once inside it.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ mkvirtualenv --without-pip my_venv
 &lt;span class="o"&gt;(&lt;/span&gt;my_venv&lt;span class="o"&gt;)&lt;/span&gt;$ curl https://bootstrap.pypa.io/get-pip.py &lt;span class="p"&gt;|&lt;/span&gt; python
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Quite a lot to type, plus you have to wait for Pip to install. Definitely not optimal.&lt;/p&gt;
 &lt;p&gt;Fortunately the issue has been solved in Ubuntu 14.04.2 (which allowed me to perform my tests), but for some reason the whole pyvenv package has been &lt;a href="http://askubuntu.com/questions/682612/pyvenv-3-4-disappeared-in-ubuntu-14-04-3"&gt;removed in Ubuntu 14.04.03&lt;/a&gt;.&lt;/p&gt;
@@ -73,12 +67,10 @@
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ne"&gt;AttributeError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;module&amp;#39;&lt;/span&gt; &lt;span class="nb"&gt;object&lt;/span&gt; &lt;span class="n"&gt;has&lt;/span&gt; &lt;span class="n"&gt;no&lt;/span&gt; &lt;span class="n"&gt;attribute&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;sysconfig&amp;#39;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;&lt;code&gt;cpvirtualenv&lt;/code&gt; is instead a bit weird, since it does copy the virtualenv, but it displays the name of the original one in front of the prompt of all its copies. Even making copies of a copy doesn't change the result: it still shows the name of the first original. The &lt;code&gt;$VIRTUAL_ENV&lt;/code&gt; variable and the interpreter point to the correct folder tho...&lt;/p&gt;
 &lt;p&gt;Last but not least, is probably worthy mentioning that - by design - pyvenv doesn't offer the possibility to specify a Python interpreter for virtual environments, so&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ mkvirtualenv -p /path/to/python/interpreter my_venv
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;no longer works, which means no way to get a Python 2.7 virtualenv out of it.&lt;/p&gt;
 &lt;p&gt;All the rest work as expected.&lt;/p&gt;
@@ -96,7 +88,6 @@
     &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;mock&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mock_open&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;To be honest, I am not super glad about an import that relies on a non-mandatory dependency, but let's play along for now and let's get Travis up and running - I can always come up with something better on a later moment.&lt;/p&gt;
 &lt;p&gt;Ok so, commit my hack, push, and hold my breath for a handful of seconds. Does it work? Nope.&lt;/p&gt;
 &lt;h2&gt;Builtins, __builtin__, and better mocking decisions&lt;/h2&gt;
@@ -104,11 +95,9 @@
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;builtins.open&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;That of course didn't work in Python 2, since there the module is called &lt;code&gt;__builtin__&lt;/code&gt;. So, after a hacky and unsuccessful attempt, I ended up in rewriting my mock in a more specific and robust way. Instead of patching the function within the Builtins module, I patched the function &lt;em&gt;call&lt;/em&gt; made inside my module:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;subvenv.core.open&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;In this way, there's no need to worry about where the function comes from, since all it matters is that it gets called within my module's namespace.&lt;/p&gt;
 &lt;h2&gt;Python 2.6 and Unittest, Python 3.2 and Pip&lt;/h2&gt;
@@ -124,7 +113,6 @@
   &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;pip install -r requirements.txt&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;h2&gt;Mock and Python 3.3&lt;/h2&gt;
 &lt;p&gt;Ok, after the latest changes, I managed to add Python 2.7 to the list of successful builds. However, Python 3.3 shows up still in red and the error message is basically the same one I got when I add the Mock version issue in Python 2.7. That's weird!&lt;/p&gt;
 &lt;p&gt;Just to be sure, I double checked: yes, Mock is already part of the Unittest module in Python 3.3 and yes, its implementation of the &lt;code&gt;mock_open&lt;/code&gt; does take &lt;code&gt;read_data&lt;/code&gt; as an argument. However, as the documentation specifies, the &lt;code&gt;readline&lt;/code&gt; and &lt;code&gt;readlines&lt;/code&gt; method have been added in version 3.4, hence my error.&lt;/p&gt;
@@ -134,7 +122,6 @@
 &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;ImportError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;unittest.mock&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mock_open&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;And finally, all green!&lt;/p&gt;
 &lt;h2&gt;All in all&lt;/h2&gt;
@@ -148,24 +135,22 @@
 &lt;p&gt;Github interface it is certainly nice, but it comes to the price of making your release workflow dependent on Github. What if a certain point you decide that you want to move your code away from Github? Also wouldn't be awesome if you could take care of your releases directly from your trusted terminal? Well, it turns out that you can, since what Github does behind the scene is to create and set a Git tag on the repository.&lt;/p&gt;
 &lt;p&gt;Tags in Git are a way to set a reference to a specific point in history. You can think of them as a way to &lt;em&gt;bookmark&lt;/em&gt; a specific commit. So when you download the source code for your-awesome-project.v1.1.0 you're basically saying "Hey Git, fetch me the code up to the point that correspond to the commit tagged with the name your-awesome-project.v1.1.0".&lt;/p&gt;
 &lt;p&gt;You can set a tag with the &lt;code&gt;git tag&lt;/code&gt; command. However, before you go git-tagging all the things, you should probably be aware that there are two kinds of tags in Git: annotated and lightweight. As the man page for &lt;code&gt;git-tag&lt;/code&gt; explains:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;Tag&lt;/span&gt; &lt;span class="n"&gt;objects&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;created&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;or&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;are&lt;/span&gt; &lt;span class="k"&gt;called&lt;/span&gt; &lt;span class="ss"&gt;&amp;quot;annotated&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;tags&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="n"&gt;they&lt;/span&gt; &lt;span class="n"&gt;contain&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;creation&lt;/span&gt; &lt;span class="nb"&gt;date&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;tagger&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="k"&gt;and&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;mail&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;tagging&lt;/span&gt;
-&lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;and&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;optional&lt;/span&gt; &lt;span class="n"&gt;GnuPG&lt;/span&gt; &lt;span class="n"&gt;signature&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="n"&gt;Whereas&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="ss"&gt;&amp;quot;lightweight&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;tag&lt;/span&gt;
-&lt;span class="k"&gt;is&lt;/span&gt; &lt;span class="n"&gt;simply&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="k"&gt;object&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;usually&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="k"&gt;commit&lt;/span&gt; &lt;span class="k"&gt;object&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;Tag&lt;/span&gt; &lt;span class="nv"&gt;objects&lt;/span&gt; &lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;created&lt;/span&gt; &lt;span class="nv"&gt;with&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;a&lt;/span&gt;, &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;s&lt;/span&gt;, &lt;span class="nv"&gt;or&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;u&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt; &lt;span class="nv"&gt;are&lt;/span&gt; &lt;span class="nv"&gt;called&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;annotated&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="nv"&gt;tags&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+&lt;span class="nv"&gt;they&lt;/span&gt; &lt;span class="nv"&gt;contain&lt;/span&gt; &lt;span class="nv"&gt;a&lt;/span&gt; &lt;span class="nv"&gt;creation&lt;/span&gt; &lt;span class="nv"&gt;date&lt;/span&gt;, &lt;span class="nv"&gt;the&lt;/span&gt; &lt;span class="nv"&gt;tagger&lt;/span&gt; &lt;span class="nv"&gt;name&lt;/span&gt; &lt;span class="nv"&gt;and&lt;/span&gt; &lt;span class="nv"&gt;e&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;mail&lt;/span&gt;, &lt;span class="nv"&gt;a&lt;/span&gt; &lt;span class="nv"&gt;tagging&lt;/span&gt;
+&lt;span class="nv"&gt;message&lt;/span&gt;, &lt;span class="nv"&gt;and&lt;/span&gt; &lt;span class="nv"&gt;an&lt;/span&gt; &lt;span class="nv"&gt;optional&lt;/span&gt; &lt;span class="nv"&gt;GnuPG&lt;/span&gt; &lt;span class="nv"&gt;signature&lt;/span&gt;. &lt;span class="nv"&gt;Whereas&lt;/span&gt; &lt;span class="nv"&gt;a&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;lightweight&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="nv"&gt;tag&lt;/span&gt;
+&lt;span class="nv"&gt;is&lt;/span&gt; &lt;span class="nv"&gt;simply&lt;/span&gt; &lt;span class="nv"&gt;a&lt;/span&gt; &lt;span class="nv"&gt;name&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="nv"&gt;an&lt;/span&gt; &lt;span class="nv"&gt;object&lt;/span&gt; &lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;usually&lt;/span&gt; &lt;span class="nv"&gt;a&lt;/span&gt; &lt;span class="nv"&gt;commit&lt;/span&gt; &lt;span class="nv"&gt;object&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;.
 
-&lt;span class="n"&gt;Annotated&lt;/span&gt; &lt;span class="n"&gt;tags&lt;/span&gt; &lt;span class="k"&gt;are&lt;/span&gt; &lt;span class="n"&gt;meant&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;release&lt;/span&gt; &lt;span class="n"&gt;while&lt;/span&gt; &lt;span class="n"&gt;lightweight&lt;/span&gt; &lt;span class="n"&gt;tags&lt;/span&gt; &lt;span class="k"&gt;are&lt;/span&gt; &lt;span class="n"&gt;meant&lt;/span&gt;
-&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;private&lt;/span&gt; &lt;span class="k"&gt;or&lt;/span&gt; &lt;span class="k"&gt;temporary&lt;/span&gt; &lt;span class="k"&gt;object&lt;/span&gt; &lt;span class="n"&gt;labels&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="k"&gt;For&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt; &lt;span class="n"&gt;reason&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;some&lt;/span&gt; &lt;span class="n"&gt;git&lt;/span&gt;
-&lt;span class="n"&gt;commands&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;naming&lt;/span&gt; &lt;span class="n"&gt;objects&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;like&lt;/span&gt; &lt;span class="n"&gt;git&lt;/span&gt; &lt;span class="k"&gt;describe&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;will&lt;/span&gt; &lt;span class="k"&gt;ignore&lt;/span&gt; &lt;span class="n"&gt;lightweight&lt;/span&gt;
-&lt;span class="n"&gt;tags&lt;/span&gt; &lt;span class="k"&gt;by&lt;/span&gt; &lt;span class="k"&gt;default&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;span class="nv"&gt;Annotated&lt;/span&gt; &lt;span class="nv"&gt;tags&lt;/span&gt; &lt;span class="nv"&gt;are&lt;/span&gt; &lt;span class="nv"&gt;meant&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="nv"&gt;release&lt;/span&gt; &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="nv"&gt;lightweight&lt;/span&gt; &lt;span class="nv"&gt;tags&lt;/span&gt; &lt;span class="nv"&gt;are&lt;/span&gt; &lt;span class="nv"&gt;meant&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="nv"&gt;private&lt;/span&gt; &lt;span class="nv"&gt;or&lt;/span&gt; &lt;span class="nv"&gt;temporary&lt;/span&gt; &lt;span class="nv"&gt;object&lt;/span&gt; &lt;span class="nv"&gt;labels&lt;/span&gt;. &lt;span class="k"&gt;For&lt;/span&gt; &lt;span class="nv"&gt;this&lt;/span&gt; &lt;span class="nv"&gt;reason&lt;/span&gt;, &lt;span class="nv"&gt;some&lt;/span&gt; &lt;span class="nv"&gt;git&lt;/span&gt;
+&lt;span class="nv"&gt;commands&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="nv"&gt;naming&lt;/span&gt; &lt;span class="nv"&gt;objects&lt;/span&gt; &lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;like&lt;/span&gt; &lt;span class="nv"&gt;git&lt;/span&gt; &lt;span class="nv"&gt;describe&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt; &lt;span class="nv"&gt;will&lt;/span&gt; &lt;span class="nv"&gt;ignore&lt;/span&gt; &lt;span class="nv"&gt;lightweight&lt;/span&gt;
+&lt;span class="nv"&gt;tags&lt;/span&gt; &lt;span class="nv"&gt;by&lt;/span&gt; &lt;span class="nv"&gt;default&lt;/span&gt;.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;To be honest, I still haven't yet figured out a good case for lightweight tags - if you have, give me a shout 'cause I'd love to know! Anyways, the bottom line is: &lt;strong&gt;do not forget the &lt;code&gt;-a&lt;/code&gt; flag when you're trying to make a release&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;Ok, back to our release!&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ git tag -a v1.0.0 -m &lt;span class="s2"&gt;&amp;quot;My awesome message for v1.0.0&amp;quot;&lt;/span&gt;
 $ git push --tags  &lt;span class="c1"&gt;# tags need to be pushed explicitly&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Done!&lt;/p&gt;
 &lt;h2&gt;Happy ending? Almost...&lt;/h2&gt;
@@ -200,7 +185,6 @@ $ git push --tags  &lt;span class="c1"&gt;# tags need to be pushed explicitly&lt
   &lt;span class="nt"&gt;sudo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;yes&lt;/span&gt;
   &lt;span class="nt"&gt;apt&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;pkg=git state=latest&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Pretty easy to figure out what it does! On top of that, Ansible outputs the name of your tasks when running them, making it trivial for you to keep track of what's going on behind the scenes.&lt;/p&gt;
 &lt;p&gt;Then there are modules, like &lt;code&gt;apt&lt;/code&gt; in the example above, which are basically wrappers for the most common operations. There are lots of them, so there's a very high chance that you'll find a module for the command you need to run. And in case you don't, you can always use the shell module to run your command as you would type it in the terminal.&lt;/p&gt;
@@ -241,10 +225,9 @@ $ git push --tags  &lt;span class="c1"&gt;# tags need to be pushed explicitly&lt
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;sublimedir&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/.config/sublime-text-3/Packages/User
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;and at the end of the file the lines taking care of the magic:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks&lt;/span&gt;
-&lt;span class="k"&gt;for&lt;/span&gt; file in &lt;span class="nv"&gt;$files&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; file &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nv"&gt;$files&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
     &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -a ~/.&lt;span class="nv"&gt;$file&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;    &lt;span class="c1"&gt;# check if a dotfile already exists&lt;/span&gt;
         &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Moving any existing dotfiles from ~ to &lt;/span&gt;&lt;span class="nv"&gt;$olddir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
         mv ~/.&lt;span class="nv"&gt;$file&lt;/span&gt; &lt;span class="nv"&gt;$olddir&lt;/span&gt;
@@ -273,7 +256,6 @@ ln -s &lt;span class="nv"&gt;$dir&lt;/span&gt;/sublime/User &lt;span class="nv"&
 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The full script can be found on &lt;a href="https://github.com/Railslide/dotfiles/blob/master/installdotfiles.sh"&gt;github&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Finally, since Package Control updates regularly some of the files in the User folder, I added them to a &lt;code&gt;.gitignore&lt;/code&gt; file in order to avoid to much noise in my version control. A list of those files can be found in the &lt;a href="https://sublime.wbond.net/docs/syncing"&gt;docs&lt;/a&gt; of Package Control.&lt;/p&gt;</content><category term="/dev"></category><category term="dotfiles"></category><category term="utilities"></category><category term="git"></category><category term="dev env"></category></entry><entry><title>Installing virtualenvwrapper for Python 3.4 on Ubuntu</title><link href="https://railslide.io/virtualenvwrapper-python3.html" rel="alternate"></link><published>2014-06-04T00:00:00+02:00</published><updated>2014-06-04T00:00:00+02:00</updated><author><name>Giulia Vergottini</name></author><id>tag:railslide.io,2014-06-04:/virtualenvwrapper-python3.html</id><summary type="html">&lt;p&gt;Virtualenvwrapper is a great virtualenv management tool. Here is how I set it up for Python 3.4 on Ubuntu.&lt;/p&gt;</summary><content type="html">&lt;p&gt;After listening to an inspiring talk by &lt;a href="http://www.kennethreitz.org/"&gt;Kenneth Reitz&lt;/a&gt; about transitioning from Python 2 to Python 3 at PyCon Sweden (I'll write a blog post about it sooner or later), I've decided that I should try to stick to Python 3 as much as possible.&lt;/p&gt;
 &lt;p&gt;So the first step in that direction was to set up my working environment in a Python 3 friendly way, hence to install Virtualenwrapper for Python 3. Here's how I did it.&lt;/p&gt;
@@ -283,11 +265,9 @@ ln -s &lt;span class="nv"&gt;$dir&lt;/span&gt;/sublime/User &lt;span class="nv"&
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo apt-get install python3-pip
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Install Virtualenvwrapper for Python 3:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo pip3 install virtualenvwrapper
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So far so good. Now it is time to configure Virtualenvwrapper.&lt;/p&gt;
 &lt;p&gt;Create a folder for your virtualenvs (I use ~/.virtualenvs) and set it as WORKON_HOME:&lt;/p&gt;
@@ -295,12 +275,10 @@ ln -s &lt;span class="nv"&gt;$dir&lt;/span&gt;/sublime/User &lt;span class="nv"&
 &lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;WORKON_HOME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/.virtualenvs
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Add the following lines to ~/.bashrc:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;VIRTUALENVWRAPPER_PYTHON=&amp;#39;/usr/bin/python3&amp;#39; # This needs to be placed before the virtualenvwrapper command&lt;/span&gt;
-&lt;span class="err"&gt;source /usr/local/bin/virtualenvwrapper.sh&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;VIRTUALENVWRAPPER_PYTHON=&amp;#39;/usr/bin/python3&amp;#39; # This needs to be placed before the virtualenvwrapper command
+source /usr/local/bin/virtualenvwrapper.sh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Close and re-open your shell and you're ready to go. Here are the basic commands for using virtualenvwrapper:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkvirtualenv virtualenv_name &lt;span class="c1"&gt;# Create virtualenv&lt;/span&gt;
@@ -308,27 +286,23 @@ workon virtualenv_name &lt;span class="c1"&gt;# Activate/switch to a virtualenv&
 deactivate virtualenv_name &lt;span class="c1"&gt;# Deactivate virtualenv&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Congratulations! Your Virtualenvwrapper for Python 3 is now ready to use.&lt;/p&gt;
 &lt;h2&gt;Projects&lt;/h2&gt;
 &lt;p&gt;&lt;em&gt;&lt;strong&gt;EDIT&lt;/strong&gt;: in a previous version of this article, I suggested to use the postactivate script to automatically navigate to the project folder when activating the virtualenv. However, since I discovered that such a task is automatically performed by the projects plugin, I updated the post accordingly.&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;While the possibility to have isolated virtual environments just a &lt;code&gt;mkvirtualenv&lt;/code&gt; away had immediately convinced me of the usefulness of Virtualenvwrapper, projects made me falling in love for it.&lt;/p&gt;
 &lt;p&gt;My typical workflow is to create a virtualenv and then create a project folder with the same name. So why not setting up Virtualenvwrapper to automatically do it for me every time I create a new virtualenv? Specify PROJECT_HOME in ~/.bashrc will do the trick:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;VIRTUALENVWRAPPER_PYTHON=&amp;#39;/usr/bin/python3&amp;#39;&lt;/span&gt;
-&lt;span class="err"&gt;PROJECT_HOME=&amp;#39;/path/to/where/you/want/your/project/folder/to/be/created&amp;#39; # This needs to be placed before the virtualenvwrapper command as well&lt;/span&gt;
-&lt;span class="err"&gt;source /usr/local/bin/virtualenvwrapper.sh&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;VIRTUALENVWRAPPER_PYTHON=&amp;#39;/usr/bin/python3&amp;#39;
+PROJECT_HOME=&amp;#39;/path/to/where/you/want/your/project/folder/to/be/created&amp;#39; # This needs to be placed before the virtualenvwrapper command as well
+source /usr/local/bin/virtualenvwrapper.sh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Now, when typing&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkproject my_project
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Virtualenvwrapper will automatically create a virtualenv and a folder called &lt;em&gt;my_project&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;Cherry on top, projects automaticatilly navigates to the project folder when activating the virtualenv. Thus, when typing&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;workon my_project
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Virtualenvwrapper activates the virtualenv and teleports me to ~/Projects/my_project. Neat!&lt;/p&gt;</content><category term="/dev"></category><category term="virtualenvwrapper"></category><category term="virtualenv"></category><category term="python3"></category></entry></feed>
