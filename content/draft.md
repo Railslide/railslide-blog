@@ -1,5 +1,5 @@
 Title: {TITLE}
-Date: {DATE}
+Date: 1970-01-01
 Tags:
 Slug: {SLUG}
 Summary:
