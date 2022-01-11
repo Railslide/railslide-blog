@@ -3,7 +3,6 @@ Date: 2020-04-18
 Category: CTF
 Tags: ctf, reverse
 Slug: tghack-2020-writeup-a-game-of-keys
-Author: Giulia Vergottini
 Summary: During Easter I played the TG:HACK 2020 CTF. Here' is my writeup for the _A game of keys_ challenge.
 
 > Download this file and get the flag. You will also need this wordlist.

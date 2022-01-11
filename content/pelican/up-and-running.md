@@ -2,7 +2,6 @@ Title: Up and running!
 Date: 2014-06-03
 Tags: pelican, publishing, github pages
 Slug: up-and-running
-Author: Giulia Vergottini
 Summary: Celebrating the first post of the blog and what to do next.
 
 Ok, my Pelican and GitHub pages powered blog seems to be up and running! Yay!

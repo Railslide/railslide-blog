@@ -3,7 +3,6 @@ Date: 2016-03-01
 Category: /dev
 Tags: subvenv, announcements, virtual environments, python
 Slug: subvenv-v1-0
-Author: Giulia Vergottini
 Summary: Subvenv 1.0 is out! What it is, why I wrote it, and why you might want to use it.
 
 

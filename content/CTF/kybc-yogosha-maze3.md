@@ -3,7 +3,6 @@ Date: 2021-03-24
 Category: CTF
 Tags: ctf, lfi, rce, kybc
 Slug: kybc-yogosha-2021-maze-3-writeup
-Author: Giulia Vergottini
 Summary: Writeup for Maze 3 challenge at KYBC CTF
 
 

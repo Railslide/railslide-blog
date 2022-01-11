@@ -2,7 +2,6 @@ Title: How to set up Pelican on GitHub pages
 Date: 2014-06-09
 Tags: pelican, publishing, github pages
 Slug: pelican-github-pages
-Author: Giulia Vergottini
 Summary: How to set up Pelican on GitHUb pages and a custom domain
 
 

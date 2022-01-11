@@ -2,7 +2,6 @@ Title: How to encrypt a removable disk in Ubuntu 14.04
 Date: 2015-04-27
 Tags: ubuntu, encryption, howto
 Slug: encrypt-removable-disk-ubuntu-1404
-Author: Giulia Vergottini
 Summary: Most of the guides on how to encrypt a removable disk in Ubuntu still refer to Ubuntu 12.04. Here's how to do it in Ubuntu 14.04 and to cope with the changes it introduces to the disks manager tool.
 
 The other day, while encrypting a USB stick, I discovered that most of the available howtos (including the community wiki) refers to Ubuntu 12.04. So, here's how to do it in Ubuntu 14.04, taking into account the changes that the latest LTS introduced to the disks manager tool.

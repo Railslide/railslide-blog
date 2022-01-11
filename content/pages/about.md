@@ -1,7 +1,5 @@
 Title: About
-Author: Giulia Vergottini
 Slug: about
-
 
 Hi, I'm Giulia!
 
