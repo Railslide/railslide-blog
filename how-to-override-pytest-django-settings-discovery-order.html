@@ -83,10 +83,10 @@
 <h2>Using <code>addopts</code> in the <code>pytest.ini</code> file</h2>
 <p>Wouldn't be awesome if you could just use the <code>pytest.ini</code> file, set all the necessary settings in there, and not have to worry ever again? Actually you can, thanks to <a href="http://doc.pytest.org/en/3.0.2/customize.html#confval-addopts"><code>addopts</code></a>.</p>
 <p>What <code>addopts</code> does is to add options (hence the double d!) to your test run as if they were specified via command line. So, for example, if you want to update and export coverage every time you run the suite, you would write this in the <code>pytest.ini</code> file</p>
-<div class="highlight"><pre><span></span><code><span class="k">[pytest]</span>
-<span class="na">addopts</span> <span class="o">=</span>
-    <span class="na">--cov</span><span class="o">=</span><span class="s">.</span>
-    <span class="na">--cov-report</span><span class="o">=</span><span class="s">html</span>
+<div class="highlight"><pre><span></span><code><span class="k">[pytest]</span><span class="w"></span>
+<span class="na">addopts</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">    </span><span class="na">--cov</span><span class="o">=</span><span class="s">.</span><span class="w"></span>
+<span class="w">    </span><span class="na">--cov-report</span><span class="o">=</span><span class="s">html</span><span class="w"></span>
 </code></pre></div>
 
 <p>and every time you run <code>pytest</code> it will, behind the scene, be interpreted as if you have run</p>
