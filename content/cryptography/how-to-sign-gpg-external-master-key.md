@@ -2,7 +2,6 @@ Title: How to sign PGP keys with an offline master key
 Date: 2017-06-03
 Tags: GPG, cryptography, howto
 Slug: how-to-sign-pgp-keys-with-offline-master-key
-Author: Giulia Vergottini
 Summary: Signing other people keys with an offline master key is not super straightforward. Here's how to do it in an almost pain-free way.
 
 Lately I wanted to sign a coworker's key, so after having gone through the all in-real-life verification shebang together, all that was left was me performing the actual signing. However, since I [use subkeys on my laptop]({filename}./create-gpg-key-with-subkeys.md), I first needed to get out my master key from its secret dungeon and tell GPG to use that one instead of the usual subkey. For doing that I used the handy `--homedir` option.

@@ -3,7 +3,6 @@ Date: 2016-09-29
 Category: /dev
 Tags: django, pytest, pytest-django, environment variables
 Slug: how-to-override-pytest-django-settings-discovery-order
-Author: Giulia Vergottini
 Summary: The order pytest-django uses for determining which settings file should be used for running tests might not be the most optimal when using environment variables. However, it is still possible to override it so that it picks up the correct file without recurring to extra typing.
 
 

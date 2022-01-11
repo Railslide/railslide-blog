@@ -11,6 +11,10 @@ TIMEZONE = "Europe/Paris"
 
 DEFAULT_LANG = "en"
 
+# Avoid creating authors page, since this is a one woman show
+AUTHOR_SAVE_AS = ""
+AUTHORS_SAVE_AS = ""
+
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
 CATEGORY_FEED_ATOM = None

@@ -3,7 +3,6 @@ Date: 2016-06-07
 Category: /dev
 Tags: virtualenvwrapper, virtualenv, python3, pyvenv
 Slug: pyvenv-virtualenvwrapper
-Author: Giulia Vergottini
 Summary: After reading that it might be possible to use virtualenvwrapper with pyvenv, I decided to fire up a couple of virtual machines and to find it out.
 
 Python 3 ships with pyvenv, a built-in virtualenv manager. Although I welcomed the news as a definitely good one, the absence of a virtualenvwrapper-like tool for pyvenv has always stopped me from giving it a try. I consider virtualenvwrapper to be a super neat tool (I even wrote a plugin for it!) and I don't see why I would want to type the path to my virtual environment activation script every time I want to activate it, when I can just use a way more pythonic `workon my_venv`.

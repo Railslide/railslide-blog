@@ -3,7 +3,6 @@ Date: 2014-06-04
 Category: /dev
 Tags: virtualenvwrapper, virtualenv, python3
 Slug: virtualenvwrapper-python3
-Author: Giulia Vergottini
 Summary: Virtualenvwrapper is a great virtualenv management tool. Here is how I set it up for Python 3.4 on Ubuntu.
 
 

@@ -3,7 +3,6 @@ Date: 2016-05-15
 Category: /dev
 Tags: travis-ci, python, python3, mock
 Slug: travis-mock-afternoon-of-frustration
-Author: Giulia Vergottini
 Summary: My plan was to quickly set up Travis CI for Subvenv and then move on to other projects. Instead, it came out that I couldn't have been more wrong and I ended up instead in an afternoon of frustration.
 
 I have been tinkering for a while with the idea of setting up Travis CI for Subvenv. I mean, automatically running tests on pull requests sounded like a great idea and the getting started guide seemed pretty straightforward, so why not use a bit of my today's free-for-coding time for setting Travis up?

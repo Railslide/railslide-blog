@@ -3,7 +3,6 @@ Date: 2021-12-26
 Category: linux
 Tags: os, linux, distro
 Slug: switching-from-ubuntu-to-manjaro
-Author: Giulia Vergottini
 Summary: After many years on Ubuntu I decided it was time for some distro hopping and I gave Manjaro a spin.
 
 I've been an Ubuntu user for about 14 years and while I have been using other distros (mostly on servers) from time to time, I never felt the need to switch away from it. Lately though a mix of curiosity and some Ubuntu stuff rubbing my nerves gave me the nudge to try something else. I had heard good things about Manjaro, so I decided to give it a shot.

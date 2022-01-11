@@ -3,7 +3,6 @@ Date: 2018-03-03
 Category: /dev
 Tags: docker, dev env
 Slug: tips-and-tricks-for-developing-locally-with-docker
-Author: Giulia Vergottini
 Summary: ???
 Status: Draft
 
