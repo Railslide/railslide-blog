@@ -1,7 +1,6 @@
 Title: Switching from Ubuntu to Manjaro
 Date: 2021-12-26
-Category: linux
-Tags: os, linux, distro
+Tags: os, linux, distro, manjaro, ubuntu
 Slug: switching-from-ubuntu-to-manjaro
 Summary: After many years on Ubuntu I decided it was time for some distro hopping and I gave Manjaro a spin.
 

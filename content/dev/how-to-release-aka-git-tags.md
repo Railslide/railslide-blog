@@ -1,6 +1,5 @@
 Title: How to release your code (aka Git tags)
 Date: 2016-04-02
-Category: /dev
 Tags: git, github, release
 Slug: how-to-release-aka-git-tags
 Summary: After spending quite some time working on your side project, you feel that it is finally good enough for going public. Releasing sounds like a super neat idea, but how do you do it?

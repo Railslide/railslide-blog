@@ -1,6 +1,5 @@
 Title: KYBC 2021 - Maze 1 Writeup
 Date: 2021-03-17
-Category: CTF
 Tags: ctf, lfi, rce, kybc
 Slug: kybc-yogosha-2021-maze-1-writeups
 Summary: Writeup for Maze 1 challenge at KYBC CTF

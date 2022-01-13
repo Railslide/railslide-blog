@@ -1,6 +1,5 @@
 Title: Using pyvenv with virtualenvwrapper
 Date: 2016-06-07
-Category: /dev
 Tags: virtualenvwrapper, virtualenv, python3, pyvenv
 Slug: pyvenv-virtualenvwrapper
 Summary: After reading that it might be possible to use virtualenvwrapper with pyvenv, I decided to fire up a couple of virtual machines and to find it out.

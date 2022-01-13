@@ -1,6 +1,5 @@
 Title: Anaconda VS SublimePythonIDE
 Date: 2015-01-27
-Category: /dev
 Tags: python, sublime text, code linting, tools
 Slug: anaconda-vs-sublime-python-ide
 Summary: When I was looking for a python code linting plugin for Sublime Text 3, I stumbled upon several blog posts mentioning either SublimePythonIDE or Anaconda. The problem was, however, that a comparison between the two was nowhere to be found, so I ended up trying both.

@@ -1,6 +1,5 @@
 Title: TG:HACK 2020 Writeup - A game of keys
 Date: 2020-04-18
-Category: CTF
 Tags: ctf, reverse
 Slug: tghack-2020-writeup-a-game-of-keys
 Summary: During Easter I played the TG:HACK 2020 CTF. Here' is my writeup for the _A game of keys_ challenge.

@@ -1,6 +1,5 @@
 Title: Travis, Mock, different Python versions, and an afternoon of frustration
 Date: 2016-05-15
-Category: /dev
 Tags: travis-ci, python, python3, mock
 Slug: travis-mock-afternoon-of-frustration
 Summary: My plan was to quickly set up Travis CI for Subvenv and then move on to other projects. Instead, it came out that I couldn't have been more wrong and I ended up instead in an afternoon of frustration.

@@ -1,6 +1,5 @@
 Title: Setting up a dotfiles repo and easily port configurations around
 Date: 2014-07-10
-Category: /dev
 Tags: dotfiles, utilities, git, dev env
 Slug: dotfiles
 Summary: How I set up a repository containing my setting and configuration files and delegated the task of creating symlinks to the computer.

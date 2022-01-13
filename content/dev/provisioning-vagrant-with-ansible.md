@@ -1,6 +1,5 @@
 Title: Provisioning Vagrant with Ansible
 Date: 2016-02-05
-Category: /dev
 Tags: vagrant, ansible, automatization
 Slug: provisioning-vagrant-with-ansible
 Summary: Vagrant is an amazing tool. However, one thing that bugged me was that provisioning scripts preparation still required me a fair amount of time and trial-errors attempts. Switching to Ansible allowed me to make my life easier and provision times shorter.
