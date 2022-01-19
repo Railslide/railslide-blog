@@ -5,7 +5,7 @@ Slug: kybc-yogosha-2021-maze-3-writeup
 Summary: Writeup for Maze 3 challenge at KYBC CTF
 
 
-_In order to start this challenge it was necessary to complete [Maze 2]({filename}/CTF/kybc-yogosha-maze2.md) first_
+_In order to start this challenge it was necessary to complete [Maze 2]({filename}/ctf/kybc-yogosha-maze2.md) first_
 
 Third maze, third user. Let's check what's in `home/ctf_user3`
 
