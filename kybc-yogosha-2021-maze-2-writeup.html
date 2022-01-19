@@ -54,7 +54,7 @@
                 <header class="post-header">
                     <h1>KYBC 2021 - Maze 2 Writeup</h1>
                         <p class="post-meta">
-                        category: <a href="https://railslide.io/category/ctf.html">CTF</a>, date: 22-03-2021
+                        category: <a href="https://railslide.io/category/ctf.html">ctf</a>, date: 22-03-2021
                         </p>
                         <p class="post-meta">
                             tags =                                 <a class="post-category" href="https://railslide.io/tag/ctf.html">ctf</a>
@@ -63,7 +63,7 @@
                                 <a class="post-category" href="https://railslide.io/tag/kybc.html">kybc</a>
                 </header>
             </section>
-            <p><em>In order to start this challenge it was necessary to complete <a href="https://railslide.io/kybc-yogosha-2021-maze-1-writeups.html">Maze 1</a> first</em></p>
+            <p><em>In order to start this challenge it was necessary to complete <a href="{filename}/CTF/kybc-yogosha-maze1.md">Maze 1</a> first</em></p>
 <p>After catching the first flag, let's check what's in <code>home/ctf_user2</code>. There is a flag file, but this time concatenating it doesn't work since the current user (<code>ctf_user1</code>) doesn't have read permissions to it. The only other interesting thing is a file called <code>sysadmin.c</code>. Permissions are in my favor this time, so let's have a look at the content:</p>
 <div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>

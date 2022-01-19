@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="https://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>Oh btw, I use Arch // Railslide // Code, experiments, and thoughts</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/puremorning.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="links"><a href="/about.html">About</a></p>
+                                <p class="links"><a href="/categories.html">Categories</a></p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Oh btw, I use Arch</h1>
+                        <p class="post-meta">
+                        category: <a href="https://railslide.io/category/linux.html">linux</a>, date: 13-01-2022
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="https://railslide.io/tag/os.html">os</a>
+                                <a class="post-category" href="https://railslide.io/tag/linux.html">linux</a>
+                                <a class="post-category" href="https://railslide.io/tag/distro.html">distro</a>
+                                <a class="post-category" href="https://railslide.io/tag/arch.html">arch</a>
+                </header>
+            </section>
+            <p>I was happily running Manjaro when my computer started to crash multiple times per day. I tried debugging but that did not lead anywhere (it will later turn out to be a hardware issue). So, out of ideas I decided to see if the problem was somehow Manjaro specific and if another distro would solve it. And it was at that point that a friend somehow convinced me to give Arch a shot.</p>
+<h2>My approach to Arch</h2>
+<p>The main reason why I've never considered Arch before it was probably that I had the misfortune to run into some terrible Arch users in the past. You know, the <em>Ubuntu is for noobs, installing and running Arch is so complicated, I made it and hence I'm better than you</em> kind of people. So in my mind Arch was pretty much an elitist overcomplicated distro and I didn't really see any good reason for giving it a shot.</p>
+<p>What changed my mind then? Well, it has been a combination of things. On one hand - thanks to Manjaro - I got exposed to AUR (Arch User Repository) and grew fond of it. on April 1st Arch had released an installer (fun fact: due to the date many thought it was an April's fool) removing the need to install Arch from scratch. Plus, I was extremely frustrated by the frequent crashes and if Arch was the solution so be it.</p>
+<p>On the other hand I realized that a bunch of awesome people in my life were in fact using Arch (I probably had run into nice Arch users even before, but since they didn't go around boosting how cool they were for using Arch I probably missed that). And since I'm not immune to peer reinforcement that definitely helped. Plus a part of me secretly regarded Arch as a sort of mandatory step/rite of passage in my linux journey, so when a friend suggested to give Arch a shot I just assumed that the time for it had come.</p>
+<p>I must say, however, that even though I had bought in to the idea of installing Arch, my expectation was very much of giving it try, finding it too complicated/elitist, and moving to another distro. It turned out that I was very wrong.</p>
+<h2>Installing Arch</h2>
+<p>Thanks to the shiny new installer, the process of installing Arch was generally straightforward. The only part I didn't find very intuitive was accessing the wifi from TTY. Thankfully a friend had provided me with instructions, so that went smoothly as well. For the sake of my future self, here they are:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">iwctl</span>
+<span class="nv">stations</span> <span class="nv">list</span>
+<span class="nv">stations</span> <span class="o">&lt;</span><span class="nv">probably</span><span class="o">-</span><span class="nv">wlan0</span><span class="o">-</span><span class="nv">but</span><span class="o">-</span><span class="nv">whatever</span><span class="o">-</span><span class="nv">is</span><span class="o">-</span><span class="nv">listed</span><span class="o">-</span><span class="nv">in</span><span class="o">-</span><span class="nv">list</span><span class="o">&gt;</span> <span class="k">connect</span> <span class="o">&lt;</span><span class="nv">SSID</span><span class="o">&gt;</span>
+</code></pre></div>
+
+<p>The rest went through without too much hassle. A good idea was however to have another computer or a phone ready at hand, for those few times where I felt the need to google something during the process.</p>
+<h2>My first steps into the Arch world</h2>
+<p>My first impression of Arch was that it was very... bare. Being used to distros with a bespoken desktop environment, I was a bit caught off guard when I first logged in. I had picked Gnome during the installation and what I got was indeed Gnome, just stripped to the bare minimum - anything else I wanted I had to install it myself. Don't get me wrong though, that is a good thing! Yes, I did have to figure out what was the name of the components I wanted and how to install them. But after a bit of fiddling I got my DE to work, look and feel exactly the way I wanted - and if that's not the beauty of linux in a nutshell, I don't what that is.</p>
+<p>Another thing I noticed is the speed of my system. Compared to a fresh installation of Ubuntu, Arch is just blazing fast. I guess that's probably one of the perks on of not having a lot of useless software installed from the start. Again, yes, I had to install everything I need out of the box, but that also means my system resources are spent only on the programs I actually use.</p>
+<p>Last but not least, I cannot really stress enough what an amazing documentation and community Arch has. The internet is full of people praising the Arch wiki and I totally agree - for 99% of the issues I encountered the solution was documented there. And the remaining 1% was usually covered by the <a href="https://bbs.archlinux.org/">Arch Linux Forum on BBS</a>.</p>
+<h2>Package management</h2>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>
