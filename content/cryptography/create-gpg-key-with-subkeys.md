@@ -4,7 +4,7 @@ Tags: GPG, cryptography, howto
 Slug: create-gpg-key-with-subkeys
 Summary: A step by step guide for creating a GPG key with subkeys.
 
-I wanted to create a GPG key - so far so good. The problem is that I also wanted to use GPG on multiple devices, ideally even on my phone. I could have - _in theory_ - copied the key over to all the needed machines, but that would have been a terrible ide. What if I lose my phone/laptop? My key would be compromised and I'd be left with no other choice than revoking it and losing all the previous signatures.
+I wanted to create a GPG key - so far so good. The problem is that I also wanted to use GPG on multiple devices, ideally even on my phone. I could have - _in theory_ - copied the key over to all the needed machines, but that would have been a terrible idea. What if I lose my phone/laptop? My key would be compromised and I'd be left with no other choice than revoking it and losing all the previous signatures.
 
 That's when subkeys come in.
 
