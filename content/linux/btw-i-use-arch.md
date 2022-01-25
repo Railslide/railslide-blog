@@ -42,3 +42,16 @@ Last but not least, I cannot really stress enough what an amazing documentation 
 
 Package management
 ------------------
+
+When I mentioned to people that I was considering Arch (the fist step of installing Arch is to tell everyone that you're installing Arch :D), I got many warnings around package management. They mostly boiled down to two topics: rolling releases and Aur packages.
+
+The main critique with rolling releases is that you need to monitor which packages you're installing, since you might end up with something _too new_ to play nice with the rest of them. My experience with it is that, while I do pay a bit more attention when critical packages show up in the list (e.g. new kernel, or Gnome related stuff), I've yet to ended up in such a scenario. Maybe I'm just lucky, but so far these 8 months have been smoothly from that perspective.
+
+_AUR_PACKAGES_
+
+Plus now that thanks to Yay (if you don't use it, have a look at it - it's awesome!) I can handle both AUR and Arch packages from the same place, I'm an even happier camper.
+
+Conclusion
+----------
+
+All in all, I'm very happy with Arch. In spite of my reluctance, it turned out to be a great fit for me.
