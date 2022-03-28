@@ -3,7 +3,7 @@ Slug: about
 
 Hi, I'm Giulia!
 
-A security engineer with a MA in History and a background in software development.
+A software developer with a MA in History and a passion for security.
 
 <hr class="invisible-spacer">
 
