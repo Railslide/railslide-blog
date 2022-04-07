@@ -12,7 +12,15 @@ Setup
 
 
 Local development
----------------
+-----------------
+
+Create a new empty article with all the metadata scaffholding in place with
+
+```
+python newarticle.py [category_name]/[filename].md
+```
+
+**Note:** the command will fail if a directory with the given category name doesn't already exists (this is done to avoid mistakenly creating new folders due to typos). So if you are going to intodruce a new category, create the directory first and then run the script.
 
 To render the blog, start the development server with `poetry run make devserver` and point your browser to http://localhost:8000
 
