@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="https://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>Managing multiple Git identities // Railslide // Code, experiments, and thoughts</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/puremorning.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="links"><a href="/about.html">About</a></p>
+                                <p class="links"><a href="/categories.html">Categories</a></p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Managing multiple Git identities</h1>
+                        <p class="post-meta">
+                        category: <a href="https://railslide.io/category/dev.html">dev</a>, date: 30-08-2022
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="https://railslide.io/tag/git.html">git</a>
+                </header>
+            </section>
+            <p>I code for work and I code for fun. When I do it for fun I use my personal email address as identity in Git, but when I do it for work I am often required to use my work email. For a long time my solution was to simply to set my working email in the <code>.gitconfig</code> of my working machine. That worked for most cases (I usually tend to only code for work on my work machine) and as the only pain point seemed to be my dotfiles, I simply accepted the pain of copy-pasting things around as a necessary evil and moved on with my life.</p>
+<p>However, it turns out that there's a better way to handle multiple identities in Git: enter conditional configuration! Basically you can tell Git to include a different <code>.gitconfig</code> depending on a certain condition (e.g. when the <code>.git</code> directory matches a certain path). So for my specific case I simply changed my <code>.gitconfig</code> to like something like this:</p>
+<div class="highlight"><pre><span></span><code><span class="k">[user]</span><span class="w"></span>
+<span class="w">    </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;first name&gt; &lt;last name&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="na">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;work email address&gt;</span><span class="w"></span>
+<span class="k">[includeIf &quot;gitdir:~/Projects/personal/&quot;]</span><span class="w"></span>
+<span class="w">    </span><span class="na">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">.gitconfig-personal</span><span class="w"></span>
+</code></pre></div>
+
+<p>and then in the <code>.gitconfig-personal</code> I added</p>
+<div class="highlight"><pre><span></span><code><span class="k">[user]</span><span class="w"></span>
+<span class="w">    </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;first name&gt; &lt;last name&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="na">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;personal email address&gt;</span><span class="w"></span>
+</code></pre></div>
+
+<p>and now every time I work on a repo in the <code>personal/</code> folder the work <code>[user]</code> block gets automagically overridden by the personal one. No more weird copy pasting around! </p>
+<h3>Gotchas</h3>
+<ul>
+<li>This requires Git 2.13+ to work.</li>
+<li>The last slash of the <code>gitdir</code> path matters! If you forget it, it won't work.</li>
+<li><code>../</code> gets matched literally, so don't use that if you want to refer to the parent folder.</li>
+</ul>
+<h3>References</h3>
+<ul>
+<li><a href="https://git-scm.com/docs/git-config#_conditional_includes">Conditional configuration in Git docs</a></li>
+</ul>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>
