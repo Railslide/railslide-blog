@@ -24,12 +24,15 @@ def main():
     try:
         file_path = Path(f"content/{sys.argv[1]}")
     except IndexError:
-        raise TypeError(
+        raise RuntimeError(
             "Missing file name!\nUsage: python newarticle.py category/filename.md"
         )
 
     if file_path.exists():
         raise FileExistsError("File already exists!")
+
+    if file_path.suffix != "md":
+        raise RuntimeError("Filename should have .md extension!")
 
     # Let's avoid creating directories because of typos
     if not file_path.parent.exists():
