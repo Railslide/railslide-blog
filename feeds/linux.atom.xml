@@ -57,7 +57,7 @@
 &lt;li&gt;The correct keyboard layout is not loaded yet, so if you're using special chars good luck with that.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;A workaround for it is to do a manual partitioning and leave &lt;code&gt;/boot&lt;/code&gt; unencrypted. However documentation and/or steps-by-steps instructions for how to do it are not easy to find, and even if you know how to do it you might still bump into some &lt;a href="https://github.com/calamares/calamares/issues/1073"&gt;installer bug&lt;/a&gt; and end up with an unbootable system.&lt;/p&gt;
-&lt;h1&gt;Conclusion&lt;/h1&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
 &lt;p&gt;In general I got a really nice impression of Manjaro and I definitely landed in my list of recommended distros.&lt;/p&gt;
 &lt;p&gt;Will I stay with it? Well, I ended up not to. Due to frequent crashes to my machine, I tried to install other distros to see if it was something related to Manjaro. While the problem turned out to be a hardware issue, the debugging process resulted in me stumbling on the above Calamares bug when trying to go back to Manjaro, getting frustrated, and eventually install something else (more on this in another post!). That said, I'd be more than willing to give Manjaro another chance in the future, once such bug gets fixed.&lt;/p&gt;
 &lt;p&gt;TL;DR: a great distro, with some encryption pain.&lt;/p&gt;</content><category term="linux"></category><category term="os"></category><category term="linux"></category><category term="distro"></category><category term="manjaro"></category><category term="ubuntu"></category></entry></feed>
