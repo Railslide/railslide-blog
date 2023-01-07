@@ -3,7 +3,7 @@ Date: 2023-01-04
 Tags: editor, vim, tools
 Slug: learning-vim-in-2022
 Summary: I decided that in 2022 I would learn Vim, here's how it went.
-Status: draft
+
 
 At a certain point I decided that it was time for me to learn how to use Vim. There were mainly two reasons for it. Number one, while playing the Sans Holiday Hack Challenge I have had a taste of how powerful could Vim be, as I discovered that I could open a binary file, pipe it through `xxd`, and modify its source code. Second, I recently found myself orphaned of an editor of choice, so I needed to find a new one.
 
@@ -11,7 +11,7 @@ At a certain point I decided that it was time for me to learn how to use Vim. Th
 
 For a long time I have used Sublime Text as my go-to editor. I set up a bunch of plugins so that I could have linting and autocompletion, bought a license (at the time the business model of Sublime was an one-off lifelong license) and happily coded with it for a bunch of years. The problem with that setup was that the more languages I started coding in the more plugins I had to add, and those plugins didn't always play along with each other. On top of that Sublime has now switched to a monthly subscription license model, and - while I still use Sublime for occasional note-taking and writing this blog - I don't feel it gives me enough value for committing to a subscription.
 
-Then came Kotlin and with it came IntelliJ. I loved IntelliJ and for me it's the best IDE out there: fantastic language support, everything can be done through keyboard, fuzzy search for anything you might need (files, actions, etc.), and so on. So why don't I stick to it? Well, mostly because its free version doesn't have multilanguage support. In other words, if you don't use the paid version, you have to use a different editor for each language (e.g. IntelliJ for Kotlin, PyCharm for Python, GoLand for Go, and good luck with JS/Typescript as there's no free version of Webstorm). That is usually not a problem at work, as my employer is happy to cover the cost of the license, but when it comes to the amount of code I do in my free time I found hard to motivate such an expense.
+Then came Kotlin and with it came IntelliJ. I loved IntelliJ and for me it's one of the best IDEs out there: fantastic language support, everything can be done through keyboard, fuzzy search for anything you might need (files, actions, etc.), and so on. So why don't I stick to it? Well, mostly because its free version doesn't have multilanguage support. In other words, if you don't use the paid version, you have to use a different editor for each language (i.e. IntelliJ for Kotlin, PyCharm for Python, GoLand for Go, and good luck with JS/Typescript as there's no free version of Webstorm). That is usually not a problem at work, as my employer is happy to cover the cost of the license, but when it comes to the amount of code I do in my free time I found hard to motivate such an expense.
 
 Last but not least I also gave VSCode a shot, but I found it way too mouse oriented from my liking and its shortcuts didn't feel super intuitive to me.
 
@@ -27,13 +27,9 @@ Copy and pasting is probably the part I struggle the most with at the moment. Vi
 
 On the bright side there are some motions I really enjoy and see a lot of value in. For example, the ability to delete a whole line by simply typing `dd` is a bliss and I often find myself longing for it when using other text-editing programs. I also really like the so called [_Vim grammar_](https://github.com/iggredible/Learn-Vim/blob/master/ch04_vim_grammar.md), i.e. the ability to combine together motions and operators to create/learn new commands. Or, in more simple terms, how things don't seem to make sense in Vim until you understand the thinking behind them and suddenly everything clicks in place.
 
-## Wrapping up
+## Conclusion
 
-So, was it worthy learning Vim in 2022? To me yes. Sure, it might have been frustrating at times and there were definitely occasions where editing some files took me what it felt like an eternity, but all in all it has been growing on me and nowadays I rarely feel the need to resort to other editors.
-
-So if you are willing to put the time, I'd say it's worth a shot.
-
-And if learning Vim sounds daunting, just be aware that there are plenty of resources out there and that it's really up to you how much hardcore you wanna go with it.
+So, was it worthy learning Vim in 2022? To me yes. Sure, it might have been frustrating at times and there were definitely occasions where editing some files took me what it felt like an eternity, but all in all it has been growing on me and nowadays I rarely feel the need to resort to other editors. So if you are willing to put the time, I'd say it's worth a shot.
 
 
 ## Resources

@@ -44,7 +44,7 @@ My major complain about it are its disk encryption settings. By default if you d
 
 A workaround for it is to do a manual partitioning and leave `/boot` unencrypted. However documentation and/or steps-by-steps instructions for how to do it are not easy to find, and even if you know how to do it you might still bump into some [installer bug](https://github.com/calamares/calamares/issues/1073) and end up with an unbootable system.
 
-# Conclusion
+## Conclusion
 In general I got a really nice impression of Manjaro and I definitely landed in my list of recommended distros.
 
 Will I stay with it? Well, I ended up not to. Due to frequent crashes to my machine, I tried to install other distros to see if it was something related to Manjaro. While the problem turned out to be a hardware issue, the debugging process resulted in me stumbling on the above Calamares bug when trying to go back to Manjaro, getting frustrated, and eventually install something else (more on this in another post!). That said, I'd be more than willing to give Manjaro another chance in the future, once such bug gets fixed.
