@@ -1,5 +1,5 @@
 Title: Learning vim in 2022
-Date: 2023-01-04
+Date: 2023-01-07
 Tags: editor, vim, tools
 Slug: learning-vim-in-2022
 Summary: I decided that in 2022 I would learn Vim, here's how it went.
