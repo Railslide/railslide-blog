@@ -28,11 +28,14 @@ def main():
             "Missing file name!\nUsage: python newarticle.py category/filename.md"
         )
 
+    if file_path.suffix != ".md":
+        if file_path.suffix == "":
+            file_path = file_path.with_suffix(".md")
+        else:
+            raise RuntimeError("Filename should have .md extension!")
+
     if file_path.exists():
         raise FileExistsError("File already exists!")
-
-    if file_path.suffix != "md":
-        raise RuntimeError("Filename should have .md extension!")
 
     # Let's avoid creating directories because of typos
     if not file_path.parent.exists():
