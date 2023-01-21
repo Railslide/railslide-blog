@@ -1,5 +1,5 @@
 Title: Going full in with Neovim
-Date: 2023-01-16
+Date: 2023-01-21
 Tags: editor, vim, neovim, tools
 Slug: going-full-in-with-neovim
 Summary: Goodbye `.vimrc`, hello `lua.init`!
