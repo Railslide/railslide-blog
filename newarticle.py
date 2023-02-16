@@ -9,7 +9,7 @@ def prepare_content(filename):
     template = Path("content/draft.md")
     content = template.read_text()
 
-    slug = filename.rstrip(".md")
+    slug = filename.removesuffix(".md")
     title = str.replace(slug, "-", " ").capitalize()
     date_string = date.today().strftime("%Y-%m-%d")
 
