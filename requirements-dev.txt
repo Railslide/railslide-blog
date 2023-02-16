@@ -1,0 +1,5 @@
+-r requirements.txt
+
+pip-tools==6.12.2
+black==23.1.0
+isort==5.12.0
