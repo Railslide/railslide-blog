@@ -1,6 +1,7 @@
-from fabric.api import *
-import fabric.contrib.project as project
 import os
+
+import fabric.contrib.project as project
+from fabric.api import *
 
 # Local path configuration (can be absolute or relative to fabfile)
 env.deploy_path = "output"
