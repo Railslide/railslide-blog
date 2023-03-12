@@ -65,7 +65,7 @@
 <p>Download this file and get the flag. You will also need this wordlist.</p>
 </blockquote>
 <p>The provided files are a python compiled file (keygame.pyc) and a txt file with a list of gibberish words (wordlist.txt). The wordlist didn't seem very interesting, so I proceeded to decompile the python file</p>
-<div class="highlight"><pre><span></span><code>$ uncompyle6 keygame.pyc &gt; keygame.py
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>uncompyle6<span class="w"> </span>keygame.pyc<span class="w"> </span>&gt;<span class="w"> </span>keygame.py
 </code></pre></div>
 
 <p>And had a look at the source code</p>
@@ -124,30 +124,30 @@
 
 <p>My take from it was that the programs takes four inputs and uses them for creating a key based on a matrix and on the wordlist. If the resulting key is the correct one, the <code>checkdata</code> function is going to print out the flag.</p>
 <p>Running the program confirmed my theory</p>
-<div class="highlight"><pre><span></span><code>$ python keygame.py
-input a number: <span class="m">1</span>
-input a number: <span class="m">1</span>
-input a number: <span class="m">1</span>
-input a number: <span class="m">1</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>keygame.py
+input<span class="w"> </span>a<span class="w"> </span>number:<span class="w"> </span><span class="m">1</span>
+input<span class="w"> </span>a<span class="w"> </span>number:<span class="w"> </span><span class="m">1</span>
+input<span class="w"> </span>a<span class="w"> </span>number:<span class="w"> </span><span class="m">1</span>
+input<span class="w"> </span>a<span class="w"> </span>number:<span class="w"> </span><span class="m">1</span>
 aa0caa0c
-<span class="m">5</span><span class="p">&amp;</span>RYAW   DASA_BYF
-                           ^
-                             ^ <span class="nv">aa0caa0c</span> <span class="o">=</span> TG31<span class="o">{</span>tils gmag!vhotmd c<span class="sb">`</span> oo!tei%mono<span class="o">}</span>
+<span class="m">5</span><span class="p">&amp;</span>RYAW<span class="w">   </span>DASA_BYF
+<span class="w">                           </span>^
+<span class="w">                             </span>^<span class="w"> </span><span class="nv">aa0caa0c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>TG31<span class="o">{</span>tils<span class="w"> </span>gmag!vhotmd<span class="w"> </span>c<span class="sb">`</span><span class="w"> </span>oo!tei%mono<span class="o">}</span>
 </code></pre></div>
 
 <p>Now, how to figure out what are the correct inputs? The sources shows that the game is created with a 25x25 matrix (<code>mgame = myGame(25, 25)</code>) and since the inputs are used as indexes for the matrix, any input greater than 24 should be invalid.</p>
 <p>A quick run of the program confirmed this theory as well</p>
-<div class="highlight"><pre><span></span><code>$ python keygame.py
-input a number: <span class="m">25</span>
-input a number: <span class="m">25</span>
-input a number: <span class="m">25</span>
-input a number: <span class="m">25</span>
-Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
-  File <span class="s2">&quot;keygame.py&quot;</span>, line <span class="m">56</span>, <span class="k">in</span> &lt;module&gt;
-    <span class="nv">data</span> <span class="o">=</span> mgame.make_keys<span class="o">(</span>int<span class="o">(</span>x<span class="o">)</span>, int<span class="o">(</span>y<span class="o">)</span>, int<span class="o">(</span>x1<span class="o">)</span>, int<span class="o">(</span>y1<span class="o">))</span>
-  File <span class="s2">&quot;keygame.py&quot;</span>, line <span class="m">34</span>, <span class="k">in</span> make_keys
-    keyArray.append<span class="o">(</span>self.matrix<span class="o">[</span>args<span class="o">[</span><span class="m">0</span><span class="o">]][</span>args<span class="o">[</span><span class="m">1</span><span class="o">]])</span>
-IndexError: list index out of range
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>keygame.py
+input<span class="w"> </span>a<span class="w"> </span>number:<span class="w"> </span><span class="m">25</span>
+input<span class="w"> </span>a<span class="w"> </span>number:<span class="w"> </span><span class="m">25</span>
+input<span class="w"> </span>a<span class="w"> </span>number:<span class="w"> </span><span class="m">25</span>
+input<span class="w"> </span>a<span class="w"> </span>number:<span class="w"> </span><span class="m">25</span>
+Traceback<span class="w"> </span><span class="o">(</span>most<span class="w"> </span>recent<span class="w"> </span>call<span class="w"> </span>last<span class="o">)</span>:
+<span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;keygame.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">56</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>&lt;module&gt;
+<span class="w">    </span><span class="nv">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>mgame.make_keys<span class="o">(</span>int<span class="o">(</span>x<span class="o">)</span>,<span class="w"> </span>int<span class="o">(</span>y<span class="o">)</span>,<span class="w"> </span>int<span class="o">(</span>x1<span class="o">)</span>,<span class="w"> </span>int<span class="o">(</span>y1<span class="o">))</span>
+<span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;keygame.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">34</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>make_keys
+<span class="w">    </span>keyArray.append<span class="o">(</span>self.matrix<span class="o">[</span>args<span class="o">[</span><span class="m">0</span><span class="o">]][</span>args<span class="o">[</span><span class="m">1</span><span class="o">]])</span>
+IndexError:<span class="w"> </span>list<span class="w"> </span>index<span class="w"> </span>out<span class="w"> </span>of<span class="w"> </span>range
 </code></pre></div>
 
 <p>So, I needed a way to test all the possible combinations of four inputs ranging from 0 to 24 and it turned out that python has a built-in way for doing just that. Enter <code>itertools.products</code></p>

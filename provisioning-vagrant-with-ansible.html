@@ -68,9 +68,9 @@
 <p>Finally, you have to <em>echo all the things</em> in order to keep track of the different installation steps - reducing thus the readability of the script.</p>
 <p>Of course these are trivial problems and I've happily coped with them for quite some time. But then I had the chance to have a look at Ansible - and it has been a game changer!</p>
 <p>Ansible uses yaml as a language for its orchestration files (aka playbook), which makes them extremely easy to read. For example, this is how a task for installing Git could look</p>
-<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install git</span><span class="w"></span>
-<span class="w">  </span><span class="nt">sudo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">yes</span><span class="w"></span>
-<span class="w">  </span><span class="nt">apt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pkg=git state=latest</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install git</span>
+<span class="w">  </span><span class="nt">sudo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">yes</span>
+<span class="w">  </span><span class="nt">apt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pkg=git state=latest</span>
 </code></pre></div>
 
 <p>Pretty easy to figure out what it does! On top of that, Ansible outputs the name of your tasks when running them, making it trivial for you to keep track of what's going on behind the scenes.</p>

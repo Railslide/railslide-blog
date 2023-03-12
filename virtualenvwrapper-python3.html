@@ -67,17 +67,17 @@
 <p>Virtualenwrapper documentation specifies that Virtualenvwrapper has been tested under Python 2.6-3.3, but no mention of Python 3.4. Being lazy and not really willing to install a third version of Python on my computer (Ubuntu 14.04 comes with Python 2.7.6 and Python 3.4 by default), I decided to give it try with what I had. Everything seems to work flawlessly so far, just keep it in mind in case you want to try to follow these instructions.</p>
 <h2>Setting up Virtualenvwrapper</h2>
 <p>Install pip for Python 3:</p>
-<div class="highlight"><pre><span></span><code>sudo apt-get install python3-pip
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>python3-pip
 </code></pre></div>
 
 <p>Install Virtualenvwrapper for Python 3:</p>
-<div class="highlight"><pre><span></span><code>sudo pip3 install virtualenvwrapper
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>pip3<span class="w"> </span>install<span class="w"> </span>virtualenvwrapper
 </code></pre></div>
 
 <p>So far so good. Now it is time to configure Virtualenvwrapper.</p>
 <p>Create a folder for your virtualenvs (I use ~/.virtualenvs) and set it as WORKON_HOME:</p>
-<div class="highlight"><pre><span></span><code>mkdir ~/.virtualenvs
-<span class="nb">export</span> <span class="nv">WORKON_HOME</span><span class="o">=</span>~/.virtualenvs
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>~/.virtualenvs
+<span class="nb">export</span><span class="w"> </span><span class="nv">WORKON_HOME</span><span class="o">=</span>~/.virtualenvs
 </code></pre></div>
 
 <p>Add the following lines to ~/.bashrc:</p>
@@ -86,9 +86,9 @@ source /usr/local/bin/virtualenvwrapper.sh
 </code></pre></div>
 
 <p>Close and re-open your shell and you're ready to go. Here are the basic commands for using virtualenvwrapper:</p>
-<div class="highlight"><pre><span></span><code>mkvirtualenv virtualenv_name <span class="c1"># Create virtualenv</span>
-workon virtualenv_name <span class="c1"># Activate/switch to a virtualenv</span>
-deactivate virtualenv_name <span class="c1"># Deactivate virtualenv</span>
+<div class="highlight"><pre><span></span><code>mkvirtualenv<span class="w"> </span>virtualenv_name<span class="w"> </span><span class="c1"># Create virtualenv</span>
+workon<span class="w"> </span>virtualenv_name<span class="w"> </span><span class="c1"># Activate/switch to a virtualenv</span>
+deactivate<span class="w"> </span>virtualenv_name<span class="w"> </span><span class="c1"># Deactivate virtualenv</span>
 </code></pre></div>
 
 <p>Congratulations! Your Virtualenvwrapper for Python 3 is now ready to use.</p>
@@ -102,12 +102,12 @@ source /usr/local/bin/virtualenvwrapper.sh
 </code></pre></div>
 
 <p>Now, when typing</p>
-<div class="highlight"><pre><span></span><code>mkproject my_project
+<div class="highlight"><pre><span></span><code>mkproject<span class="w"> </span>my_project
 </code></pre></div>
 
 <p>Virtualenvwrapper will automatically create a virtualenv and a folder called <em>my_project</em>.</p>
 <p>Cherry on top, projects automaticatilly navigates to the project folder when activating the virtualenv. Thus, when typing</p>
-<div class="highlight"><pre><span></span><code>workon my_project
+<div class="highlight"><pre><span></span><code>workon<span class="w"> </span>my_project
 </code></pre></div>
 
 <p>Virtualenvwrapper activates the virtualenv and teleports me to ~/Projects/my_project. Neat!</p>

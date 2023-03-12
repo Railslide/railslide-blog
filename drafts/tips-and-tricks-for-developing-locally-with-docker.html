@@ -81,14 +81,14 @@
 <span class="s2">          --master </span><span class="se">\</span>
 <span class="s2">          --manage-script-name </span><span class="se">\</span>
 <span class="s2">          --mount /=app:app </span><span class="se">\</span>
-<span class="s2">          --python-autoreload 1&quot;</span><span class="w"></span>
+<span class="s2">          --python-autoreload 1&quot;</span>
 </code></pre></div>
 
 <h2>Use a volume for the source code</h2>
 <p>If you happen to be working with dynamic languages, you might get frustrated by having to wait for the build to complete in order to see your code changes applied. Thankfully there's workaround for it: use Docker Compose to override the Dockerfile and add your source folder as a volume. By doing so, changes to the code will immediately propagate to the container.</p>
-<div class="highlight"><pre><span></span><code><span class="n">my_app</span><span class="o">:</span><span class="w"></span>
-<span class="w">  </span><span class="n">volumes</span><span class="o">:</span><span class="w"></span>
-<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="o">./</span><span class="n">src</span><span class="o">:/</span><span class="n">src</span><span class="o">/</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="n">my_app</span><span class="o">:</span>
+<span class="w">  </span><span class="n">volumes</span><span class="o">:</span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="o">./</span><span class="n">src</span><span class="o">:/</span><span class="n">src</span><span class="o">/</span>
 </code></pre></div>
 
 <h2>Use a .dockerignore file</h2>

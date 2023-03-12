@@ -62,17 +62,17 @@
             </section>
             <p>I code for work and I code for fun. When I do it for fun I use my personal email address as identity in Git, but when I do it for work I am often required to use my work email. For a long time my solution was to simply to set my working email in the <code>.gitconfig</code> of my working machine. That worked for most cases (I usually tend to only code for work on my work machine) and as the only pain point seemed to be my dotfiles, I simply accepted the pain of copy-pasting things around as a necessary evil and moved on with my life.</p>
 <p>However, it turns out that there's a better way to handle multiple identities in Git: enter conditional configuration! Basically you can tell Git to include a different <code>.gitconfig</code> depending on a certain condition (e.g. when the <code>.git</code> directory matches a certain path). So for my specific case I simply changed my <code>.gitconfig</code> to like something like this:</p>
-<div class="highlight"><pre><span></span><code><span class="k">[user]</span><span class="w"></span>
-<span class="w">    </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;first name&gt; &lt;last name&gt;</span><span class="w"></span>
-<span class="w">    </span><span class="na">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;work email address&gt;</span><span class="w"></span>
-<span class="k">[includeIf &quot;gitdir:~/Projects/personal/&quot;]</span><span class="w"></span>
-<span class="w">    </span><span class="na">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">.gitconfig-personal</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="k">[user]</span>
+<span class="w">    </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;first name&gt; &lt;last name&gt;</span>
+<span class="w">    </span><span class="na">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;work email address&gt;</span>
+<span class="k">[includeIf &quot;gitdir:~/Projects/personal/&quot;]</span>
+<span class="w">    </span><span class="na">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">.gitconfig-personal</span>
 </code></pre></div>
 
 <p>and then in the <code>.gitconfig-personal</code> I added</p>
-<div class="highlight"><pre><span></span><code><span class="k">[user]</span><span class="w"></span>
-<span class="w">    </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;first name&gt; &lt;last name&gt;</span><span class="w"></span>
-<span class="w">    </span><span class="na">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;personal email address&gt;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="k">[user]</span>
+<span class="w">    </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;first name&gt; &lt;last name&gt;</span>
+<span class="w">    </span><span class="na">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;personal email address&gt;</span>
 </code></pre></div>
 
 <p>and now every time I work on a repo in the <code>personal/</code> folder the work <code>[user]</code> block gets automagically overridden by the personal one. No more weird copy pasting around! </p>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide - cryptography</title><link href="https://railslide.io/" rel="alternate"></link><link href="https://railslide.io/feeds/cryptography.atom.xml" rel="self"></link><id>https://railslide.io/</id><updated>2017-06-03T00:00:00+02:00</updated><entry><title>How to sign PGP keys with an offline master key</title><link href="https://railslide.io/how-to-sign-pgp-keys-with-offline-master-key.html" rel="alternate"></link><published>2017-06-03T00:00:00+02:00</published><updated>2017-06-03T00:00:00+02:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2017-06-03:/how-to-sign-pgp-keys-with-offline-master-key.html</id><summary type="html">&lt;p&gt;Signing other people keys with an offline master key is not super straightforward. Here's how to do it in an almost pain-free way.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Lately I wanted to sign a coworker's key, so after having gone through the all in-real-life verification shebang together, all that was left was me performing the actual signing. However, since I &lt;a href="https://railslide.io/create-gpg-key-with-subkeys.html"&gt;use subkeys on my laptop&lt;/a&gt;, I first needed to get out my master key from its secret dungeon and tell GPG to use that one instead of the usual subkey. For doing that I used the handy &lt;code&gt;--homedir&lt;/code&gt; option.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --homedir&lt;span class="o"&gt;=&lt;/span&gt;/path/to/my/master/gnupg/folder --sign-key mycoworker@myjob.com
-gpg: key &lt;span class="s2"&gt;&amp;quot;mycoworker@myjob.com&amp;quot;&lt;/span&gt; not found: public key not found
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--homedir&lt;span class="o"&gt;=&lt;/span&gt;/path/to/my/master/gnupg/folder&lt;span class="w"&gt; &lt;/span&gt;--sign-key&lt;span class="w"&gt; &lt;/span&gt;mycoworker@myjob.com
+gpg:&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;mycoworker@myjob.com&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;not&lt;span class="w"&gt; &lt;/span&gt;found:&lt;span class="w"&gt; &lt;/span&gt;public&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;not&lt;span class="w"&gt; &lt;/span&gt;found
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;How's that possible? I am positive that I've imported my coworker's key - we have even exchanged encrypted email with each other!&lt;/p&gt;
 &lt;p&gt;Well, the fact is that I imported the key, yes, but I did it in my local keyring which is the one located at &lt;code&gt;~/.gnupg&lt;/code&gt; and thus not the one my master key refers to. Pretty much as when using GPG on multiple computers: you have to re-import all the public keys from scratch.&lt;/p&gt;
 &lt;p&gt;Ok, so what are the options? Export the key I want to sign, import it into the master keyring, sign it, export it from the master keyiring, and finally import it into the local keyring? Sure, you could do that, but it's quite cumbersome. Fortunately, gpg has a better solution for that: the &lt;code&gt;--keyring&lt;/code&gt; option!&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --homedir&lt;span class="o"&gt;=&lt;/span&gt;/path/to/my/master/gnupg/folder --keyring ~/.gnupg/pubring.gpg --sign-key mycoworker@myjob.com
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--homedir&lt;span class="o"&gt;=&lt;/span&gt;/path/to/my/master/gnupg/folder&lt;span class="w"&gt; &lt;/span&gt;--keyring&lt;span class="w"&gt; &lt;/span&gt;~/.gnupg/pubring.gpg&lt;span class="w"&gt; &lt;/span&gt;--sign-key&lt;span class="w"&gt; &lt;/span&gt;mycoworker@myjob.com
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And voilà! Now you can proceed signing the key.&lt;/p&gt;</content><category term="cryptography"></category><category term="GPG"></category><category term="cryptography"></category><category term="howto"></category></entry><entry><title>How to create a GPG key with subkeys</title><link href="https://railslide.io/create-gpg-key-with-subkeys.html" rel="alternate"></link><published>2017-04-19T00:00:00+02:00</published><updated>2017-04-19T00:00:00+02:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2017-04-19:/create-gpg-key-with-subkeys.html</id><summary type="html">&lt;p&gt;A step by step guide for creating a GPG key with subkeys.&lt;/p&gt;</summary><content type="html">&lt;p&gt;I wanted to create a GPG key - so far so good. The problem is that I also wanted to use GPG on multiple devices, ideally even on my phone. I could have - &lt;em&gt;in theory&lt;/em&gt; - copied the key over to all the needed machines, but that would have been a terrible idea. What if I lose my phone/laptop? My key would be compromised and I'd be left with no other choice than revoking it and losing all the previous signatures.&lt;/p&gt;
@@ -26,232 +26,232 @@ cert-digest-algo SHA512
 &lt;p&gt;If not, add them.&lt;/p&gt;
 &lt;h2&gt;Create a master key&lt;/h2&gt;
 &lt;p&gt;Create the master key - I'm going to mark user inputs with &lt;code&gt;# [input value] &amp;lt;--&lt;/code&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --gen-key
-gpg &lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;.4.11&lt;span class="p"&gt;;&lt;/span&gt; Copyright &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;2010&lt;/span&gt; Free Software Foundation, Inc.
-This is free software: you are free to change and  redistribute it.
-There is NO WARRANTY, to the extent permitted by law.
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--gen-key
+gpg&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;.4.11&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Copyright&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Free&lt;span class="w"&gt; &lt;/span&gt;Software&lt;span class="w"&gt; &lt;/span&gt;Foundation,&lt;span class="w"&gt; &lt;/span&gt;Inc.
+This&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;free&lt;span class="w"&gt; &lt;/span&gt;software:&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;are&lt;span class="w"&gt; &lt;/span&gt;free&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;change&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt;  &lt;/span&gt;redistribute&lt;span class="w"&gt; &lt;/span&gt;it.
+There&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;NO&lt;span class="w"&gt; &lt;/span&gt;WARRANTY,&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;extent&lt;span class="w"&gt; &lt;/span&gt;permitted&lt;span class="w"&gt; &lt;/span&gt;by&lt;span class="w"&gt; &lt;/span&gt;law.
 
-Please &lt;span class="k"&gt;select&lt;/span&gt; what kind of key you want:
-    &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; RSA and RSA &lt;span class="o"&gt;(&lt;/span&gt;default&lt;span class="o"&gt;)&lt;/span&gt;
-    &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; DSA and Elgamal
-    &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; DSA &lt;span class="o"&gt;(&lt;/span&gt;sign only&lt;span class="o"&gt;)&lt;/span&gt;
-    &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; RSA &lt;span class="o"&gt;(&lt;/span&gt;sign only&lt;span class="o"&gt;)&lt;/span&gt;
-    Your selection? &lt;span class="c1"&gt;# 1 &amp;lt;--&lt;/span&gt;
+Please&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;what&lt;span class="w"&gt; &lt;/span&gt;kind&lt;span class="w"&gt; &lt;/span&gt;of&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want:
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;default&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;DSA&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;Elgamal
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;DSA&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;sign&lt;span class="w"&gt; &lt;/span&gt;only&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;sign&lt;span class="w"&gt; &lt;/span&gt;only&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;selection?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# 1 &amp;lt;--&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;When it comes to choosing the length make sure to choose the longest available option (4096 at the time of writing).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;RSA keys may be between &lt;span class="m"&gt;1024&lt;/span&gt; and &lt;span class="m"&gt;4096&lt;/span&gt; bits long.
-What keysize &lt;span class="k"&gt;do&lt;/span&gt; you want? &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2048&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;  &lt;span class="c1"&gt;# 4096 &amp;lt;-- (the longer the better!)&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;keys&lt;span class="w"&gt; &lt;/span&gt;may&lt;span class="w"&gt; &lt;/span&gt;be&lt;span class="w"&gt; &lt;/span&gt;between&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1024&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;4096&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;bits&lt;span class="w"&gt; &lt;/span&gt;long.
+What&lt;span class="w"&gt; &lt;/span&gt;keysize&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;do&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2048&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="c1"&gt;# 4096 &amp;lt;-- (the longer the better!)&lt;/span&gt;
 
-Requested keysize is &lt;span class="m"&gt;4096&lt;/span&gt; bits
-Please specify how long the key should be valid.
-    &lt;span class="nv"&gt;0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; key does not expire
-    &amp;lt;n&amp;gt;  &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n days
-    &amp;lt;n&amp;gt;w &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n weeks
-    &amp;lt;n&amp;gt;m &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n months
-    &amp;lt;n&amp;gt;y &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n years
-Key is valid &lt;span class="k"&gt;for&lt;/span&gt;? &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# 0 &amp;lt;--&lt;/span&gt;
+Requested&lt;span class="w"&gt; &lt;/span&gt;keysize&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;4096&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;bits
+Please&lt;span class="w"&gt; &lt;/span&gt;specify&lt;span class="w"&gt; &lt;/span&gt;how&lt;span class="w"&gt; &lt;/span&gt;long&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;should&lt;span class="w"&gt; &lt;/span&gt;be&lt;span class="w"&gt; &lt;/span&gt;valid.
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nv"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;does&lt;span class="w"&gt; &lt;/span&gt;not&lt;span class="w"&gt; &lt;/span&gt;expire
+&lt;span class="w"&gt;    &lt;/span&gt;&amp;lt;n&amp;gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;expires&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;n&lt;span class="w"&gt; &lt;/span&gt;days
+&lt;span class="w"&gt;    &lt;/span&gt;&amp;lt;n&amp;gt;w&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;expires&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;n&lt;span class="w"&gt; &lt;/span&gt;weeks
+&lt;span class="w"&gt;    &lt;/span&gt;&amp;lt;n&amp;gt;m&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;expires&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;n&lt;span class="w"&gt; &lt;/span&gt;months
+&lt;span class="w"&gt;    &lt;/span&gt;&amp;lt;n&amp;gt;y&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;expires&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;n&lt;span class="w"&gt; &lt;/span&gt;years
+Key&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;valid&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# 0 &amp;lt;--&lt;/span&gt;
 
-Key does not expire at all
-Is this correct? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
+Key&lt;span class="w"&gt; &lt;/span&gt;does&lt;span class="w"&gt; &lt;/span&gt;not&lt;span class="w"&gt; &lt;/span&gt;expire&lt;span class="w"&gt; &lt;/span&gt;at&lt;span class="w"&gt; &lt;/span&gt;all
+Is&lt;span class="w"&gt; &lt;/span&gt;this&lt;span class="w"&gt; &lt;/span&gt;correct?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
 
-You need a user ID to identify your key&lt;span class="p"&gt;;&lt;/span&gt; the software constructs the user ID
-from the Real Name, Comment and E-mail Address &lt;span class="k"&gt;in&lt;/span&gt; this form:
-    &lt;span class="s2"&gt;&amp;quot;Heinrich Heine (Der Dichter) &amp;lt;heinrichh@duesseldorf.de&amp;gt;&amp;quot;&lt;/span&gt;
+You&lt;span class="w"&gt; &lt;/span&gt;need&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;user&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;identify&lt;span class="w"&gt; &lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;software&lt;span class="w"&gt; &lt;/span&gt;constructs&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;user&lt;span class="w"&gt; &lt;/span&gt;ID
+from&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;Real&lt;span class="w"&gt; &lt;/span&gt;Name,&lt;span class="w"&gt; &lt;/span&gt;Comment&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;E-mail&lt;span class="w"&gt; &lt;/span&gt;Address&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;this&lt;span class="w"&gt; &lt;/span&gt;form:
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Heinrich Heine (Der Dichter) &amp;lt;heinrichh@duesseldorf.de&amp;gt;&amp;quot;&lt;/span&gt;
 
-Real name: &lt;span class="c1"&gt;# [Your name] &amp;lt;--&lt;/span&gt;
+Real&lt;span class="w"&gt; &lt;/span&gt;name:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# [Your name] &amp;lt;--&lt;/span&gt;
 
-E-mail address: &lt;span class="c1"&gt;# [Your email address] &amp;lt;--&lt;/span&gt;
+E-mail&lt;span class="w"&gt; &lt;/span&gt;address:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# [Your email address] &amp;lt;--&lt;/span&gt;
 
 Comment:
-You selected this USER-ID:
-    &lt;span class="s2"&gt;&amp;quot;[Your name] &amp;lt;[your email address]&amp;gt;&amp;quot;&lt;/span&gt;
+You&lt;span class="w"&gt; &lt;/span&gt;selected&lt;span class="w"&gt; &lt;/span&gt;this&lt;span class="w"&gt; &lt;/span&gt;USER-ID:
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;[Your name] &amp;lt;[your email address]&amp;gt;&amp;quot;&lt;/span&gt;
 
-Change &lt;span class="o"&gt;(&lt;/span&gt;N&lt;span class="o"&gt;)&lt;/span&gt;ame, &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt;omment, &lt;span class="o"&gt;(&lt;/span&gt;E&lt;span class="o"&gt;)&lt;/span&gt;-mail or &lt;span class="o"&gt;(&lt;/span&gt;O&lt;span class="o"&gt;)&lt;/span&gt;kay/&lt;span class="o"&gt;(&lt;/span&gt;Q&lt;span class="o"&gt;)&lt;/span&gt;uit? &lt;span class="c1"&gt;# o &amp;lt;--&lt;/span&gt;
+Change&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;N&lt;span class="o"&gt;)&lt;/span&gt;ame,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt;omment,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;E&lt;span class="o"&gt;)&lt;/span&gt;-mail&lt;span class="w"&gt; &lt;/span&gt;or&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;O&lt;span class="o"&gt;)&lt;/span&gt;kay/&lt;span class="o"&gt;(&lt;/span&gt;Q&lt;span class="o"&gt;)&lt;/span&gt;uit?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# o &amp;lt;--&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;When prompted for a passphrase, make sure to choose a strong one - ideally long and hard to guess. If someone gets access to the secret key, the passphrase would be the only thing left to prevent them from using it.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;You need a Passphrase to protect your secret key.
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;You&lt;span class="w"&gt; &lt;/span&gt;need&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;Passphrase&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;protect&lt;span class="w"&gt; &lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;secret&lt;span class="w"&gt; &lt;/span&gt;key.
 &lt;span class="c1"&gt;# Enter passphrase &amp;lt;--&lt;/span&gt;
 
-We need to generate a lot of random bytes. It is a good idea to perform
-some other action &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt; on the keyboard, move the mouse, utilize the
-disks&lt;span class="o"&gt;)&lt;/span&gt; during the prime generation&lt;span class="p"&gt;;&lt;/span&gt; this gives the random number
-generator a better chance to gain enough entropy.
+We&lt;span class="w"&gt; &lt;/span&gt;need&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;generate&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;lot&lt;span class="w"&gt; &lt;/span&gt;of&lt;span class="w"&gt; &lt;/span&gt;random&lt;span class="w"&gt; &lt;/span&gt;bytes.&lt;span class="w"&gt; &lt;/span&gt;It&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;good&lt;span class="w"&gt; &lt;/span&gt;idea&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;perform
+some&lt;span class="w"&gt; &lt;/span&gt;other&lt;span class="w"&gt; &lt;/span&gt;action&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;on&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;keyboard,&lt;span class="w"&gt; &lt;/span&gt;move&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;mouse,&lt;span class="w"&gt; &lt;/span&gt;utilize&lt;span class="w"&gt; &lt;/span&gt;the
+disks&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;during&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;prime&lt;span class="w"&gt; &lt;/span&gt;generation&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;this&lt;span class="w"&gt; &lt;/span&gt;gives&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;random&lt;span class="w"&gt; &lt;/span&gt;number
+generator&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;better&lt;span class="w"&gt; &lt;/span&gt;chance&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;gain&lt;span class="w"&gt; &lt;/span&gt;enough&lt;span class="w"&gt; &lt;/span&gt;entropy.
 .............+++++
 ..+++++
 
-gpg: key &lt;span class="o"&gt;[&lt;/span&gt;your key ID&lt;span class="o"&gt;]&lt;/span&gt; marked as ultimately trusted
-public and secret key created and signed.
+gpg:&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;marked&lt;span class="w"&gt; &lt;/span&gt;as&lt;span class="w"&gt; &lt;/span&gt;ultimately&lt;span class="w"&gt; &lt;/span&gt;trusted
+public&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;secret&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;created&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;signed.
 
-gpg: checking the trustdb
-gpg: &lt;span class="m"&gt;3&lt;/span&gt; marginal&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, &lt;span class="m"&gt;1&lt;/span&gt; complete&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, PGP trust model
-gpg: depth: &lt;span class="m"&gt;0&lt;/span&gt;  valid:   &lt;span class="m"&gt;1&lt;/span&gt;  signed:   &lt;span class="m"&gt;0&lt;/span&gt;  trust: &lt;span class="m"&gt;0&lt;/span&gt;-, 0q, 0n, 0m, 0f, 1u
-pub   4096R/&lt;span class="o"&gt;[&lt;/span&gt;your key ID&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
-      Key &lt;span class="nv"&gt;fingerprint&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;Key fingerprint&lt;span class="o"&gt;]&lt;/span&gt;
-uid                  &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
-sub   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
+gpg:&lt;span class="w"&gt; &lt;/span&gt;checking&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;trustdb
+gpg:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;marginal&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;needed,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;complete&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;needed,&lt;span class="w"&gt; &lt;/span&gt;PGP&lt;span class="w"&gt; &lt;/span&gt;trust&lt;span class="w"&gt; &lt;/span&gt;model
+gpg:&lt;span class="w"&gt; &lt;/span&gt;depth:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;valid:&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;signed:&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;trust:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;-,&lt;span class="w"&gt; &lt;/span&gt;0q,&lt;span class="w"&gt; &lt;/span&gt;0n,&lt;span class="w"&gt; &lt;/span&gt;0m,&lt;span class="w"&gt; &lt;/span&gt;0f,&lt;span class="w"&gt; &lt;/span&gt;1u
+pub&lt;span class="w"&gt;   &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17
+&lt;span class="w"&gt;      &lt;/span&gt;Key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;fingerprint&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Key&lt;span class="w"&gt; &lt;/span&gt;fingerprint&lt;span class="o"&gt;]&lt;/span&gt;
+uid&lt;span class="w"&gt;                  &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;name&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
+sub&lt;span class="w"&gt;   &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Congratulations! The master key has been created!&lt;/p&gt;
 &lt;h2&gt;Set your key to prefer strong hashes&lt;/h2&gt;
 &lt;p&gt;In theory, if hash preferences were set in the &lt;code&gt;gpg.conf&lt;/code&gt; file before creating the key, this step should not be necessary. But better safe than sorry.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --edit-key &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;
-gpg &lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;.4.11&lt;span class="p"&gt;;&lt;/span&gt; Copyright &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;2010&lt;/span&gt; Free Software Foundation, Inc.
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--edit-key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;
+gpg&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;.4.11&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Copyright&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Free&lt;span class="w"&gt; &lt;/span&gt;Software&lt;span class="w"&gt; &lt;/span&gt;Foundation,&lt;span class="w"&gt; &lt;/span&gt;Inc.
+This&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;free&lt;span class="w"&gt; &lt;/span&gt;software:&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;are&lt;span class="w"&gt; &lt;/span&gt;free&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;change&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;redistribute&lt;span class="w"&gt; &lt;/span&gt;it.
+There&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;NO&lt;span class="w"&gt; &lt;/span&gt;WARRANTY,&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;extent&lt;span class="w"&gt; &lt;/span&gt;permitted&lt;span class="w"&gt; &lt;/span&gt;by&lt;span class="w"&gt; &lt;/span&gt;law.
 
-Secret key is available.
+Secret&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;available.
 
-gpg: checking the trustdb
-gpg: &lt;span class="m"&gt;3&lt;/span&gt; marginal&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, &lt;span class="m"&gt;1&lt;/span&gt; complete&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, PGP trust model
-gpg: depth: &lt;span class="m"&gt;0&lt;/span&gt;  valid:   &lt;span class="m"&gt;1&lt;/span&gt;  signed:   &lt;span class="m"&gt;0&lt;/span&gt;  trust: &lt;span class="m"&gt;0&lt;/span&gt;-, 0q, 0n, 0m, 0f, 1u
-pub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: SC
-                     trust: ultimate      validity: ultimate
-sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: E
+gpg:&lt;span class="w"&gt; &lt;/span&gt;checking&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;trustdb
+gpg:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;marginal&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;needed,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;complete&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;needed,&lt;span class="w"&gt; &lt;/span&gt;PGP&lt;span class="w"&gt; &lt;/span&gt;trust&lt;span class="w"&gt; &lt;/span&gt;model
+gpg:&lt;span class="w"&gt; &lt;/span&gt;depth:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;valid:&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;signed:&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;trust:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;-,&lt;span class="w"&gt; &lt;/span&gt;0q,&lt;span class="w"&gt; &lt;/span&gt;0n,&lt;span class="w"&gt; &lt;/span&gt;0m,&lt;span class="w"&gt; &lt;/span&gt;0f,&lt;span class="w"&gt; &lt;/span&gt;1u
+pub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;SC
+&lt;span class="w"&gt;                     &lt;/span&gt;trust:&lt;span class="w"&gt; &lt;/span&gt;ultimate&lt;span class="w"&gt;      &lt;/span&gt;validity:&lt;span class="w"&gt; &lt;/span&gt;ultimate
+sub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;E
 
-gpg&amp;gt; &lt;span class="c1"&gt;# setpref SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 ZLIB BZIP2 ZIP Uncompressed &amp;lt;--&lt;/span&gt;
+gpg&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# setpref SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 ZLIB BZIP2 ZIP Uncompressed &amp;lt;--&lt;/span&gt;
 
-Set preference list to:
-     Cypher: AES256, AES192, AES, CAST5, 3DES
-     Digest: SHA512, SHA384, SHA256, SHA224, SHA1
-     Compression: ZLIB, BZIP2, ZIP, Uncompressed
-     Features: MDC, Keyserver no-modify
-Really update the preferences? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
+Set&lt;span class="w"&gt; &lt;/span&gt;preference&lt;span class="w"&gt; &lt;/span&gt;list&lt;span class="w"&gt; &lt;/span&gt;to:
+&lt;span class="w"&gt;     &lt;/span&gt;Cypher:&lt;span class="w"&gt; &lt;/span&gt;AES256,&lt;span class="w"&gt; &lt;/span&gt;AES192,&lt;span class="w"&gt; &lt;/span&gt;AES,&lt;span class="w"&gt; &lt;/span&gt;CAST5,&lt;span class="w"&gt; &lt;/span&gt;3DES
+&lt;span class="w"&gt;     &lt;/span&gt;Digest:&lt;span class="w"&gt; &lt;/span&gt;SHA512,&lt;span class="w"&gt; &lt;/span&gt;SHA384,&lt;span class="w"&gt; &lt;/span&gt;SHA256,&lt;span class="w"&gt; &lt;/span&gt;SHA224,&lt;span class="w"&gt; &lt;/span&gt;SHA1
+&lt;span class="w"&gt;     &lt;/span&gt;Compression:&lt;span class="w"&gt; &lt;/span&gt;ZLIB,&lt;span class="w"&gt; &lt;/span&gt;BZIP2,&lt;span class="w"&gt; &lt;/span&gt;ZIP,&lt;span class="w"&gt; &lt;/span&gt;Uncompressed
+&lt;span class="w"&gt;     &lt;/span&gt;Features:&lt;span class="w"&gt; &lt;/span&gt;MDC,&lt;span class="w"&gt; &lt;/span&gt;Keyserver&lt;span class="w"&gt; &lt;/span&gt;no-modify
+Really&lt;span class="w"&gt; &lt;/span&gt;update&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;preferences?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
 
 
-You need a passphrase to unlock the secret key &lt;span class="k"&gt;for&lt;/span&gt;
-user: &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
-&lt;span class="m"&gt;4096&lt;/span&gt;-bit RSA key, ID &lt;span class="o"&gt;[&lt;/span&gt;You key ID&lt;span class="o"&gt;]&lt;/span&gt;, created &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
+You&lt;span class="w"&gt; &lt;/span&gt;need&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;passphrase&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;unlock&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;secret&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;
+user:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;name&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
+&lt;span class="m"&gt;4096&lt;/span&gt;-bit&lt;span class="w"&gt; &lt;/span&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;key,&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;You&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;created&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17
 
 &lt;span class="c1"&gt;# Enter passphrase &amp;lt;--&lt;/span&gt;
 
-pub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: SC
-                     trust: ultimate      validity: ultimate
-sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: E   &lt;span class="o"&gt;]&lt;/span&gt;
+pub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;SC
+&lt;span class="w"&gt;                     &lt;/span&gt;trust:&lt;span class="w"&gt; &lt;/span&gt;ultimate&lt;span class="w"&gt;      &lt;/span&gt;validity:&lt;span class="w"&gt; &lt;/span&gt;ultimate
+sub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;E&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
 
-gpg&amp;gt; &lt;span class="c1"&gt;# save&lt;/span&gt;
+gpg&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# save&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Create a signing subkey&lt;/h2&gt;
 &lt;p&gt;When creating a key GPG automatically creates an encryption subkey as well, which means that only the signing subkey needs manual creation.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --edit-key &lt;span class="o"&gt;[&lt;/span&gt;Your email address&lt;span class="o"&gt;]&lt;/span&gt;
-gpg &lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;.4.11&lt;span class="p"&gt;;&lt;/span&gt; Copyright &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;2010&lt;/span&gt; Free Software Foundation, Inc.
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--edit-key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;
+gpg&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;.4.11&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Copyright&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Free&lt;span class="w"&gt; &lt;/span&gt;Software&lt;span class="w"&gt; &lt;/span&gt;Foundation,&lt;span class="w"&gt; &lt;/span&gt;Inc.
+This&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;free&lt;span class="w"&gt; &lt;/span&gt;software:&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;are&lt;span class="w"&gt; &lt;/span&gt;free&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;change&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;redistribute&lt;span class="w"&gt; &lt;/span&gt;it.
+There&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;NO&lt;span class="w"&gt; &lt;/span&gt;WARRANTY,&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;extent&lt;span class="w"&gt; &lt;/span&gt;permitted&lt;span class="w"&gt; &lt;/span&gt;by&lt;span class="w"&gt; &lt;/span&gt;law.
 
-Secret key is available.
+Secret&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;available.
 
-gpg: checking the trustdb
-gpg: &lt;span class="m"&gt;3&lt;/span&gt; marginal&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, &lt;span class="m"&gt;1&lt;/span&gt; complete&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, PGP trust model
-gpg: depth: &lt;span class="m"&gt;0&lt;/span&gt;  valid:   &lt;span class="m"&gt;1&lt;/span&gt;  signed:   &lt;span class="m"&gt;0&lt;/span&gt;  trust: &lt;span class="m"&gt;0&lt;/span&gt;-, 0q, 0n, 0m, 0f, 1u
-pub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: SC
-                         trust: ultimate      validity: ultimate
-sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: E   &lt;span class="o"&gt;]&lt;/span&gt;
+gpg:&lt;span class="w"&gt; &lt;/span&gt;checking&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;trustdb
+gpg:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;marginal&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;needed,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;complete&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;needed,&lt;span class="w"&gt; &lt;/span&gt;PGP&lt;span class="w"&gt; &lt;/span&gt;trust&lt;span class="w"&gt; &lt;/span&gt;model
+gpg:&lt;span class="w"&gt; &lt;/span&gt;depth:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;valid:&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;signed:&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;trust:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;-,&lt;span class="w"&gt; &lt;/span&gt;0q,&lt;span class="w"&gt; &lt;/span&gt;0n,&lt;span class="w"&gt; &lt;/span&gt;0m,&lt;span class="w"&gt; &lt;/span&gt;0f,&lt;span class="w"&gt; &lt;/span&gt;1u
+pub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;SC
+&lt;span class="w"&gt;                         &lt;/span&gt;trust:&lt;span class="w"&gt; &lt;/span&gt;ultimate&lt;span class="w"&gt;      &lt;/span&gt;validity:&lt;span class="w"&gt; &lt;/span&gt;ultimate
+sub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;E&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
 
-gpg&amp;gt; &lt;span class="c1"&gt;# addkey &amp;lt;--&lt;/span&gt;
+gpg&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# addkey &amp;lt;--&lt;/span&gt;
 
-Key is protected.
+Key&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;protected.
 
-You need a passphrase to unlock the secret key &lt;span class="k"&gt;for&lt;/span&gt;
-user: &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
-&lt;span class="m"&gt;4096&lt;/span&gt;-bit RSA key, ID &lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;, created &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
+You&lt;span class="w"&gt; &lt;/span&gt;need&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;passphrase&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;unlock&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;secret&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;
+user:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;name&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
+&lt;span class="m"&gt;4096&lt;/span&gt;-bit&lt;span class="w"&gt; &lt;/span&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;key,&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;created&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17
 &lt;span class="c1"&gt;# Enter passphrase &amp;lt;--&lt;/span&gt;
 
-Please &lt;span class="k"&gt;select&lt;/span&gt; what kind of key you want:
-    &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; DSA &lt;span class="o"&gt;(&lt;/span&gt;sign only&lt;span class="o"&gt;)&lt;/span&gt;
-    &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; RSA &lt;span class="o"&gt;(&lt;/span&gt;sign only&lt;span class="o"&gt;)&lt;/span&gt;
-    &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; Elgamal &lt;span class="o"&gt;(&lt;/span&gt;encrypt only&lt;span class="o"&gt;)&lt;/span&gt;
-    &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; RSA &lt;span class="o"&gt;(&lt;/span&gt;encrypt only&lt;span class="o"&gt;)&lt;/span&gt;
-Your selection? &lt;span class="c1"&gt;# 4 &amp;lt;--&lt;/span&gt;
+Please&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;what&lt;span class="w"&gt; &lt;/span&gt;kind&lt;span class="w"&gt; &lt;/span&gt;of&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want:
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;DSA&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;sign&lt;span class="w"&gt; &lt;/span&gt;only&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;sign&lt;span class="w"&gt; &lt;/span&gt;only&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Elgamal&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;encrypt&lt;span class="w"&gt; &lt;/span&gt;only&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;encrypt&lt;span class="w"&gt; &lt;/span&gt;only&lt;span class="o"&gt;)&lt;/span&gt;
+Your&lt;span class="w"&gt; &lt;/span&gt;selection?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# 4 &amp;lt;--&lt;/span&gt;
 
-RSA keys may be between &lt;span class="m"&gt;1024&lt;/span&gt; and &lt;span class="m"&gt;4096&lt;/span&gt; bits long.
-What keysize &lt;span class="k"&gt;do&lt;/span&gt; you want? &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2048&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# 4096 &amp;lt;-- (the longer the better!)&lt;/span&gt;
+RSA&lt;span class="w"&gt; &lt;/span&gt;keys&lt;span class="w"&gt; &lt;/span&gt;may&lt;span class="w"&gt; &lt;/span&gt;be&lt;span class="w"&gt; &lt;/span&gt;between&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1024&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;4096&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;bits&lt;span class="w"&gt; &lt;/span&gt;long.
+What&lt;span class="w"&gt; &lt;/span&gt;keysize&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;do&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2048&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# 4096 &amp;lt;-- (the longer the better!)&lt;/span&gt;
 
-Requested keysize is &lt;span class="m"&gt;4096&lt;/span&gt; bits
-Please specify how long the key should be valid.
-    &lt;span class="nv"&gt;0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; key does not expire
-    &amp;lt;n&amp;gt;  &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n days
-    &amp;lt;n&amp;gt;w &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n weeks
-    &amp;lt;n&amp;gt;m &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n months
-    &amp;lt;n&amp;gt;y &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n years
-Key is valid &lt;span class="k"&gt;for&lt;/span&gt;? &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# 0 &amp;lt;--&lt;/span&gt;
+Requested&lt;span class="w"&gt; &lt;/span&gt;keysize&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;4096&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;bits
+Please&lt;span class="w"&gt; &lt;/span&gt;specify&lt;span class="w"&gt; &lt;/span&gt;how&lt;span class="w"&gt; &lt;/span&gt;long&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;should&lt;span class="w"&gt; &lt;/span&gt;be&lt;span class="w"&gt; &lt;/span&gt;valid.
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nv"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;does&lt;span class="w"&gt; &lt;/span&gt;not&lt;span class="w"&gt; &lt;/span&gt;expire
+&lt;span class="w"&gt;    &lt;/span&gt;&amp;lt;n&amp;gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;expires&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;n&lt;span class="w"&gt; &lt;/span&gt;days
+&lt;span class="w"&gt;    &lt;/span&gt;&amp;lt;n&amp;gt;w&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;expires&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;n&lt;span class="w"&gt; &lt;/span&gt;weeks
+&lt;span class="w"&gt;    &lt;/span&gt;&amp;lt;n&amp;gt;m&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;expires&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;n&lt;span class="w"&gt; &lt;/span&gt;months
+&lt;span class="w"&gt;    &lt;/span&gt;&amp;lt;n&amp;gt;y&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;expires&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;n&lt;span class="w"&gt; &lt;/span&gt;years
+Key&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;valid&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# 0 &amp;lt;--&lt;/span&gt;
 
-Key does not expire at all
-Is this correct? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
+Key&lt;span class="w"&gt; &lt;/span&gt;does&lt;span class="w"&gt; &lt;/span&gt;not&lt;span class="w"&gt; &lt;/span&gt;expire&lt;span class="w"&gt; &lt;/span&gt;at&lt;span class="w"&gt; &lt;/span&gt;all
+Is&lt;span class="w"&gt; &lt;/span&gt;this&lt;span class="w"&gt; &lt;/span&gt;correct?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
 
-Really create? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
+Really&lt;span class="w"&gt; &lt;/span&gt;create?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
 
 
-pub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: SC
-                         trust: ultimate      validity: ultimate
-sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: E   &lt;span class="o"&gt;]&lt;/span&gt;
-sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: S
+pub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;SC
+&lt;span class="w"&gt;                         &lt;/span&gt;trust:&lt;span class="w"&gt; &lt;/span&gt;ultimate&lt;span class="w"&gt;      &lt;/span&gt;validity:&lt;span class="w"&gt; &lt;/span&gt;ultimate
+sub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;E&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
+sub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;S
 
-gpg&amp;gt; &lt;span class="c1"&gt;# save &amp;lt;--&lt;/span&gt;
+gpg&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# save &amp;lt;--&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Create a revocation certificate&lt;/h2&gt;
 &lt;p&gt;If the master key gets lost or compromised, the revocation certificate is going to be your emergency brake.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --output revoke.asc --gen-revoke &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;
-Create a revocation certificate &lt;span class="k"&gt;for&lt;/span&gt; this key? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
-Please &lt;span class="k"&gt;select&lt;/span&gt; the reason &lt;span class="k"&gt;for&lt;/span&gt; the revocation:
-  &lt;span class="nv"&gt;0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; No reason specified
-  &lt;span class="nv"&gt;1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; Key has been compromised
-  &lt;span class="nv"&gt;2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; Key is superseded
-  &lt;span class="nv"&gt;3&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; Key is no longer used
-  &lt;span class="nv"&gt;Q&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; Cancel
-&lt;span class="o"&gt;(&lt;/span&gt;Probably you want to &lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; here&lt;span class="o"&gt;)&lt;/span&gt;
-Your decision? &lt;span class="c1"&gt;# 1 &amp;lt;--&lt;/span&gt;
-Enter an optional description&lt;span class="p"&gt;;&lt;/span&gt; end it with an empty line:
-&amp;gt; &lt;span class="c1"&gt;# Empty line will do fine here &amp;lt;--&lt;/span&gt;
-Reason &lt;span class="k"&gt;for&lt;/span&gt; revocation: Key has been compromised
-&lt;span class="o"&gt;(&lt;/span&gt;No description given&lt;span class="o"&gt;)&lt;/span&gt;
-Is this okay? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--output&lt;span class="w"&gt; &lt;/span&gt;revoke.asc&lt;span class="w"&gt; &lt;/span&gt;--gen-revoke&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;
+Create&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;revocation&lt;span class="w"&gt; &lt;/span&gt;certificate&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;this&lt;span class="w"&gt; &lt;/span&gt;key?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
+Please&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;reason&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;revocation:
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;No&lt;span class="w"&gt; &lt;/span&gt;reason&lt;span class="w"&gt; &lt;/span&gt;specified
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Key&lt;span class="w"&gt; &lt;/span&gt;has&lt;span class="w"&gt; &lt;/span&gt;been&lt;span class="w"&gt; &lt;/span&gt;compromised
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;2&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Key&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;superseded
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;3&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Key&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;no&lt;span class="w"&gt; &lt;/span&gt;longer&lt;span class="w"&gt; &lt;/span&gt;used
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;Q&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Cancel
+&lt;span class="o"&gt;(&lt;/span&gt;Probably&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;here&lt;span class="o"&gt;)&lt;/span&gt;
+Your&lt;span class="w"&gt; &lt;/span&gt;decision?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# 1 &amp;lt;--&lt;/span&gt;
+Enter&lt;span class="w"&gt; &lt;/span&gt;an&lt;span class="w"&gt; &lt;/span&gt;optional&lt;span class="w"&gt; &lt;/span&gt;description&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;end&lt;span class="w"&gt; &lt;/span&gt;it&lt;span class="w"&gt; &lt;/span&gt;with&lt;span class="w"&gt; &lt;/span&gt;an&lt;span class="w"&gt; &lt;/span&gt;empty&lt;span class="w"&gt; &lt;/span&gt;line:
+&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# Empty line will do fine here &amp;lt;--&lt;/span&gt;
+Reason&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;revocation:&lt;span class="w"&gt; &lt;/span&gt;Key&lt;span class="w"&gt; &lt;/span&gt;has&lt;span class="w"&gt; &lt;/span&gt;been&lt;span class="w"&gt; &lt;/span&gt;compromised
+&lt;span class="o"&gt;(&lt;/span&gt;No&lt;span class="w"&gt; &lt;/span&gt;description&lt;span class="w"&gt; &lt;/span&gt;given&lt;span class="o"&gt;)&lt;/span&gt;
+Is&lt;span class="w"&gt; &lt;/span&gt;this&lt;span class="w"&gt; &lt;/span&gt;okay?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
 
-You need a passphrase to unlock the secret key &lt;span class="k"&gt;for&lt;/span&gt;
-user: &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
-&lt;span class="m"&gt;4096&lt;/span&gt;-bit RSA key, ID &lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;, created &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
+You&lt;span class="w"&gt; &lt;/span&gt;need&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;passphrase&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;unlock&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;secret&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;
+user:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;name&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
+&lt;span class="m"&gt;4096&lt;/span&gt;-bit&lt;span class="w"&gt; &lt;/span&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;key,&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;created&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17
 &lt;span class="c1"&gt;# Enter passphrase &amp;lt;--&lt;/span&gt;
 
-Revocation certificate created.
+Revocation&lt;span class="w"&gt; &lt;/span&gt;certificate&lt;span class="w"&gt; &lt;/span&gt;created.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Make several copies of it and save it in a safe place (ideally not the same one as the master key!)&lt;/p&gt;
 &lt;h2&gt;Remove the master key&lt;/h2&gt;
 &lt;p&gt;Before proceeding, make sure to have backups of the &lt;code&gt;.gpg&lt;/code&gt; folder (perhaps on an encrypted media)&lt;/p&gt;
 &lt;p&gt;Temporarily export the subkeys:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --export-secret-subkeys &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt; &amp;gt; /media/encrypted-media/subkeys
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--export-secret-subkeys&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;/media/encrypted-media/subkeys
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Delete the master key:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --delete-secret-key 0x6F87F32E2234961E
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--delete-secret-key&lt;span class="w"&gt; &lt;/span&gt;0x6F87F32E2234961E
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Re-import the subkeys and remove the temporary export:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --import /media/encrypted-usb/subkeys
-$ shred -u /media/encrypted-usb/subkeys
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--import&lt;span class="w"&gt; &lt;/span&gt;/media/encrypted-usb/subkeys
+$&lt;span class="w"&gt; &lt;/span&gt;shred&lt;span class="w"&gt; &lt;/span&gt;-u&lt;span class="w"&gt; &lt;/span&gt;/media/encrypted-usb/subkeys
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Check that everything worked as intended - the hash (#) next to the &lt;code&gt;sec&lt;/code&gt; line means that the master key is missing.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg -K &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;-K&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;
 
 /home/username/.gnupg/secring.gpg
 -----------------------------
-sec#  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
-uid                  &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
-ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]&lt;/span&gt;   &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
-ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]&lt;/span&gt;   &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
+sec#&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17
+uid&lt;span class="w"&gt;                  &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;name&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
+ssb&lt;span class="w"&gt;   &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17
+ssb&lt;span class="w"&gt;   &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Upload the key to a keyserver&lt;/h2&gt;
 &lt;p&gt;Keyservers syncs keys with each other, so any keyserver would do.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --keyserver pgp.mit.edu --send-key &lt;span class="o"&gt;[&lt;/span&gt;your key ID&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--keyserver&lt;span class="w"&gt; &lt;/span&gt;pgp.mit.edu&lt;span class="w"&gt; &lt;/span&gt;--send-key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Using your master key&lt;/h2&gt;
 &lt;p&gt;Assuming that the &lt;code&gt;.gpg&lt;/code&gt; folder is on some kind of encrypted media:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --homedir&lt;span class="o"&gt;=&lt;/span&gt;/media/encrypted-media/.gnupg/ &lt;span class="o"&gt;[&lt;/span&gt;gpg command&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--homedir&lt;span class="o"&gt;=&lt;/span&gt;/media/encrypted-media/.gnupg/&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;command&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Parting thoughts&lt;/h2&gt;
@@ -294,7 +294,7 @@ ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]
 &lt;/ul&gt;</content><category term="cryptography"></category><category term="GPG"></category><category term="cryptography"></category></entry><entry><title>How to encrypt a removable disk in Ubuntu 14.04</title><link href="https://railslide.io/encrypt-removable-disk-ubuntu-1404.html" rel="alternate"></link><published>2015-04-27T00:00:00+02:00</published><updated>2015-04-27T00:00:00+02:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2015-04-27:/encrypt-removable-disk-ubuntu-1404.html</id><summary type="html">&lt;p&gt;Most of the guides on how to encrypt a removable disk in Ubuntu still refer to Ubuntu 12.04. Here's how to do it in Ubuntu 14.04 and to cope with the changes it introduces to the disks manager tool.&lt;/p&gt;</summary><content type="html">&lt;p&gt;The other day, while encrypting a USB stick, I discovered that most of the available howtos (including the community wiki) refers to Ubuntu 12.04. So, here's how to do it in Ubuntu 14.04, taking into account the changes that the latest LTS introduced to the disks manager tool.&lt;/p&gt;
 &lt;h2&gt;1. Install cryptsetup&lt;/h2&gt;
 &lt;p&gt;The first thing you need to do is to install &lt;code&gt;cryptsetup&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo apt-get install cryptsetup
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;cryptsetup
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;You can also install it from the Software center if you feel more comfortable with a graphical interface.&lt;/p&gt;

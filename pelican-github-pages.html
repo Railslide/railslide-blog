@@ -77,33 +77,33 @@ output/
 <p>Before installing Pelican, I would recommend to create a new virtualenv. It is not mandatory, but it is definitely a good practice and would prevent the risk of conflicts between installed packages.</p>
 <p>NOTE: Pelican documentation recommends to use Pelican with Python 2.7. I am keeping up with <a href="https://railslide.io/virtualenvwrapper-python3.html">my pledge of using Python 3 whenever possible</a>, as well as giving a try with Python 3.4 (Ubuntu 14.04 default version). Everything works fine so far and anyways these instructions are version agnostic - just be aware of it and choose your Python version accordingly.</p>
 <p>Install pelican and ghp-import</p>
-<div class="highlight"><pre><span></span><code>pip install pelican
-pip install -e git+git://github.com/davisp/ghp-import.git#egg<span class="o">=</span>ghp-import
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>pelican
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>git+git://github.com/davisp/ghp-import.git#egg<span class="o">=</span>ghp-import
 </code></pre></div>
 
 <p>Next run <code>pelican-quickstart</code> and get ready to answer to a bunch of questions. Most of them are pretty straightforward and anyway you'll be able to change them later in your settings files. These are the only ones you need to care about for the moment:</p>
-<div class="highlight"><pre><span></span><code>Where <span class="k">do</span> you want to create your new web site? <span class="o">[</span>.<span class="o">]</span> <span class="c1"># Press enter</span>
-Do you want to specify a URL prefix? e.g., http://example.com <span class="o">(</span>Y/n<span class="o">)</span> <span class="c1"># y</span>
-What is your URL prefix? <span class="o">(</span>see above example<span class="p">;</span> no trailing slash<span class="o">)</span> <span class="c1"># http://username.github.io/repository</span>
-Do you want to generate a Fabfile/Makefile to automate generation and publishing? <span class="o">(</span>Y/n<span class="o">)</span> <span class="c1"># y</span>
+<div class="highlight"><pre><span></span><code>Where<span class="w"> </span><span class="k">do</span><span class="w"> </span>you<span class="w"> </span>want<span class="w"> </span>to<span class="w"> </span>create<span class="w"> </span>your<span class="w"> </span>new<span class="w"> </span>web<span class="w"> </span>site?<span class="w"> </span><span class="o">[</span>.<span class="o">]</span><span class="w"> </span><span class="c1"># Press enter</span>
+Do<span class="w"> </span>you<span class="w"> </span>want<span class="w"> </span>to<span class="w"> </span>specify<span class="w"> </span>a<span class="w"> </span>URL<span class="w"> </span>prefix?<span class="w"> </span>e.g.,<span class="w"> </span>http://example.com<span class="w"> </span><span class="o">(</span>Y/n<span class="o">)</span><span class="w"> </span><span class="c1"># y</span>
+What<span class="w"> </span>is<span class="w"> </span>your<span class="w"> </span>URL<span class="w"> </span>prefix?<span class="w"> </span><span class="o">(</span>see<span class="w"> </span>above<span class="w"> </span>example<span class="p">;</span><span class="w"> </span>no<span class="w"> </span>trailing<span class="w"> </span>slash<span class="o">)</span><span class="w"> </span><span class="c1"># http://username.github.io/repository</span>
+Do<span class="w"> </span>you<span class="w"> </span>want<span class="w"> </span>to<span class="w"> </span>generate<span class="w"> </span>a<span class="w"> </span>Fabfile/Makefile<span class="w"> </span>to<span class="w"> </span>automate<span class="w"> </span>generation<span class="w"> </span>and<span class="w"> </span>publishing?<span class="w"> </span><span class="o">(</span>Y/n<span class="o">)</span><span class="w"> </span><span class="c1"># y</span>
 </code></pre></div>
 
 <p>Answer <code>n</code> to all the questions about uploading your website and you are ready to go.</p>
 <h1>3. Writing content</h1>
 <p>Fire up your favorite text editor and write your blog content in either Markdown or reStructuredText. Once you have done, save it in the content folder. For previewing it:</p>
-<div class="highlight"><pre><span></span><code>make devserver
+<div class="highlight"><pre><span></span><code>make<span class="w"> </span>devserver
 <span class="c1"># go to http://localhost:8000 and check if everything looks good</span>
-^C <span class="c1"># note that CTRL+C won&#39;t stop dev server</span>
-./develop_server.sh stop <span class="c1"># manually stop the dev server</span>
+^C<span class="w"> </span><span class="c1"># note that CTRL+C won&#39;t stop dev server</span>
+./develop_server.sh<span class="w"> </span>stop<span class="w"> </span><span class="c1"># manually stop the dev server</span>
 </code></pre></div>
 
 <h1>4. Publishing and pushing</h1>
 <p>Ok this is the easy part.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># pushing the source repo</span>
-git push origin master
+git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>master
 
 <span class="c1"># push the output folder to GitHub pages</span>
-make github
+make<span class="w"> </span>github
 
 <span class="c1"># celebrate!</span>
 </code></pre></div>

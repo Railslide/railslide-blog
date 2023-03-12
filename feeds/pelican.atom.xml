@@ -14,33 +14,33 @@ output/
 &lt;p&gt;Before installing Pelican, I would recommend to create a new virtualenv. It is not mandatory, but it is definitely a good practice and would prevent the risk of conflicts between installed packages.&lt;/p&gt;
 &lt;p&gt;NOTE: Pelican documentation recommends to use Pelican with Python 2.7. I am keeping up with &lt;a href="https://railslide.io/virtualenvwrapper-python3.html"&gt;my pledge of using Python 3 whenever possible&lt;/a&gt;, as well as giving a try with Python 3.4 (Ubuntu 14.04 default version). Everything works fine so far and anyways these instructions are version agnostic - just be aware of it and choose your Python version accordingly.&lt;/p&gt;
 &lt;p&gt;Install pelican and ghp-import&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pip install pelican
-pip install -e git+git://github.com/davisp/ghp-import.git#egg&lt;span class="o"&gt;=&lt;/span&gt;ghp-import
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pip&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;pelican
+pip&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;-e&lt;span class="w"&gt; &lt;/span&gt;git+git://github.com/davisp/ghp-import.git#egg&lt;span class="o"&gt;=&lt;/span&gt;ghp-import
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Next run &lt;code&gt;pelican-quickstart&lt;/code&gt; and get ready to answer to a bunch of questions. Most of them are pretty straightforward and anyway you'll be able to change them later in your settings files. These are the only ones you need to care about for the moment:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Where &lt;span class="k"&gt;do&lt;/span&gt; you want to create your new web site? &lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="c1"&gt;# Press enter&lt;/span&gt;
-Do you want to specify a URL prefix? e.g., http://example.com &lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y&lt;/span&gt;
-What is your URL prefix? &lt;span class="o"&gt;(&lt;/span&gt;see above example&lt;span class="p"&gt;;&lt;/span&gt; no trailing slash&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# http://username.github.io/repository&lt;/span&gt;
-Do you want to generate a Fabfile/Makefile to automate generation and publishing? &lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Where&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;do&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;create&lt;span class="w"&gt; &lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;new&lt;span class="w"&gt; &lt;/span&gt;web&lt;span class="w"&gt; &lt;/span&gt;site?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# Press enter&lt;/span&gt;
+Do&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;specify&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;URL&lt;span class="w"&gt; &lt;/span&gt;prefix?&lt;span class="w"&gt; &lt;/span&gt;e.g.,&lt;span class="w"&gt; &lt;/span&gt;http://example.com&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# y&lt;/span&gt;
+What&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;URL&lt;span class="w"&gt; &lt;/span&gt;prefix?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;see&lt;span class="w"&gt; &lt;/span&gt;above&lt;span class="w"&gt; &lt;/span&gt;example&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;no&lt;span class="w"&gt; &lt;/span&gt;trailing&lt;span class="w"&gt; &lt;/span&gt;slash&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# http://username.github.io/repository&lt;/span&gt;
+Do&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;generate&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;Fabfile/Makefile&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;automate&lt;span class="w"&gt; &lt;/span&gt;generation&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;publishing?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# y&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Answer &lt;code&gt;n&lt;/code&gt; to all the questions about uploading your website and you are ready to go.&lt;/p&gt;
 &lt;h1&gt;3. Writing content&lt;/h1&gt;
 &lt;p&gt;Fire up your favorite text editor and write your blog content in either Markdown or reStructuredText. Once you have done, save it in the content folder. For previewing it:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;make devserver
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;make&lt;span class="w"&gt; &lt;/span&gt;devserver
 &lt;span class="c1"&gt;# go to http://localhost:8000 and check if everything looks good&lt;/span&gt;
-^C &lt;span class="c1"&gt;# note that CTRL+C won&amp;#39;t stop dev server&lt;/span&gt;
-./develop_server.sh stop &lt;span class="c1"&gt;# manually stop the dev server&lt;/span&gt;
+^C&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# note that CTRL+C won&amp;#39;t stop dev server&lt;/span&gt;
+./develop_server.sh&lt;span class="w"&gt; &lt;/span&gt;stop&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# manually stop the dev server&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;4. Publishing and pushing&lt;/h1&gt;
 &lt;p&gt;Ok this is the easy part.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# pushing the source repo&lt;/span&gt;
-git push origin master
+git&lt;span class="w"&gt; &lt;/span&gt;push&lt;span class="w"&gt; &lt;/span&gt;origin&lt;span class="w"&gt; &lt;/span&gt;master
 
 &lt;span class="c1"&gt;# push the output folder to GitHub pages&lt;/span&gt;
-make github
+make&lt;span class="w"&gt; &lt;/span&gt;github
 
 &lt;span class="c1"&gt;# celebrate!&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;

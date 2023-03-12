@@ -68,13 +68,13 @@
 <h2>The Ubuntu mess</h2>
 <p>According to Python documentation I should be able to invoke pyvenv by simply calling <code>pyvenv [args]</code>. However, that is not the case for Ubuntu. Thus, my first attempt to set my <code>VIRTUALENVWRAPPER_VIRTUALENV</code> variable equal to <code>pyvenv</code> resulted in my vagrant machine complaining because it could not find it in my path. Setting it to <code>pyvenv-3.4</code> solved it (I was initially testing on Ubuntu 14.04, which ships with Python 3.4). Though having to manually change it whenever I decide to update my Python version is far from optimal.</p>
 <p>So I set <code>pyvenv-3.4</code> as <code>VIRTUALENVWRAPPER_VIRTUALENV</code>, created a new virtualenv and...</p>
-<div class="highlight"><pre><span></span><code>Error: Command <span class="s1">&#39;[&#39;</span>/home/vagrant/.virtualenvs/test/bin/python3.4<span class="s1">&#39;, &#39;</span>-Im<span class="s1">&#39;, &#39;</span>ensurepip<span class="s1">&#39;, &#39;</span>--upgrade<span class="s1">&#39;, &#39;</span>--default-pip<span class="s1">&#39;]&#39;</span> returned non-zero <span class="nb">exit</span> status <span class="m">1</span>
+<div class="highlight"><pre><span></span><code>Error:<span class="w"> </span>Command<span class="w"> </span><span class="s1">&#39;[&#39;</span>/home/vagrant/.virtualenvs/test/bin/python3.4<span class="s1">&#39;, &#39;</span>-Im<span class="s1">&#39;, &#39;</span>ensurepip<span class="s1">&#39;, &#39;</span>--upgrade<span class="s1">&#39;, &#39;</span>--default-pip<span class="s1">&#39;]&#39;</span><span class="w"> </span>returned<span class="w"> </span>non-zero<span class="w"> </span><span class="nb">exit</span><span class="w"> </span>status<span class="w"> </span><span class="m">1</span>
 </code></pre></div>
 
 <p>Ok, not exactly what I was hoping for.</p>
 <p>After a bit of digging, it came out that it is due <a href="https://bugs.launchpad.net/ubuntu/+source/python3.4/+bug/1290847">to a bug with ensurepip</a> in the first release of Ubuntu 14.04. However, it is possible to bypass the problem by first creating the virtualenv without pip and then manually installing it once inside it.</p>
-<div class="highlight"><pre><span></span><code>$ mkvirtualenv --without-pip my_venv
-<span class="o">(</span>my_venv<span class="o">)</span>$ curl https://bootstrap.pypa.io/get-pip.py <span class="p">|</span> python
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>mkvirtualenv<span class="w"> </span>--without-pip<span class="w"> </span>my_venv
+<span class="o">(</span>my_venv<span class="o">)</span>$<span class="w"> </span>curl<span class="w"> </span>https://bootstrap.pypa.io/get-pip.py<span class="w"> </span><span class="p">|</span><span class="w"> </span>python
 </code></pre></div>
 
 <p>Quite a lot to type, plus you have to wait for Pip to install. Definitely not optimal.</p>
@@ -98,7 +98,7 @@
 
 <p><code>cpvirtualenv</code> is instead a bit weird, since it does copy the virtualenv, but it displays the name of the original one in front of the prompt of all its copies. Even making copies of a copy doesn't change the result: it still shows the name of the first original. The <code>$VIRTUAL_ENV</code> variable and the interpreter point to the correct folder tho...</p>
 <p>Last but not least, is probably worthy mentioning that - by design - pyvenv doesn't offer the possibility to specify a Python interpreter for virtual environments, so</p>
-<div class="highlight"><pre><span></span><code>$ mkvirtualenv -p /path/to/python/interpreter my_venv
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>mkvirtualenv<span class="w"> </span>-p<span class="w"> </span>/path/to/python/interpreter<span class="w"> </span>my_venv
 </code></pre></div>
 
 <p>no longer works, which means no way to get a Python 2.7 virtualenv out of it.</p>

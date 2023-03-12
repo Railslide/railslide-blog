@@ -63,14 +63,14 @@
                 </header>
             </section>
             <p>Lately I wanted to sign a coworker's key, so after having gone through the all in-real-life verification shebang together, all that was left was me performing the actual signing. However, since I <a href="https://railslide.io/create-gpg-key-with-subkeys.html">use subkeys on my laptop</a>, I first needed to get out my master key from its secret dungeon and tell GPG to use that one instead of the usual subkey. For doing that I used the handy <code>--homedir</code> option.</p>
-<div class="highlight"><pre><span></span><code>$ gpg --homedir<span class="o">=</span>/path/to/my/master/gnupg/folder --sign-key mycoworker@myjob.com
-gpg: key <span class="s2">&quot;mycoworker@myjob.com&quot;</span> not found: public key not found
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>gpg<span class="w"> </span>--homedir<span class="o">=</span>/path/to/my/master/gnupg/folder<span class="w"> </span>--sign-key<span class="w"> </span>mycoworker@myjob.com
+gpg:<span class="w"> </span>key<span class="w"> </span><span class="s2">&quot;mycoworker@myjob.com&quot;</span><span class="w"> </span>not<span class="w"> </span>found:<span class="w"> </span>public<span class="w"> </span>key<span class="w"> </span>not<span class="w"> </span>found
 </code></pre></div>
 
 <p>How's that possible? I am positive that I've imported my coworker's key - we have even exchanged encrypted email with each other!</p>
 <p>Well, the fact is that I imported the key, yes, but I did it in my local keyring which is the one located at <code>~/.gnupg</code> and thus not the one my master key refers to. Pretty much as when using GPG on multiple computers: you have to re-import all the public keys from scratch.</p>
 <p>Ok, so what are the options? Export the key I want to sign, import it into the master keyring, sign it, export it from the master keyiring, and finally import it into the local keyring? Sure, you could do that, but it's quite cumbersome. Fortunately, gpg has a better solution for that: the <code>--keyring</code> option!</p>
-<div class="highlight"><pre><span></span><code>$ gpg --homedir<span class="o">=</span>/path/to/my/master/gnupg/folder --keyring ~/.gnupg/pubring.gpg --sign-key mycoworker@myjob.com
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>gpg<span class="w"> </span>--homedir<span class="o">=</span>/path/to/my/master/gnupg/folder<span class="w"> </span>--keyring<span class="w"> </span>~/.gnupg/pubring.gpg<span class="w"> </span>--sign-key<span class="w"> </span>mycoworker@myjob.com
 </code></pre></div>
 
 <p>And voilà! Now you can proceed signing the key.</p>

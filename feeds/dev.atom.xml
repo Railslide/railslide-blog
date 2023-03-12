@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide - dev</title><link href="https://railslide.io/" rel="alternate"></link><link href="https://railslide.io/feeds/dev.atom.xml" rel="self"></link><id>https://railslide.io/</id><updated>2023-02-15T00:00:00+01:00</updated><entry><title>TIL: strip does not do what I think it does</title><link href="https://railslide.io/til-strip-does-not-do-what-i-think-it-does.html" rel="alternate"></link><published>2023-02-15T00:00:00+01:00</published><updated>2023-02-15T00:00:00+01:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2023-02-15:/til-strip-does-not-do-what-i-think-it-does.html</id><summary type="html">&lt;p&gt;It turns out I have been using it wrong for all this time!&lt;/p&gt;</summary><content type="html">&lt;p&gt;I always thought &lt;code&gt;strip&lt;/code&gt;, &lt;code&gt;lstrip&lt;/code&gt; and &lt;code&gt;rstrip&lt;/code&gt; would simply match and strip whatever string it was passed to them. However, it turns out that's not how they work.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide - dev</title><link href="https://railslide.io/" rel="alternate"></link><link href="https://railslide.io/feeds/dev.atom.xml" rel="self"></link><id>https://railslide.io/</id><updated>2023-03-12T00:00:00+01:00</updated><entry><title>Make pyenv and pyright play nice together</title><link href="https://railslide.io/make-pyenv-and-pyright-play-nice-together.html" rel="alternate"></link><published>2023-03-12T00:00:00+01:00</published><updated>2023-03-12T00:00:00+01:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2023-03-12:/make-pyenv-and-pyright-play-nice-together.html</id><summary type="html">&lt;p&gt;If you use &lt;code&gt;pyenv local&lt;/code&gt;, Pyright will not automatically pick up the correct virtualenv. Here's an explanation of why it happens and how to work around it.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Some time ago I started looking into setting up the built-in LSPs in Neovim, and being Python my main programming language, I set up &lt;a href="https://github.com/microsoft/pyright/"&gt;Pyright&lt;/a&gt; as my first language server and gave it a spin. While all the basics things worked out of the box, I kept getting a bunch of &lt;code&gt;Import "some_module" could not be resolved&lt;/code&gt;. After having ruled out the classic mistakes (i.e. forgetting to install dependencies, or running Neovim from the wrong folder), and ran some test (&lt;a href="https://github.com/dense-analysis/ale"&gt;Ale&lt;/a&gt; recognized my virtualenv as expected), all that was left was that somehow Pyright did not play along with my virtualenv.&lt;/p&gt;
+&lt;h2&gt;Why it happens&lt;/h2&gt;
+&lt;p&gt;By default Pyright tries to be smart and to automatically pick up existing virtualenvs. When it comes to Pyenv, Pyright checks whether &lt;code&gt;$PYENV_VERSION&lt;/code&gt; is set and determines which Python interpreter to use from its value. So far so good.&lt;/p&gt;
+&lt;p&gt;The problems however start when using &lt;code&gt;pyenv local&lt;/code&gt;. Basically &lt;a href="https://github.com/pyenv/pyenv-virtualenv"&gt;pyenv-virtualenv&lt;/a&gt; has this super nifty function that couples the specified virtualenv with the current folder, so that it gets automatically activated whenever you &lt;code&gt;cd&lt;/code&gt; into the directory (and deactivate once you move away from it). However, whenever the virtualenv gets automagically activated, the &lt;code&gt;$PYENV_VERSION&lt;/code&gt; variable doesn't get set (and apparently that's &lt;a href="https://github.com/pyenv/pyenv/issues/1760"&gt;by design&lt;/a&gt;, and hence unlikely to change anytime soon).&lt;/p&gt;
+&lt;h2&gt;How to solve(ish)&lt;/h2&gt;
+&lt;p&gt;If you need to fix something on the fly, forcing Pyenv to set the environment variable by using &lt;code&gt;pyenv shell &amp;lt;env_name&amp;gt;&lt;/code&gt; is a quick way to work around the issue. It's worth mentioning, however, that it's only temporary and that you will have type it again every time you start a new shell. So great for debugging, but not ideal as a long term solution.&lt;/p&gt;
+&lt;p&gt;A more long term solution is to leverage Pyright configuration options. For doing so, you need to create a &lt;code&gt;pyrightconfig.json&lt;/code&gt; file in the root of your project with the following content&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;venvPath&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;lt;PYENV_ROOT&amp;gt;/versions&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;venv&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;lt;ENV_NAME&amp;gt;&amp;quot;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;where &lt;code&gt;PYENV_ROOT&lt;/code&gt; is the output of &lt;code&gt;echo $PYENV_ROOT&lt;/code&gt; and &lt;code&gt;ENV_NAME&lt;/code&gt; is the name of your virtualenv.&lt;/p&gt;
+&lt;p&gt;Keep in mind though that &lt;code&gt;pyrightconfig.json&lt;/code&gt; &lt;u&gt;does not support shell variables&lt;/u&gt;, so stuff like &lt;code&gt;~/.pyenv/versions&lt;/code&gt; won't work.&lt;/p&gt;
+&lt;p&gt;While this is a way better method, it still requires a lot of typing. Wouldn't be great if it was possible to automate this somehow? Enter &lt;a href="https://github.com/alefpereira/pyenv-pyright"&gt;pyenv-pyright&lt;/a&gt;, a Pyenv plugin that takes care of handling &lt;code&gt;pyrightconfig.json&lt;/code&gt; on your behalf. So now all you have to do is to type &lt;code&gt;pyenv pyright&lt;/code&gt; once and you're ready to go!&lt;/p&gt;
+&lt;p&gt;Happy coding!&lt;/p&gt;
+&lt;h2&gt;Resources&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/alefpereira/pyenv-pyright"&gt;pyenv-pyright&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/microsoft/pyright/blob/main/docs/configuration.md"&gt;Pyright configuration options&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><category term="dev"></category><category term="python"></category><category term="neovim"></category></entry><entry><title>TIL: strip does not do what I think it does</title><link href="https://railslide.io/til-strip-does-not-do-what-i-think-it-does.html" rel="alternate"></link><published>2023-02-15T00:00:00+01:00</published><updated>2023-02-15T00:00:00+01:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2023-02-15:/til-strip-does-not-do-what-i-think-it-does.html</id><summary type="html">&lt;p&gt;It turns out I have been using it wrong for all this time!&lt;/p&gt;</summary><content type="html">&lt;p&gt;I always thought &lt;code&gt;strip&lt;/code&gt;, &lt;code&gt;lstrip&lt;/code&gt; and &lt;code&gt;rstrip&lt;/code&gt; would simply match and strip whatever string it was passed to them. However, it turns out that's not how they work.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="s2"&gt;&amp;quot;Hello world&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;hel&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
 &lt;span class="c1"&gt;# Expected outcome: &amp;#39;lo world&amp;#39;&lt;/span&gt;
 &lt;span class="s1"&gt;&amp;#39;o world&amp;#39;&lt;/span&gt;  &lt;span class="c1"&gt;# Actual outcome&lt;/span&gt;
@@ -19,21 +40,21 @@
 &lt;p&gt;Ok, and what about Lua? When I started my &lt;a href="https://railslide.io/learning-vim-in-2022.html"&gt;Vim adventure&lt;/a&gt; I felt like I didn't know enough about Vim and Neovim to have a strong preference for one over the other, so I just placed all my config in &lt;code&gt;.vimrc&lt;/code&gt; as that was compatible with both. But then time passed and two things happened: first, I realized I have never went back once to Vim after trying Neovim; second, Vim announced that from version 9.0 it will introduce a new scripting language (Vim 9 Script), which will not be completely backward-compatible with the old VimScript. For me that meant that, no matter which editor I chose, I would have to learn a new language. And if I have to put the effort, I'd rather do it for something multipurpose like Lua, than for a language that only applies to my editor.&lt;/p&gt;
 &lt;h2&gt;The structure&lt;/h2&gt;
 &lt;p&gt;After a bit of back and forth, this is what the directory structure of my config currently looks like:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;nvim
-├── after
-│   └── plugin
-│       ├── ale.lua
-│       ├── lightline.vim.lua
-│       ├── onedark.lua
-│       └── telescope.lua
-├── init.lua
-├── lua
-│   └── railslide
-│       ├── mappings.lua
-│       ├── options.lua
-│       └── plugin-manager.lua
-└── plugin
-    └── packer_compiled.lua
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;nvim&lt;/span&gt;
+&lt;span class="n"&gt;├── after&lt;/span&gt;
+&lt;span class="n"&gt;│   └── plugin&lt;/span&gt;
+&lt;span class="n"&gt;│       ├── ale.lua&lt;/span&gt;
+&lt;span class="n"&gt;│       ├── lightline.vim.lua&lt;/span&gt;
+&lt;span class="n"&gt;│       ├── onedark.lua&lt;/span&gt;
+&lt;span class="n"&gt;│       └── telescope.lua&lt;/span&gt;
+&lt;span class="n"&gt;├── init.lua&lt;/span&gt;
+&lt;span class="n"&gt;├── lua&lt;/span&gt;
+&lt;span class="n"&gt;│   └── railslide&lt;/span&gt;
+&lt;span class="n"&gt;│       ├── mappings.lua&lt;/span&gt;
+&lt;span class="n"&gt;│       ├── options.lua&lt;/span&gt;
+&lt;span class="n"&gt;│       └── plugin-manager.lua&lt;/span&gt;
+&lt;span class="n"&gt;└── plugin&lt;/span&gt;
+&lt;span class="n"&gt;    └── packer_compiled.lua&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The &lt;code&gt;lua/railside&lt;/code&gt; folder is where I keep my general configuration. The &lt;code&gt;lua&lt;/code&gt; folder is included in Neovim &lt;code&gt;runtimepath&lt;/code&gt; and it's where Neovim looks for Lua plugins by default. Inside that I created a directory with my own username in order to avoid namespace conflicts (the name per se doesn't actually matter, as long as it's something unlikely to be used by something else you're good to go).&lt;/p&gt;
@@ -81,17 +102,17 @@
 &lt;li&gt;&lt;a href="https://github.com/iggredible/Learn-Vim"&gt;Learn Vim (the Smart Way)&lt;/a&gt;. Not for complete beginners but still a great read - just make sure to complete the tutorial first.&lt;/li&gt;
 &lt;/ul&gt;</content><category term="dev"></category><category term="editor"></category><category term="vim"></category><category term="tools"></category></entry><entry><title>Managing multiple Git identities</title><link href="https://railslide.io/managing-multiple-git-identities.html" rel="alternate"></link><published>2022-08-30T00:00:00+02:00</published><updated>2022-08-30T00:00:00+02:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2022-08-30:/managing-multiple-git-identities.html</id><summary type="html">&lt;p&gt;How to manage multiple Git identities on the same machine&lt;/p&gt;</summary><content type="html">&lt;p&gt;I code for work and I code for fun. When I do it for fun I use my personal email address as identity in Git, but when I do it for work I am often required to use my work email. For a long time my solution was to simply to set my working email in the &lt;code&gt;.gitconfig&lt;/code&gt; of my working machine. That worked for most cases (I usually tend to only code for work on my work machine) and as the only pain point seemed to be my dotfiles, I simply accepted the pain of copy-pasting things around as a necessary evil and moved on with my life.&lt;/p&gt;
 &lt;p&gt;However, it turns out that there's a better way to handle multiple identities in Git: enter conditional configuration! Basically you can tell Git to include a different &lt;code&gt;.gitconfig&lt;/code&gt; depending on a certain condition (e.g. when the &lt;code&gt;.git&lt;/code&gt; directory matches a certain path). So for my specific case I simply changed my &lt;code&gt;.gitconfig&lt;/code&gt; to like something like this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[user]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;lt;first name&amp;gt; &amp;lt;last name&amp;gt;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;email&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;lt;work email address&amp;gt;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="k"&gt;[includeIf &amp;quot;gitdir:~/Projects/personal/&amp;quot;]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;path&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;.gitconfig-personal&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[user]&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;lt;first name&amp;gt; &amp;lt;last name&amp;gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;email&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;lt;work email address&amp;gt;&lt;/span&gt;
+&lt;span class="k"&gt;[includeIf &amp;quot;gitdir:~/Projects/personal/&amp;quot;]&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;path&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;.gitconfig-personal&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and then in the &lt;code&gt;.gitconfig-personal&lt;/code&gt; I added&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[user]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;lt;first name&amp;gt; &amp;lt;last name&amp;gt;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;email&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;lt;personal email address&amp;gt;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[user]&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;lt;first name&amp;gt; &amp;lt;last name&amp;gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;email&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;lt;personal email address&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and now every time I work on a repo in the &lt;code&gt;personal/&lt;/code&gt; folder the work &lt;code&gt;[user]&lt;/code&gt; block gets automagically overridden by the personal one. No more weird copy pasting around! &lt;/p&gt;
@@ -114,7 +135,7 @@
 &lt;h2&gt;Using the &lt;code&gt;--ds&lt;/code&gt; option&lt;/h2&gt;
 &lt;p&gt;This is probably a no-brainer, but the most obvious way to make sure pytest-django picks up the right settings file is to pass the &lt;code&gt;--ds&lt;/code&gt; option when invoking &lt;code&gt;pytest&lt;/code&gt; from the command line.&lt;/p&gt;
 &lt;p&gt;While it certainly works, it adds quite a lot of typing - especially if you use a &lt;a href="https://www.rdegges.com/2011/the-perfect-django-settings-file/"&gt;settings module instead of a single setting file&lt;/a&gt;, since it could easily translate into&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pytest --ds&lt;span class="o"&gt;=&lt;/span&gt;project_folder.settings_folder.settings_file
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;pytest&lt;span class="w"&gt; &lt;/span&gt;--ds&lt;span class="o"&gt;=&lt;/span&gt;project_folder.settings_folder.settings_file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Certainly not something I'd like to do every time I want to run the test suite.&lt;/p&gt;
@@ -124,19 +145,19 @@
 &lt;h2&gt;Using &lt;code&gt;addopts&lt;/code&gt; in the &lt;code&gt;pytest.ini&lt;/code&gt; file&lt;/h2&gt;
 &lt;p&gt;Wouldn't be awesome if you could just use the &lt;code&gt;pytest.ini&lt;/code&gt; file, set all the necessary settings in there, and not have to worry ever again? Actually you can, thanks to &lt;a href="http://doc.pytest.org/en/3.0.2/customize.html#confval-addopts"&gt;&lt;code&gt;addopts&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;What &lt;code&gt;addopts&lt;/code&gt; does is to add options (hence the double d!) to your test run as if they were specified via command line. So, for example, if you want to update and export coverage every time you run the suite, you would write this in the &lt;code&gt;pytest.ini&lt;/code&gt; file&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[pytest]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="na"&gt;addopts&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;--cov&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;--cov-report&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;html&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[pytest]&lt;/span&gt;
+&lt;span class="na"&gt;addopts&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;--cov&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;.&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;--cov-report&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;html&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and every time you run &lt;code&gt;pytest&lt;/code&gt; it will, behind the scene, be interpreted as if you have run&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pytest --cov&lt;span class="o"&gt;=&lt;/span&gt;. --cov-report&lt;span class="o"&gt;=&lt;/span&gt;html
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;pytest&lt;span class="w"&gt; &lt;/span&gt;--cov&lt;span class="o"&gt;=&lt;/span&gt;.&lt;span class="w"&gt; &lt;/span&gt;--cov-report&lt;span class="o"&gt;=&lt;/span&gt;html
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Thus, by adding &lt;code&gt;--ds=project_folder.settings_folder.settings_file&lt;/code&gt; to &lt;code&gt;addopts&lt;/code&gt; it is possible to override pytest-django discovery order and make sure that the value in the &lt;code&gt;pytest.ini&lt;/code&gt; file gets read instead of environment variable.&lt;/p&gt;
 &lt;p&gt;Ok, but what if you want to point pytest to a different settings file for one run only? No problem! One of the perks of this method is that you can esplicitly pass the &lt;code&gt;--ds&lt;/code&gt; option from the command line to override the one in the &lt;code&gt;pytest.ini&lt;/code&gt; file. So running&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pytest --ds&lt;span class="o"&gt;=&lt;/span&gt;other_settings_file
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;pytest&lt;span class="w"&gt; &lt;/span&gt;--ds&lt;span class="o"&gt;=&lt;/span&gt;other_settings_file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;will just work as usual. Neat!&lt;/p&gt;</content><category term="dev"></category><category term="django"></category><category term="pytest"></category><category term="pytest-django"></category><category term="environment variables"></category></entry><entry><title>Using pyvenv with virtualenvwrapper</title><link href="https://railslide.io/pyvenv-virtualenvwrapper.html" rel="alternate"></link><published>2016-06-07T00:00:00+02:00</published><updated>2016-06-07T00:00:00+02:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2016-06-07:/pyvenv-virtualenvwrapper.html</id><summary type="html">&lt;p&gt;After reading that it might be possible to use virtualenvwrapper with pyvenv, I decided to fire up a couple of virtual machines and to find it out.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Python 3 ships with pyvenv, a built-in virtualenv manager. Although I welcomed the news as a definitely good one, the absence of a virtualenvwrapper-like tool for pyvenv has always stopped me from giving it a try. I consider virtualenvwrapper to be a super neat tool (I even wrote a plugin for it!) and I don't see why I would want to type the path to my virtual environment activation script every time I want to activate it, when I can just use a way more pythonic &lt;code&gt;workon my_venv&lt;/code&gt;.&lt;/p&gt;
@@ -144,13 +165,13 @@
 &lt;h2&gt;The Ubuntu mess&lt;/h2&gt;
 &lt;p&gt;According to Python documentation I should be able to invoke pyvenv by simply calling &lt;code&gt;pyvenv [args]&lt;/code&gt;. However, that is not the case for Ubuntu. Thus, my first attempt to set my &lt;code&gt;VIRTUALENVWRAPPER_VIRTUALENV&lt;/code&gt; variable equal to &lt;code&gt;pyvenv&lt;/code&gt; resulted in my vagrant machine complaining because it could not find it in my path. Setting it to &lt;code&gt;pyvenv-3.4&lt;/code&gt; solved it (I was initially testing on Ubuntu 14.04, which ships with Python 3.4). Though having to manually change it whenever I decide to update my Python version is far from optimal.&lt;/p&gt;
 &lt;p&gt;So I set &lt;code&gt;pyvenv-3.4&lt;/code&gt; as &lt;code&gt;VIRTUALENVWRAPPER_VIRTUALENV&lt;/code&gt;, created a new virtualenv and...&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Error: Command &lt;span class="s1"&gt;&amp;#39;[&amp;#39;&lt;/span&gt;/home/vagrant/.virtualenvs/test/bin/python3.4&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;-Im&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;ensurepip&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;--upgrade&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;--default-pip&lt;span class="s1"&gt;&amp;#39;]&amp;#39;&lt;/span&gt; returned non-zero &lt;span class="nb"&gt;exit&lt;/span&gt; status &lt;span class="m"&gt;1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Error:&lt;span class="w"&gt; &lt;/span&gt;Command&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;[&amp;#39;&lt;/span&gt;/home/vagrant/.virtualenvs/test/bin/python3.4&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;-Im&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;ensurepip&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;--upgrade&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;--default-pip&lt;span class="s1"&gt;&amp;#39;]&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;returned&lt;span class="w"&gt; &lt;/span&gt;non-zero&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;status&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Ok, not exactly what I was hoping for.&lt;/p&gt;
 &lt;p&gt;After a bit of digging, it came out that it is due &lt;a href="https://bugs.launchpad.net/ubuntu/+source/python3.4/+bug/1290847"&gt;to a bug with ensurepip&lt;/a&gt; in the first release of Ubuntu 14.04. However, it is possible to bypass the problem by first creating the virtualenv without pip and then manually installing it once inside it.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ mkvirtualenv --without-pip my_venv
-&lt;span class="o"&gt;(&lt;/span&gt;my_venv&lt;span class="o"&gt;)&lt;/span&gt;$ curl https://bootstrap.pypa.io/get-pip.py &lt;span class="p"&gt;|&lt;/span&gt; python
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;mkvirtualenv&lt;span class="w"&gt; &lt;/span&gt;--without-pip&lt;span class="w"&gt; &lt;/span&gt;my_venv
+&lt;span class="o"&gt;(&lt;/span&gt;my_venv&lt;span class="o"&gt;)&lt;/span&gt;$&lt;span class="w"&gt; &lt;/span&gt;curl&lt;span class="w"&gt; &lt;/span&gt;https://bootstrap.pypa.io/get-pip.py&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;python
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Quite a lot to type, plus you have to wait for Pip to install. Definitely not optimal.&lt;/p&gt;
@@ -174,7 +195,7 @@
 
 &lt;p&gt;&lt;code&gt;cpvirtualenv&lt;/code&gt; is instead a bit weird, since it does copy the virtualenv, but it displays the name of the original one in front of the prompt of all its copies. Even making copies of a copy doesn't change the result: it still shows the name of the first original. The &lt;code&gt;$VIRTUAL_ENV&lt;/code&gt; variable and the interpreter point to the correct folder tho...&lt;/p&gt;
 &lt;p&gt;Last but not least, is probably worthy mentioning that - by design - pyvenv doesn't offer the possibility to specify a Python interpreter for virtual environments, so&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ mkvirtualenv -p /path/to/python/interpreter my_venv
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;mkvirtualenv&lt;span class="w"&gt; &lt;/span&gt;-p&lt;span class="w"&gt; &lt;/span&gt;/path/to/python/interpreter&lt;span class="w"&gt; &lt;/span&gt;my_venv
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;no longer works, which means no way to get a Python 2.7 virtualenv out of it.&lt;/p&gt;
@@ -212,10 +233,10 @@
 &lt;h2&gt;Which mock?&lt;/h2&gt;
 &lt;p&gt;Ok, so back to my mocks! Now they get imported and patch what they need to patch, but still don't seem to work as expected. Or rather, it looks like there's something off with the &lt;code&gt;mock_open&lt;/code&gt; helper, since for some reason it returns a &lt;code&gt;MagicMock&lt;/code&gt; instance instead of the specified &lt;code&gt;read_data&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;After a bit of head scratching and googling, I found a &lt;a href="https://github.com/travis-ci/travis-ci/issues/5849"&gt;feature request&lt;/a&gt; to Travis that shaded light over my own problem. Thanks to it I got to discover that Travis runs an old version of Mock (I haven't figured out which one exactly, but for sure older than 1.3.0) which does not implement &lt;code&gt;mock_open&lt;/code&gt; as later versions do. Thankfully the same issue suggested also a workaround for it, i.e. to add an explicit install command for the desired version to the configuration file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nt"&gt;install&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pip install .&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pip install mock==2.0&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pip install -r requirements.txt&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nt"&gt;install&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pip install .&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pip install mock==2.0&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pip install -r requirements.txt&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Mock and Python 3.3&lt;/h2&gt;
@@ -240,21 +261,21 @@
 &lt;p&gt;Github interface it is certainly nice, but it comes to the price of making your release workflow dependent on Github. What if a certain point you decide that you want to move your code away from Github? Also wouldn't be awesome if you could take care of your releases directly from your trusted terminal? Well, it turns out that you can, since what Github does behind the scene is to create and set a Git tag on the repository.&lt;/p&gt;
 &lt;p&gt;Tags in Git are a way to set a reference to a specific point in history. You can think of them as a way to &lt;em&gt;bookmark&lt;/em&gt; a specific commit. So when you download the source code for your-awesome-project.v1.1.0 you're basically saying "Hey Git, fetch me the code up to the point that correspond to the commit tagged with the name your-awesome-project.v1.1.0".&lt;/p&gt;
 &lt;p&gt;You can set a tag with the &lt;code&gt;git tag&lt;/code&gt; command. However, before you go git-tagging all the things, you should probably be aware that there are two kinds of tags in Git: annotated and lightweight. As the man page for &lt;code&gt;git-tag&lt;/code&gt; explains:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;Tag&lt;/span&gt; &lt;span class="nv"&gt;objects&lt;/span&gt; &lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;created&lt;/span&gt; &lt;span class="nv"&gt;with&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;a&lt;/span&gt;, &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;s&lt;/span&gt;, &lt;span class="nv"&gt;or&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;u&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt; &lt;span class="nv"&gt;are&lt;/span&gt; &lt;span class="nv"&gt;called&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;annotated&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="nv"&gt;tags&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
-&lt;span class="nv"&gt;they&lt;/span&gt; &lt;span class="nv"&gt;contain&lt;/span&gt; &lt;span class="nv"&gt;a&lt;/span&gt; &lt;span class="nv"&gt;creation&lt;/span&gt; &lt;span class="nv"&gt;date&lt;/span&gt;, &lt;span class="nv"&gt;the&lt;/span&gt; &lt;span class="nv"&gt;tagger&lt;/span&gt; &lt;span class="nv"&gt;name&lt;/span&gt; &lt;span class="nv"&gt;and&lt;/span&gt; &lt;span class="nv"&gt;e&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;mail&lt;/span&gt;, &lt;span class="nv"&gt;a&lt;/span&gt; &lt;span class="nv"&gt;tagging&lt;/span&gt;
-&lt;span class="nv"&gt;message&lt;/span&gt;, &lt;span class="nv"&gt;and&lt;/span&gt; &lt;span class="nv"&gt;an&lt;/span&gt; &lt;span class="nv"&gt;optional&lt;/span&gt; &lt;span class="nv"&gt;GnuPG&lt;/span&gt; &lt;span class="nv"&gt;signature&lt;/span&gt;. &lt;span class="nv"&gt;Whereas&lt;/span&gt; &lt;span class="nv"&gt;a&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;lightweight&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="nv"&gt;tag&lt;/span&gt;
-&lt;span class="nv"&gt;is&lt;/span&gt; &lt;span class="nv"&gt;simply&lt;/span&gt; &lt;span class="nv"&gt;a&lt;/span&gt; &lt;span class="nv"&gt;name&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="nv"&gt;an&lt;/span&gt; &lt;span class="nv"&gt;object&lt;/span&gt; &lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;usually&lt;/span&gt; &lt;span class="nv"&gt;a&lt;/span&gt; &lt;span class="nv"&gt;commit&lt;/span&gt; &lt;span class="nv"&gt;object&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;.
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;Tag&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;objects&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;created&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;with&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;a&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;s&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;u&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;are&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;called&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;annotated&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;tags&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+&lt;span class="nv"&gt;they&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;contain&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;creation&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;date&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;the&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;tagger&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;and&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;e&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;mail&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;tagging&lt;/span&gt;
+&lt;span class="nv"&gt;message&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;and&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;an&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;optional&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;GnuPG&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;signature&lt;/span&gt;.&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;Whereas&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;lightweight&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;tag&lt;/span&gt;
+&lt;span class="nv"&gt;is&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;simply&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;an&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;object&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;usually&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;commit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;object&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;.
 
-&lt;span class="nv"&gt;Annotated&lt;/span&gt; &lt;span class="nv"&gt;tags&lt;/span&gt; &lt;span class="nv"&gt;are&lt;/span&gt; &lt;span class="nv"&gt;meant&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="nv"&gt;release&lt;/span&gt; &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="nv"&gt;lightweight&lt;/span&gt; &lt;span class="nv"&gt;tags&lt;/span&gt; &lt;span class="nv"&gt;are&lt;/span&gt; &lt;span class="nv"&gt;meant&lt;/span&gt;
-&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="nv"&gt;private&lt;/span&gt; &lt;span class="nv"&gt;or&lt;/span&gt; &lt;span class="nv"&gt;temporary&lt;/span&gt; &lt;span class="nv"&gt;object&lt;/span&gt; &lt;span class="nv"&gt;labels&lt;/span&gt;. &lt;span class="k"&gt;For&lt;/span&gt; &lt;span class="nv"&gt;this&lt;/span&gt; &lt;span class="nv"&gt;reason&lt;/span&gt;, &lt;span class="nv"&gt;some&lt;/span&gt; &lt;span class="nv"&gt;git&lt;/span&gt;
-&lt;span class="nv"&gt;commands&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="nv"&gt;naming&lt;/span&gt; &lt;span class="nv"&gt;objects&lt;/span&gt; &lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;like&lt;/span&gt; &lt;span class="nv"&gt;git&lt;/span&gt; &lt;span class="nv"&gt;describe&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt; &lt;span class="nv"&gt;will&lt;/span&gt; &lt;span class="nv"&gt;ignore&lt;/span&gt; &lt;span class="nv"&gt;lightweight&lt;/span&gt;
-&lt;span class="nv"&gt;tags&lt;/span&gt; &lt;span class="nv"&gt;by&lt;/span&gt; &lt;span class="nv"&gt;default&lt;/span&gt;.
+&lt;span class="nv"&gt;Annotated&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;tags&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;are&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;meant&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;release&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;lightweight&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;tags&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;are&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;meant&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;private&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;temporary&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;object&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;labels&lt;/span&gt;.&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;For&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;this&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;reason&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;some&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;git&lt;/span&gt;
+&lt;span class="nv"&gt;commands&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;naming&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;objects&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;like&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;git&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;describe&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;will&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;ignore&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;lightweight&lt;/span&gt;
+&lt;span class="nv"&gt;tags&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;by&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;default&lt;/span&gt;.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;To be honest, I still haven't yet figured out a good case for lightweight tags - if you have, give me a shout 'cause I'd love to know! Anyways, the bottom line is: &lt;strong&gt;do not forget the &lt;code&gt;-a&lt;/code&gt; flag when you're trying to make a release&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;Ok, back to our release!&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ git tag -a v1.0.0 -m &lt;span class="s2"&gt;&amp;quot;My awesome message for v1.0.0&amp;quot;&lt;/span&gt;
-$ git push --tags  &lt;span class="c1"&gt;# tags need to be pushed explicitly&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;git&lt;span class="w"&gt; &lt;/span&gt;tag&lt;span class="w"&gt; &lt;/span&gt;-a&lt;span class="w"&gt; &lt;/span&gt;v1.0.0&lt;span class="w"&gt; &lt;/span&gt;-m&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;My awesome message for v1.0.0&amp;quot;&lt;/span&gt;
+$&lt;span class="w"&gt; &lt;/span&gt;git&lt;span class="w"&gt; &lt;/span&gt;push&lt;span class="w"&gt; &lt;/span&gt;--tags&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="c1"&gt;# tags need to be pushed explicitly&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Done!&lt;/p&gt;
@@ -286,9 +307,9 @@ $ git push --tags  &lt;span class="c1"&gt;# tags need to be pushed explicitly&lt
 &lt;p&gt;Finally, you have to &lt;em&gt;echo all the things&lt;/em&gt; in order to keep track of the different installation steps - reducing thus the readability of the script.&lt;/p&gt;
 &lt;p&gt;Of course these are trivial problems and I've happily coped with them for quite some time. But then I had the chance to have a look at Ansible - and it has been a game changer!&lt;/p&gt;
 &lt;p&gt;Ansible uses yaml as a language for its orchestration files (aka playbook), which makes them extremely easy to read. For example, this is how a task for installing Git could look&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;Install git&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;sudo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;yes&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;apt&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pkg=git state=latest&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;Install git&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;sudo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;yes&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;apt&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pkg=git state=latest&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Pretty easy to figure out what it does! On top of that, Ansible outputs the name of your tasks when running them, making it trivial for you to keep track of what's going on behind the scenes.&lt;/p&gt;
@@ -332,33 +353,33 @@ $ git push --tags  &lt;span class="c1"&gt;# tags need to be pushed explicitly&lt
 
 &lt;p&gt;and at the end of the file the lines taking care of the magic:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks&lt;/span&gt;
-&lt;span class="k"&gt;for&lt;/span&gt; file &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nv"&gt;$files&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
-    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -a ~/.&lt;span class="nv"&gt;$file&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;    &lt;span class="c1"&gt;# check if a dotfile already exists&lt;/span&gt;
-        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Moving any existing dotfiles from ~ to &lt;/span&gt;&lt;span class="nv"&gt;$olddir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
-        mv ~/.&lt;span class="nv"&gt;$file&lt;/span&gt; &lt;span class="nv"&gt;$olddir&lt;/span&gt;
-    &lt;span class="k"&gt;fi&lt;/span&gt;
-    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Creating symlink to &lt;/span&gt;&lt;span class="nv"&gt;$file&lt;/span&gt;&lt;span class="s2"&gt; in home directory.&amp;quot;&lt;/span&gt;
-    ln -s &lt;span class="nv"&gt;$dir&lt;/span&gt;/&lt;span class="nv"&gt;$file&lt;/span&gt; ~/.&lt;span class="nv"&gt;$file&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;file&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$files&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;do&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-a&lt;span class="w"&gt; &lt;/span&gt;~/.&lt;span class="nv"&gt;$file&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="c1"&gt;# check if a dotfile already exists&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Moving any existing dotfiles from ~ to &lt;/span&gt;&lt;span class="nv"&gt;$olddir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;mv&lt;span class="w"&gt; &lt;/span&gt;~/.&lt;span class="nv"&gt;$file&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$olddir&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Creating symlink to &lt;/span&gt;&lt;span class="nv"&gt;$file&lt;/span&gt;&lt;span class="s2"&gt; in home directory.&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;ln&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$dir&lt;/span&gt;/&lt;span class="nv"&gt;$file&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;~/.&lt;span class="nv"&gt;$file&lt;/span&gt;
 &lt;span class="k"&gt;done&lt;/span&gt;
 
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Create symlink for Sublime Text User directory&lt;/span&gt;
-&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -d &lt;span class="nv"&gt;$sublimedir&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt; &lt;span class="c1"&gt;# check whether the directory already exists&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-d&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# check whether the directory already exists&lt;/span&gt;
 
-    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -L &lt;span class="nv"&gt;$sublimedir&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
-        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Removing old symlink&amp;quot;&lt;/span&gt;
-        rm &lt;span class="nv"&gt;$sublimedir&lt;/span&gt;
-        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
-    &lt;span class="k"&gt;else&lt;/span&gt;
-        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Moving the existing Sublime Text Users directory from &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;&lt;span class="s2"&gt; to &lt;/span&gt;&lt;span class="nv"&gt;$olddir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
-        mv &lt;span class="nv"&gt;$sublimedir&lt;/span&gt; &lt;span class="nv"&gt;$olddir&lt;/span&gt;
-        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
-    &lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-L&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Removing old symlink&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;rm&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;else&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Moving the existing Sublime Text Users directory from &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;&lt;span class="s2"&gt; to &lt;/span&gt;&lt;span class="nv"&gt;$olddir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;mv&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$olddir&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;fi&lt;/span&gt;
 &lt;span class="k"&gt;fi&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Creating symlink to User in &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
-ln -s &lt;span class="nv"&gt;$dir&lt;/span&gt;/sublime/User &lt;span class="nv"&gt;$sublimedir&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Creating symlink to User in &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+ln&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$dir&lt;/span&gt;/sublime/User&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The full script can be found on &lt;a href="https://github.com/Railslide/dotfiles/blob/master/installdotfiles.sh"&gt;github&lt;/a&gt;.&lt;/p&gt;
@@ -367,17 +388,17 @@ ln -s &lt;span class="nv"&gt;$dir&lt;/span&gt;/sublime/User &lt;span class="nv"&
 &lt;p&gt;Virtualenwrapper documentation specifies that Virtualenvwrapper has been tested under Python 2.6-3.3, but no mention of Python 3.4. Being lazy and not really willing to install a third version of Python on my computer (Ubuntu 14.04 comes with Python 2.7.6 and Python 3.4 by default), I decided to give it try with what I had. Everything seems to work flawlessly so far, just keep it in mind in case you want to try to follow these instructions.&lt;/p&gt;
 &lt;h2&gt;Setting up Virtualenvwrapper&lt;/h2&gt;
 &lt;p&gt;Install pip for Python 3:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo apt-get install python3-pip
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;python3-pip
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Install Virtualenvwrapper for Python 3:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo pip3 install virtualenvwrapper
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;pip3&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;virtualenvwrapper
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;So far so good. Now it is time to configure Virtualenvwrapper.&lt;/p&gt;
 &lt;p&gt;Create a folder for your virtualenvs (I use ~/.virtualenvs) and set it as WORKON_HOME:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkdir ~/.virtualenvs
-&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;WORKON_HOME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/.virtualenvs
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkdir&lt;span class="w"&gt; &lt;/span&gt;~/.virtualenvs
+&lt;span class="nb"&gt;export&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;WORKON_HOME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/.virtualenvs
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Add the following lines to ~/.bashrc:&lt;/p&gt;
@@ -386,9 +407,9 @@ source /usr/local/bin/virtualenvwrapper.sh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Close and re-open your shell and you're ready to go. Here are the basic commands for using virtualenvwrapper:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkvirtualenv virtualenv_name &lt;span class="c1"&gt;# Create virtualenv&lt;/span&gt;
-workon virtualenv_name &lt;span class="c1"&gt;# Activate/switch to a virtualenv&lt;/span&gt;
-deactivate virtualenv_name &lt;span class="c1"&gt;# Deactivate virtualenv&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkvirtualenv&lt;span class="w"&gt; &lt;/span&gt;virtualenv_name&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# Create virtualenv&lt;/span&gt;
+workon&lt;span class="w"&gt; &lt;/span&gt;virtualenv_name&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# Activate/switch to a virtualenv&lt;/span&gt;
+deactivate&lt;span class="w"&gt; &lt;/span&gt;virtualenv_name&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# Deactivate virtualenv&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Congratulations! Your Virtualenvwrapper for Python 3 is now ready to use.&lt;/p&gt;
@@ -402,12 +423,12 @@ source /usr/local/bin/virtualenvwrapper.sh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now, when typing&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkproject my_project
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkproject&lt;span class="w"&gt; &lt;/span&gt;my_project
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Virtualenvwrapper will automatically create a virtualenv and a folder called &lt;em&gt;my_project&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;Cherry on top, projects automaticatilly navigates to the project folder when activating the virtualenv. Thus, when typing&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;workon my_project
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;workon&lt;span class="w"&gt; &lt;/span&gt;my_project
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Virtualenvwrapper activates the virtualenv and teleports me to ~/Projects/my_project. Neat!&lt;/p&gt;</content><category term="dev"></category><category term="virtualenvwrapper"></category><category term="virtualenv"></category><category term="python3"></category></entry></feed>

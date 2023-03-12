@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide</title><link href="https://railslide.io/" rel="alternate"></link><link href="https://railslide.io/feeds/all.atom.xml" rel="self"></link><id>https://railslide.io/</id><updated>2023-02-15T00:00:00+01:00</updated><entry><title>TIL: strip does not do what I think it does</title><link href="https://railslide.io/til-strip-does-not-do-what-i-think-it-does.html" rel="alternate"></link><published>2023-02-15T00:00:00+01:00</published><updated>2023-02-15T00:00:00+01:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2023-02-15:/til-strip-does-not-do-what-i-think-it-does.html</id><summary type="html">&lt;p&gt;It turns out I have been using it wrong for all this time!&lt;/p&gt;</summary><content type="html">&lt;p&gt;I always thought &lt;code&gt;strip&lt;/code&gt;, &lt;code&gt;lstrip&lt;/code&gt; and &lt;code&gt;rstrip&lt;/code&gt; would simply match and strip whatever string it was passed to them. However, it turns out that's not how they work.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide</title><link href="https://railslide.io/" rel="alternate"></link><link href="https://railslide.io/feeds/all.atom.xml" rel="self"></link><id>https://railslide.io/</id><updated>2023-03-12T00:00:00+01:00</updated><entry><title>Make pyenv and pyright play nice together</title><link href="https://railslide.io/make-pyenv-and-pyright-play-nice-together.html" rel="alternate"></link><published>2023-03-12T00:00:00+01:00</published><updated>2023-03-12T00:00:00+01:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2023-03-12:/make-pyenv-and-pyright-play-nice-together.html</id><summary type="html">&lt;p&gt;If you use &lt;code&gt;pyenv local&lt;/code&gt;, Pyright will not automatically pick up the correct virtualenv. Here's an explanation of why it happens and how to work around it.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Some time ago I started looking into setting up the built-in LSPs in Neovim, and being Python my main programming language, I set up &lt;a href="https://github.com/microsoft/pyright/"&gt;Pyright&lt;/a&gt; as my first language server and gave it a spin. While all the basics things worked out of the box, I kept getting a bunch of &lt;code&gt;Import "some_module" could not be resolved&lt;/code&gt;. After having ruled out the classic mistakes (i.e. forgetting to install dependencies, or running Neovim from the wrong folder), and ran some test (&lt;a href="https://github.com/dense-analysis/ale"&gt;Ale&lt;/a&gt; recognized my virtualenv as expected), all that was left was that somehow Pyright did not play along with my virtualenv.&lt;/p&gt;
+&lt;h2&gt;Why it happens&lt;/h2&gt;
+&lt;p&gt;By default Pyright tries to be smart and to automatically pick up existing virtualenvs. When it comes to Pyenv, Pyright checks whether &lt;code&gt;$PYENV_VERSION&lt;/code&gt; is set and determines which Python interpreter to use from its value. So far so good.&lt;/p&gt;
+&lt;p&gt;The problems however start when using &lt;code&gt;pyenv local&lt;/code&gt;. Basically &lt;a href="https://github.com/pyenv/pyenv-virtualenv"&gt;pyenv-virtualenv&lt;/a&gt; has this super nifty function that couples the specified virtualenv with the current folder, so that it gets automatically activated whenever you &lt;code&gt;cd&lt;/code&gt; into the directory (and deactivate once you move away from it). However, whenever the virtualenv gets automagically activated, the &lt;code&gt;$PYENV_VERSION&lt;/code&gt; variable doesn't get set (and apparently that's &lt;a href="https://github.com/pyenv/pyenv/issues/1760"&gt;by design&lt;/a&gt;, and hence unlikely to change anytime soon).&lt;/p&gt;
+&lt;h2&gt;How to solve(ish)&lt;/h2&gt;
+&lt;p&gt;If you need to fix something on the fly, forcing Pyenv to set the environment variable by using &lt;code&gt;pyenv shell &amp;lt;env_name&amp;gt;&lt;/code&gt; is a quick way to work around the issue. It's worth mentioning, however, that it's only temporary and that you will have type it again every time you start a new shell. So great for debugging, but not ideal as a long term solution.&lt;/p&gt;
+&lt;p&gt;A more long term solution is to leverage Pyright configuration options. For doing so, you need to create a &lt;code&gt;pyrightconfig.json&lt;/code&gt; file in the root of your project with the following content&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;venvPath&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;lt;PYENV_ROOT&amp;gt;/versions&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;venv&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;lt;ENV_NAME&amp;gt;&amp;quot;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;where &lt;code&gt;PYENV_ROOT&lt;/code&gt; is the output of &lt;code&gt;echo $PYENV_ROOT&lt;/code&gt; and &lt;code&gt;ENV_NAME&lt;/code&gt; is the name of your virtualenv.&lt;/p&gt;
+&lt;p&gt;Keep in mind though that &lt;code&gt;pyrightconfig.json&lt;/code&gt; &lt;u&gt;does not support shell variables&lt;/u&gt;, so stuff like &lt;code&gt;~/.pyenv/versions&lt;/code&gt; won't work.&lt;/p&gt;
+&lt;p&gt;While this is a way better method, it still requires a lot of typing. Wouldn't be great if it was possible to automate this somehow? Enter &lt;a href="https://github.com/alefpereira/pyenv-pyright"&gt;pyenv-pyright&lt;/a&gt;, a Pyenv plugin that takes care of handling &lt;code&gt;pyrightconfig.json&lt;/code&gt; on your behalf. So now all you have to do is to type &lt;code&gt;pyenv pyright&lt;/code&gt; once and you're ready to go!&lt;/p&gt;
+&lt;p&gt;Happy coding!&lt;/p&gt;
+&lt;h2&gt;Resources&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/alefpereira/pyenv-pyright"&gt;pyenv-pyright&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/microsoft/pyright/blob/main/docs/configuration.md"&gt;Pyright configuration options&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><category term="dev"></category><category term="python"></category><category term="neovim"></category></entry><entry><title>TIL: strip does not do what I think it does</title><link href="https://railslide.io/til-strip-does-not-do-what-i-think-it-does.html" rel="alternate"></link><published>2023-02-15T00:00:00+01:00</published><updated>2023-02-15T00:00:00+01:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2023-02-15:/til-strip-does-not-do-what-i-think-it-does.html</id><summary type="html">&lt;p&gt;It turns out I have been using it wrong for all this time!&lt;/p&gt;</summary><content type="html">&lt;p&gt;I always thought &lt;code&gt;strip&lt;/code&gt;, &lt;code&gt;lstrip&lt;/code&gt; and &lt;code&gt;rstrip&lt;/code&gt; would simply match and strip whatever string it was passed to them. However, it turns out that's not how they work.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="s2"&gt;&amp;quot;Hello world&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;hel&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
 &lt;span class="c1"&gt;# Expected outcome: &amp;#39;lo world&amp;#39;&lt;/span&gt;
 &lt;span class="s1"&gt;&amp;#39;o world&amp;#39;&lt;/span&gt;  &lt;span class="c1"&gt;# Actual outcome&lt;/span&gt;
@@ -19,21 +40,21 @@
 &lt;p&gt;Ok, and what about Lua? When I started my &lt;a href="https://railslide.io/learning-vim-in-2022.html"&gt;Vim adventure&lt;/a&gt; I felt like I didn't know enough about Vim and Neovim to have a strong preference for one over the other, so I just placed all my config in &lt;code&gt;.vimrc&lt;/code&gt; as that was compatible with both. But then time passed and two things happened: first, I realized I have never went back once to Vim after trying Neovim; second, Vim announced that from version 9.0 it will introduce a new scripting language (Vim 9 Script), which will not be completely backward-compatible with the old VimScript. For me that meant that, no matter which editor I chose, I would have to learn a new language. And if I have to put the effort, I'd rather do it for something multipurpose like Lua, than for a language that only applies to my editor.&lt;/p&gt;
 &lt;h2&gt;The structure&lt;/h2&gt;
 &lt;p&gt;After a bit of back and forth, this is what the directory structure of my config currently looks like:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;nvim
-├── after
-│   └── plugin
-│       ├── ale.lua
-│       ├── lightline.vim.lua
-│       ├── onedark.lua
-│       └── telescope.lua
-├── init.lua
-├── lua
-│   └── railslide
-│       ├── mappings.lua
-│       ├── options.lua
-│       └── plugin-manager.lua
-└── plugin
-    └── packer_compiled.lua
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;nvim&lt;/span&gt;
+&lt;span class="n"&gt;├── after&lt;/span&gt;
+&lt;span class="n"&gt;│   └── plugin&lt;/span&gt;
+&lt;span class="n"&gt;│       ├── ale.lua&lt;/span&gt;
+&lt;span class="n"&gt;│       ├── lightline.vim.lua&lt;/span&gt;
+&lt;span class="n"&gt;│       ├── onedark.lua&lt;/span&gt;
+&lt;span class="n"&gt;│       └── telescope.lua&lt;/span&gt;
+&lt;span class="n"&gt;├── init.lua&lt;/span&gt;
+&lt;span class="n"&gt;├── lua&lt;/span&gt;
+&lt;span class="n"&gt;│   └── railslide&lt;/span&gt;
+&lt;span class="n"&gt;│       ├── mappings.lua&lt;/span&gt;
+&lt;span class="n"&gt;│       ├── options.lua&lt;/span&gt;
+&lt;span class="n"&gt;│       └── plugin-manager.lua&lt;/span&gt;
+&lt;span class="n"&gt;└── plugin&lt;/span&gt;
+&lt;span class="n"&gt;    └── packer_compiled.lua&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The &lt;code&gt;lua/railside&lt;/code&gt; folder is where I keep my general configuration. The &lt;code&gt;lua&lt;/code&gt; folder is included in Neovim &lt;code&gt;runtimepath&lt;/code&gt; and it's where Neovim looks for Lua plugins by default. Inside that I created a directory with my own username in order to avoid namespace conflicts (the name per se doesn't actually matter, as long as it's something unlikely to be used by something else you're good to go).&lt;/p&gt;
@@ -81,17 +102,17 @@
 &lt;li&gt;&lt;a href="https://github.com/iggredible/Learn-Vim"&gt;Learn Vim (the Smart Way)&lt;/a&gt;. Not for complete beginners but still a great read - just make sure to complete the tutorial first.&lt;/li&gt;
 &lt;/ul&gt;</content><category term="dev"></category><category term="editor"></category><category term="vim"></category><category term="tools"></category></entry><entry><title>Managing multiple Git identities</title><link href="https://railslide.io/managing-multiple-git-identities.html" rel="alternate"></link><published>2022-08-30T00:00:00+02:00</published><updated>2022-08-30T00:00:00+02:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2022-08-30:/managing-multiple-git-identities.html</id><summary type="html">&lt;p&gt;How to manage multiple Git identities on the same machine&lt;/p&gt;</summary><content type="html">&lt;p&gt;I code for work and I code for fun. When I do it for fun I use my personal email address as identity in Git, but when I do it for work I am often required to use my work email. For a long time my solution was to simply to set my working email in the &lt;code&gt;.gitconfig&lt;/code&gt; of my working machine. That worked for most cases (I usually tend to only code for work on my work machine) and as the only pain point seemed to be my dotfiles, I simply accepted the pain of copy-pasting things around as a necessary evil and moved on with my life.&lt;/p&gt;
 &lt;p&gt;However, it turns out that there's a better way to handle multiple identities in Git: enter conditional configuration! Basically you can tell Git to include a different &lt;code&gt;.gitconfig&lt;/code&gt; depending on a certain condition (e.g. when the &lt;code&gt;.git&lt;/code&gt; directory matches a certain path). So for my specific case I simply changed my &lt;code&gt;.gitconfig&lt;/code&gt; to like something like this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[user]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;lt;first name&amp;gt; &amp;lt;last name&amp;gt;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;email&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;lt;work email address&amp;gt;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="k"&gt;[includeIf &amp;quot;gitdir:~/Projects/personal/&amp;quot;]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;path&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;.gitconfig-personal&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[user]&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;lt;first name&amp;gt; &amp;lt;last name&amp;gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;email&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;lt;work email address&amp;gt;&lt;/span&gt;
+&lt;span class="k"&gt;[includeIf &amp;quot;gitdir:~/Projects/personal/&amp;quot;]&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;path&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;.gitconfig-personal&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and then in the &lt;code&gt;.gitconfig-personal&lt;/code&gt; I added&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[user]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;lt;first name&amp;gt; &amp;lt;last name&amp;gt;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;email&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;lt;personal email address&amp;gt;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[user]&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;lt;first name&amp;gt; &amp;lt;last name&amp;gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;email&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;lt;personal email address&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and now every time I work on a repo in the &lt;code&gt;personal/&lt;/code&gt; folder the work &lt;code&gt;[user]&lt;/code&gt; block gets automagically overridden by the personal one. No more weird copy pasting around! &lt;/p&gt;
@@ -107,7 +128,7 @@
 &lt;/ul&gt;</content><category term="dev"></category><category term="git"></category></entry><entry><title>How to resolve screen flickering in Arch</title><link href="https://railslide.io/how-to-resolve-screen-flickering-in-arch.html" rel="alternate"></link><published>2022-04-07T00:00:00+02:00</published><updated>2022-04-07T00:00:00+02:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2022-04-07:/how-to-resolve-screen-flickering-in-arch.html</id><summary type="html">&lt;p&gt;How to solve screen flickering in Arch when using Intel graphics and systemd-boot&lt;/p&gt;</summary><content type="html">&lt;p&gt;After a system upgrade, I got this annoying screen flickering happening at random intervals. Initially I thought the issue was Gnome related, but after a bit of research it turned out to be caused by a &lt;a href="https://wiki.archlinux.org/title/Intel_graphics#Screen_flickering"&gt;power saving feature on my Intel graphic card&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;The solution to it is to disable the feature through a kernel parameter. For doing so you need to edit a configuration file specific to the chosen boot loader. In my case it's systemd-boot, so the file was located in &lt;code&gt;/boot/loader/entries/[SOMETHING].conf&lt;/code&gt; (in my case the filename was the timestamp of my system installation, but mileage may vary).&lt;/p&gt;
 &lt;p&gt;Open the file with your favourite editor&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;sudo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;nano&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;boot&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;entries&lt;/span&gt;&lt;span class="o"&gt;/[&lt;/span&gt;&lt;span class="n"&gt;SOMETHING&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;conf&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;sudo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;nano&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;boot&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;entries&lt;/span&gt;&lt;span class="o"&gt;/[&lt;/span&gt;&lt;span class="n"&gt;SOMETHING&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;conf&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Add &lt;code&gt;i915.enable_psr=0&lt;/code&gt; at the end of the &lt;code&gt;options&lt;/code&gt; line.&lt;/p&gt;
@@ -125,8 +146,8 @@
 &lt;h2&gt;Installing Arch&lt;/h2&gt;
 &lt;p&gt;Thanks to the shiny new installer, the process of installing Arch was generally straightforward. The only part I didn't find very intuitive was accessing the wifi from TTY. Thankfully a friend had provided me with instructions, so that went smoothly as well. For the sake of my future self, here they are:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;iwctl&lt;/span&gt;
-&lt;span class="nv"&gt;stations&lt;/span&gt; &lt;span class="nv"&gt;list&lt;/span&gt;
-&lt;span class="nv"&gt;stations&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nv"&gt;probably&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;wlan0&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;but&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;whatever&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;is&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;listed&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;in&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;list&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;connect&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nv"&gt;SSID&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="nv"&gt;stations&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;list&lt;/span&gt;
+&lt;span class="nv"&gt;stations&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nv"&gt;probably&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;wlan0&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;but&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;whatever&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;is&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;listed&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;in&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;list&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;connect&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nv"&gt;SSID&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The rest went through without too much hassle. A good idea was however to have another computer or a phone ready at hand, for those few times where I felt the need to google something during the process.&lt;/p&gt;
@@ -191,19 +212,19 @@ strings out.bin
 &lt;p&gt;One of the strings seems to match the flag pattern &lt;code&gt;pvkq{dbiH._dy_pvkqH.E.H.U.H._wo_?}&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Running it through a &lt;a href="http://theblob.org/rot.cgi?"&gt;ROT decoder&lt;/a&gt; gives me &lt;code&gt;flag{tryX._to_flagX.U.X.K.X._me_?}&lt;/code&gt;. Since the flag doesn't look too right and the system doesn't accept anyway, let's assume I probably messed up something while tinkering with &lt;code&gt;od&lt;/code&gt; and manually fix it: &lt;code&gt;flag{try_to_flag_me_?}&lt;/code&gt;.&lt;/p&gt;</content><category term="ctf"></category><category term="ctf"></category><category term="lfi"></category><category term="rce"></category><category term="kybc"></category></entry><entry><title>KYBC 2021 - Maze 2 Writeup</title><link href="https://railslide.io/kybc-yogosha-2021-maze-2-writeup.html" rel="alternate"></link><published>2021-03-22T00:00:00+01:00</published><updated>2021-03-22T00:00:00+01:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2021-03-22:/kybc-yogosha-2021-maze-2-writeup.html</id><summary type="html">&lt;p&gt;Writeup for Maze 2 challenge at KYBC CTF&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;em&gt;In order to start this challenge it was necessary to complete &lt;a href="https://railslide.io/kybc-yogosha-2021-maze-1-writeups.html"&gt;Maze 1&lt;/a&gt; first&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;After catching the first flag, let's check what's in &lt;code&gt;home/ctf_user2&lt;/code&gt;. There is a flag file, but this time concatenating it doesn't work since the current user (&lt;code&gt;ctf_user1&lt;/code&gt;) doesn't have read permissions to it. The only other interesting thing is a file called &lt;code&gt;sysadmin.c&lt;/code&gt;. Permissions are in my favor this time, so let's have a look at the content:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="cp"&gt;#include&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cpf"&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cpf"&gt;&amp;lt;stdlib.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="cp"&gt;#include&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cpf"&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cpf"&gt;&amp;lt;stdlib.h&amp;gt;&lt;/span&gt;
 
-&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;argc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;argv&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;argc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;argv&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
 
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Hello sysadmin :) &lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Today date : &lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;fflush&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;stdout&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;setreuid&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;geteuid&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;getuid&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;system&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;date&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Hello sysadmin :) &lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Today date : &lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;fflush&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;stdout&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;setreuid&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;geteuid&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;getuid&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;system&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;date&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;That &lt;code&gt;system("date")&lt;/code&gt; call looks promising, so let's try to replace it with some useful bash statement instead:&lt;/p&gt;
@@ -244,7 +265,7 @@ strings out.bin
 &lt;p&gt;Download this file and get the flag. You will also need this wordlist.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;The provided files are a python compiled file (keygame.pyc) and a txt file with a list of gibberish words (wordlist.txt). The wordlist didn't seem very interesting, so I proceeded to decompile the python file&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ uncompyle6 keygame.pyc &amp;gt; keygame.py
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;uncompyle6&lt;span class="w"&gt; &lt;/span&gt;keygame.pyc&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;keygame.py
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And had a look at the source code&lt;/p&gt;
@@ -303,30 +324,30 @@ strings out.bin
 
 &lt;p&gt;My take from it was that the programs takes four inputs and uses them for creating a key based on a matrix and on the wordlist. If the resulting key is the correct one, the &lt;code&gt;checkdata&lt;/code&gt; function is going to print out the flag.&lt;/p&gt;
 &lt;p&gt;Running the program confirmed my theory&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python keygame.py
-input a number: &lt;span class="m"&gt;1&lt;/span&gt;
-input a number: &lt;span class="m"&gt;1&lt;/span&gt;
-input a number: &lt;span class="m"&gt;1&lt;/span&gt;
-input a number: &lt;span class="m"&gt;1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;python&lt;span class="w"&gt; &lt;/span&gt;keygame.py
+input&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;number:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+input&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;number:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+input&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;number:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+input&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;number:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
 aa0caa0c
-&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;RYAW   DASA_BYF
-                           ^
-                             ^ &lt;span class="nv"&gt;aa0caa0c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; TG31&lt;span class="o"&gt;{&lt;/span&gt;tils gmag!vhotmd c&lt;span class="sb"&gt;`&lt;/span&gt; oo!tei%mono&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;RYAW&lt;span class="w"&gt;   &lt;/span&gt;DASA_BYF
+&lt;span class="w"&gt;                           &lt;/span&gt;^
+&lt;span class="w"&gt;                             &lt;/span&gt;^&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;aa0caa0c&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;TG31&lt;span class="o"&gt;{&lt;/span&gt;tils&lt;span class="w"&gt; &lt;/span&gt;gmag!vhotmd&lt;span class="w"&gt; &lt;/span&gt;c&lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;oo!tei%mono&lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now, how to figure out what are the correct inputs? The sources shows that the game is created with a 25x25 matrix (&lt;code&gt;mgame = myGame(25, 25)&lt;/code&gt;) and since the inputs are used as indexes for the matrix, any input greater than 24 should be invalid.&lt;/p&gt;
 &lt;p&gt;A quick run of the program confirmed this theory as well&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python keygame.py
-input a number: &lt;span class="m"&gt;25&lt;/span&gt;
-input a number: &lt;span class="m"&gt;25&lt;/span&gt;
-input a number: &lt;span class="m"&gt;25&lt;/span&gt;
-input a number: &lt;span class="m"&gt;25&lt;/span&gt;
-Traceback &lt;span class="o"&gt;(&lt;/span&gt;most recent call last&lt;span class="o"&gt;)&lt;/span&gt;:
-  File &lt;span class="s2"&gt;&amp;quot;keygame.py&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;56&lt;/span&gt;, &lt;span class="k"&gt;in&lt;/span&gt; &amp;lt;module&amp;gt;
-    &lt;span class="nv"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; mgame.make_keys&lt;span class="o"&gt;(&lt;/span&gt;int&lt;span class="o"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;)&lt;/span&gt;, int&lt;span class="o"&gt;(&lt;/span&gt;y&lt;span class="o"&gt;)&lt;/span&gt;, int&lt;span class="o"&gt;(&lt;/span&gt;x1&lt;span class="o"&gt;)&lt;/span&gt;, int&lt;span class="o"&gt;(&lt;/span&gt;y1&lt;span class="o"&gt;))&lt;/span&gt;
-  File &lt;span class="s2"&gt;&amp;quot;keygame.py&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;34&lt;/span&gt;, &lt;span class="k"&gt;in&lt;/span&gt; make_keys
-    keyArray.append&lt;span class="o"&gt;(&lt;/span&gt;self.matrix&lt;span class="o"&gt;[&lt;/span&gt;args&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="o"&gt;]][&lt;/span&gt;args&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;]])&lt;/span&gt;
-IndexError: list index out of range
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;python&lt;span class="w"&gt; &lt;/span&gt;keygame.py
+input&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;number:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;25&lt;/span&gt;
+input&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;number:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;25&lt;/span&gt;
+input&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;number:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;25&lt;/span&gt;
+input&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;number:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;25&lt;/span&gt;
+Traceback&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;most&lt;span class="w"&gt; &lt;/span&gt;recent&lt;span class="w"&gt; &lt;/span&gt;call&lt;span class="w"&gt; &lt;/span&gt;last&lt;span class="o"&gt;)&lt;/span&gt;:
+&lt;span class="w"&gt;  &lt;/span&gt;File&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;keygame.py&amp;quot;&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;line&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;56&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;lt;module&amp;gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nv"&gt;data&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;mgame.make_keys&lt;span class="o"&gt;(&lt;/span&gt;int&lt;span class="o"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;)&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;int&lt;span class="o"&gt;(&lt;/span&gt;y&lt;span class="o"&gt;)&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;int&lt;span class="o"&gt;(&lt;/span&gt;x1&lt;span class="o"&gt;)&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;int&lt;span class="o"&gt;(&lt;/span&gt;y1&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;File&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;keygame.py&amp;quot;&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;line&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;34&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;make_keys
+&lt;span class="w"&gt;    &lt;/span&gt;keyArray.append&lt;span class="o"&gt;(&lt;/span&gt;self.matrix&lt;span class="o"&gt;[&lt;/span&gt;args&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="o"&gt;]][&lt;/span&gt;args&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;]])&lt;/span&gt;
+IndexError:&lt;span class="w"&gt; &lt;/span&gt;list&lt;span class="w"&gt; &lt;/span&gt;index&lt;span class="w"&gt; &lt;/span&gt;out&lt;span class="w"&gt; &lt;/span&gt;of&lt;span class="w"&gt; &lt;/span&gt;range
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;So, I needed a way to test all the possible combinations of four inputs ranging from 0 to 24 and it turned out that python has a built-in way for doing just that. Enter &lt;code&gt;itertools.products&lt;/code&gt;&lt;/p&gt;
@@ -348,14 +369,14 @@ IndexError: list index out of range
 &lt;p&gt;I commented out the &lt;code&gt;print&lt;/code&gt; statements from keygame.py to reduce the noise, and then waited for my script to spit out the flag&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="s1"&gt;&amp;#39;TG20{this flag should be on teh moon}&amp;#39;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="ctf"></category><category term="ctf"></category><category term="reverse"></category></entry><entry><title>How to sign PGP keys with an offline master key</title><link href="https://railslide.io/how-to-sign-pgp-keys-with-offline-master-key.html" rel="alternate"></link><published>2017-06-03T00:00:00+02:00</published><updated>2017-06-03T00:00:00+02:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2017-06-03:/how-to-sign-pgp-keys-with-offline-master-key.html</id><summary type="html">&lt;p&gt;Signing other people keys with an offline master key is not super straightforward. Here's how to do it in an almost pain-free way.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Lately I wanted to sign a coworker's key, so after having gone through the all in-real-life verification shebang together, all that was left was me performing the actual signing. However, since I &lt;a href="https://railslide.io/create-gpg-key-with-subkeys.html"&gt;use subkeys on my laptop&lt;/a&gt;, I first needed to get out my master key from its secret dungeon and tell GPG to use that one instead of the usual subkey. For doing that I used the handy &lt;code&gt;--homedir&lt;/code&gt; option.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --homedir&lt;span class="o"&gt;=&lt;/span&gt;/path/to/my/master/gnupg/folder --sign-key mycoworker@myjob.com
-gpg: key &lt;span class="s2"&gt;&amp;quot;mycoworker@myjob.com&amp;quot;&lt;/span&gt; not found: public key not found
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--homedir&lt;span class="o"&gt;=&lt;/span&gt;/path/to/my/master/gnupg/folder&lt;span class="w"&gt; &lt;/span&gt;--sign-key&lt;span class="w"&gt; &lt;/span&gt;mycoworker@myjob.com
+gpg:&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;mycoworker@myjob.com&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;not&lt;span class="w"&gt; &lt;/span&gt;found:&lt;span class="w"&gt; &lt;/span&gt;public&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;not&lt;span class="w"&gt; &lt;/span&gt;found
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;How's that possible? I am positive that I've imported my coworker's key - we have even exchanged encrypted email with each other!&lt;/p&gt;
 &lt;p&gt;Well, the fact is that I imported the key, yes, but I did it in my local keyring which is the one located at &lt;code&gt;~/.gnupg&lt;/code&gt; and thus not the one my master key refers to. Pretty much as when using GPG on multiple computers: you have to re-import all the public keys from scratch.&lt;/p&gt;
 &lt;p&gt;Ok, so what are the options? Export the key I want to sign, import it into the master keyring, sign it, export it from the master keyiring, and finally import it into the local keyring? Sure, you could do that, but it's quite cumbersome. Fortunately, gpg has a better solution for that: the &lt;code&gt;--keyring&lt;/code&gt; option!&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --homedir&lt;span class="o"&gt;=&lt;/span&gt;/path/to/my/master/gnupg/folder --keyring ~/.gnupg/pubring.gpg --sign-key mycoworker@myjob.com
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--homedir&lt;span class="o"&gt;=&lt;/span&gt;/path/to/my/master/gnupg/folder&lt;span class="w"&gt; &lt;/span&gt;--keyring&lt;span class="w"&gt; &lt;/span&gt;~/.gnupg/pubring.gpg&lt;span class="w"&gt; &lt;/span&gt;--sign-key&lt;span class="w"&gt; &lt;/span&gt;mycoworker@myjob.com
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And voilà! Now you can proceed signing the key.&lt;/p&gt;</content><category term="cryptography"></category><category term="GPG"></category><category term="cryptography"></category><category term="howto"></category></entry><entry><title>How to create a GPG key with subkeys</title><link href="https://railslide.io/create-gpg-key-with-subkeys.html" rel="alternate"></link><published>2017-04-19T00:00:00+02:00</published><updated>2017-04-19T00:00:00+02:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2017-04-19:/create-gpg-key-with-subkeys.html</id><summary type="html">&lt;p&gt;A step by step guide for creating a GPG key with subkeys.&lt;/p&gt;</summary><content type="html">&lt;p&gt;I wanted to create a GPG key - so far so good. The problem is that I also wanted to use GPG on multiple devices, ideally even on my phone. I could have - &lt;em&gt;in theory&lt;/em&gt; - copied the key over to all the needed machines, but that would have been a terrible idea. What if I lose my phone/laptop? My key would be compromised and I'd be left with no other choice than revoking it and losing all the previous signatures.&lt;/p&gt;
@@ -374,232 +395,232 @@ cert-digest-algo SHA512
 &lt;p&gt;If not, add them.&lt;/p&gt;
 &lt;h2&gt;Create a master key&lt;/h2&gt;
 &lt;p&gt;Create the master key - I'm going to mark user inputs with &lt;code&gt;# [input value] &amp;lt;--&lt;/code&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --gen-key
-gpg &lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;.4.11&lt;span class="p"&gt;;&lt;/span&gt; Copyright &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;2010&lt;/span&gt; Free Software Foundation, Inc.
-This is free software: you are free to change and  redistribute it.
-There is NO WARRANTY, to the extent permitted by law.
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--gen-key
+gpg&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;.4.11&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Copyright&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Free&lt;span class="w"&gt; &lt;/span&gt;Software&lt;span class="w"&gt; &lt;/span&gt;Foundation,&lt;span class="w"&gt; &lt;/span&gt;Inc.
+This&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;free&lt;span class="w"&gt; &lt;/span&gt;software:&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;are&lt;span class="w"&gt; &lt;/span&gt;free&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;change&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt;  &lt;/span&gt;redistribute&lt;span class="w"&gt; &lt;/span&gt;it.
+There&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;NO&lt;span class="w"&gt; &lt;/span&gt;WARRANTY,&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;extent&lt;span class="w"&gt; &lt;/span&gt;permitted&lt;span class="w"&gt; &lt;/span&gt;by&lt;span class="w"&gt; &lt;/span&gt;law.
 
-Please &lt;span class="k"&gt;select&lt;/span&gt; what kind of key you want:
-    &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; RSA and RSA &lt;span class="o"&gt;(&lt;/span&gt;default&lt;span class="o"&gt;)&lt;/span&gt;
-    &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; DSA and Elgamal
-    &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; DSA &lt;span class="o"&gt;(&lt;/span&gt;sign only&lt;span class="o"&gt;)&lt;/span&gt;
-    &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; RSA &lt;span class="o"&gt;(&lt;/span&gt;sign only&lt;span class="o"&gt;)&lt;/span&gt;
-    Your selection? &lt;span class="c1"&gt;# 1 &amp;lt;--&lt;/span&gt;
+Please&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;what&lt;span class="w"&gt; &lt;/span&gt;kind&lt;span class="w"&gt; &lt;/span&gt;of&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want:
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;default&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;DSA&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;Elgamal
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;DSA&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;sign&lt;span class="w"&gt; &lt;/span&gt;only&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;sign&lt;span class="w"&gt; &lt;/span&gt;only&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;selection?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# 1 &amp;lt;--&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;When it comes to choosing the length make sure to choose the longest available option (4096 at the time of writing).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;RSA keys may be between &lt;span class="m"&gt;1024&lt;/span&gt; and &lt;span class="m"&gt;4096&lt;/span&gt; bits long.
-What keysize &lt;span class="k"&gt;do&lt;/span&gt; you want? &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2048&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;  &lt;span class="c1"&gt;# 4096 &amp;lt;-- (the longer the better!)&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;keys&lt;span class="w"&gt; &lt;/span&gt;may&lt;span class="w"&gt; &lt;/span&gt;be&lt;span class="w"&gt; &lt;/span&gt;between&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1024&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;4096&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;bits&lt;span class="w"&gt; &lt;/span&gt;long.
+What&lt;span class="w"&gt; &lt;/span&gt;keysize&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;do&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2048&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="c1"&gt;# 4096 &amp;lt;-- (the longer the better!)&lt;/span&gt;
 
-Requested keysize is &lt;span class="m"&gt;4096&lt;/span&gt; bits
-Please specify how long the key should be valid.
-    &lt;span class="nv"&gt;0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; key does not expire
-    &amp;lt;n&amp;gt;  &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n days
-    &amp;lt;n&amp;gt;w &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n weeks
-    &amp;lt;n&amp;gt;m &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n months
-    &amp;lt;n&amp;gt;y &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n years
-Key is valid &lt;span class="k"&gt;for&lt;/span&gt;? &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# 0 &amp;lt;--&lt;/span&gt;
+Requested&lt;span class="w"&gt; &lt;/span&gt;keysize&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;4096&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;bits
+Please&lt;span class="w"&gt; &lt;/span&gt;specify&lt;span class="w"&gt; &lt;/span&gt;how&lt;span class="w"&gt; &lt;/span&gt;long&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;should&lt;span class="w"&gt; &lt;/span&gt;be&lt;span class="w"&gt; &lt;/span&gt;valid.
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nv"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;does&lt;span class="w"&gt; &lt;/span&gt;not&lt;span class="w"&gt; &lt;/span&gt;expire
+&lt;span class="w"&gt;    &lt;/span&gt;&amp;lt;n&amp;gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;expires&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;n&lt;span class="w"&gt; &lt;/span&gt;days
+&lt;span class="w"&gt;    &lt;/span&gt;&amp;lt;n&amp;gt;w&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;expires&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;n&lt;span class="w"&gt; &lt;/span&gt;weeks
+&lt;span class="w"&gt;    &lt;/span&gt;&amp;lt;n&amp;gt;m&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;expires&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;n&lt;span class="w"&gt; &lt;/span&gt;months
+&lt;span class="w"&gt;    &lt;/span&gt;&amp;lt;n&amp;gt;y&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;expires&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;n&lt;span class="w"&gt; &lt;/span&gt;years
+Key&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;valid&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# 0 &amp;lt;--&lt;/span&gt;
 
-Key does not expire at all
-Is this correct? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
+Key&lt;span class="w"&gt; &lt;/span&gt;does&lt;span class="w"&gt; &lt;/span&gt;not&lt;span class="w"&gt; &lt;/span&gt;expire&lt;span class="w"&gt; &lt;/span&gt;at&lt;span class="w"&gt; &lt;/span&gt;all
+Is&lt;span class="w"&gt; &lt;/span&gt;this&lt;span class="w"&gt; &lt;/span&gt;correct?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
 
-You need a user ID to identify your key&lt;span class="p"&gt;;&lt;/span&gt; the software constructs the user ID
-from the Real Name, Comment and E-mail Address &lt;span class="k"&gt;in&lt;/span&gt; this form:
-    &lt;span class="s2"&gt;&amp;quot;Heinrich Heine (Der Dichter) &amp;lt;heinrichh@duesseldorf.de&amp;gt;&amp;quot;&lt;/span&gt;
+You&lt;span class="w"&gt; &lt;/span&gt;need&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;user&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;identify&lt;span class="w"&gt; &lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;software&lt;span class="w"&gt; &lt;/span&gt;constructs&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;user&lt;span class="w"&gt; &lt;/span&gt;ID
+from&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;Real&lt;span class="w"&gt; &lt;/span&gt;Name,&lt;span class="w"&gt; &lt;/span&gt;Comment&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;E-mail&lt;span class="w"&gt; &lt;/span&gt;Address&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;this&lt;span class="w"&gt; &lt;/span&gt;form:
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Heinrich Heine (Der Dichter) &amp;lt;heinrichh@duesseldorf.de&amp;gt;&amp;quot;&lt;/span&gt;
 
-Real name: &lt;span class="c1"&gt;# [Your name] &amp;lt;--&lt;/span&gt;
+Real&lt;span class="w"&gt; &lt;/span&gt;name:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# [Your name] &amp;lt;--&lt;/span&gt;
 
-E-mail address: &lt;span class="c1"&gt;# [Your email address] &amp;lt;--&lt;/span&gt;
+E-mail&lt;span class="w"&gt; &lt;/span&gt;address:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# [Your email address] &amp;lt;--&lt;/span&gt;
 
 Comment:
-You selected this USER-ID:
-    &lt;span class="s2"&gt;&amp;quot;[Your name] &amp;lt;[your email address]&amp;gt;&amp;quot;&lt;/span&gt;
+You&lt;span class="w"&gt; &lt;/span&gt;selected&lt;span class="w"&gt; &lt;/span&gt;this&lt;span class="w"&gt; &lt;/span&gt;USER-ID:
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;[Your name] &amp;lt;[your email address]&amp;gt;&amp;quot;&lt;/span&gt;
 
-Change &lt;span class="o"&gt;(&lt;/span&gt;N&lt;span class="o"&gt;)&lt;/span&gt;ame, &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt;omment, &lt;span class="o"&gt;(&lt;/span&gt;E&lt;span class="o"&gt;)&lt;/span&gt;-mail or &lt;span class="o"&gt;(&lt;/span&gt;O&lt;span class="o"&gt;)&lt;/span&gt;kay/&lt;span class="o"&gt;(&lt;/span&gt;Q&lt;span class="o"&gt;)&lt;/span&gt;uit? &lt;span class="c1"&gt;# o &amp;lt;--&lt;/span&gt;
+Change&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;N&lt;span class="o"&gt;)&lt;/span&gt;ame,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt;omment,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;E&lt;span class="o"&gt;)&lt;/span&gt;-mail&lt;span class="w"&gt; &lt;/span&gt;or&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;O&lt;span class="o"&gt;)&lt;/span&gt;kay/&lt;span class="o"&gt;(&lt;/span&gt;Q&lt;span class="o"&gt;)&lt;/span&gt;uit?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# o &amp;lt;--&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;When prompted for a passphrase, make sure to choose a strong one - ideally long and hard to guess. If someone gets access to the secret key, the passphrase would be the only thing left to prevent them from using it.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;You need a Passphrase to protect your secret key.
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;You&lt;span class="w"&gt; &lt;/span&gt;need&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;Passphrase&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;protect&lt;span class="w"&gt; &lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;secret&lt;span class="w"&gt; &lt;/span&gt;key.
 &lt;span class="c1"&gt;# Enter passphrase &amp;lt;--&lt;/span&gt;
 
-We need to generate a lot of random bytes. It is a good idea to perform
-some other action &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt; on the keyboard, move the mouse, utilize the
-disks&lt;span class="o"&gt;)&lt;/span&gt; during the prime generation&lt;span class="p"&gt;;&lt;/span&gt; this gives the random number
-generator a better chance to gain enough entropy.
+We&lt;span class="w"&gt; &lt;/span&gt;need&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;generate&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;lot&lt;span class="w"&gt; &lt;/span&gt;of&lt;span class="w"&gt; &lt;/span&gt;random&lt;span class="w"&gt; &lt;/span&gt;bytes.&lt;span class="w"&gt; &lt;/span&gt;It&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;good&lt;span class="w"&gt; &lt;/span&gt;idea&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;perform
+some&lt;span class="w"&gt; &lt;/span&gt;other&lt;span class="w"&gt; &lt;/span&gt;action&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;on&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;keyboard,&lt;span class="w"&gt; &lt;/span&gt;move&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;mouse,&lt;span class="w"&gt; &lt;/span&gt;utilize&lt;span class="w"&gt; &lt;/span&gt;the
+disks&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;during&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;prime&lt;span class="w"&gt; &lt;/span&gt;generation&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;this&lt;span class="w"&gt; &lt;/span&gt;gives&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;random&lt;span class="w"&gt; &lt;/span&gt;number
+generator&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;better&lt;span class="w"&gt; &lt;/span&gt;chance&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;gain&lt;span class="w"&gt; &lt;/span&gt;enough&lt;span class="w"&gt; &lt;/span&gt;entropy.
 .............+++++
 ..+++++
 
-gpg: key &lt;span class="o"&gt;[&lt;/span&gt;your key ID&lt;span class="o"&gt;]&lt;/span&gt; marked as ultimately trusted
-public and secret key created and signed.
+gpg:&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;marked&lt;span class="w"&gt; &lt;/span&gt;as&lt;span class="w"&gt; &lt;/span&gt;ultimately&lt;span class="w"&gt; &lt;/span&gt;trusted
+public&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;secret&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;created&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;signed.
 
-gpg: checking the trustdb
-gpg: &lt;span class="m"&gt;3&lt;/span&gt; marginal&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, &lt;span class="m"&gt;1&lt;/span&gt; complete&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, PGP trust model
-gpg: depth: &lt;span class="m"&gt;0&lt;/span&gt;  valid:   &lt;span class="m"&gt;1&lt;/span&gt;  signed:   &lt;span class="m"&gt;0&lt;/span&gt;  trust: &lt;span class="m"&gt;0&lt;/span&gt;-, 0q, 0n, 0m, 0f, 1u
-pub   4096R/&lt;span class="o"&gt;[&lt;/span&gt;your key ID&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
-      Key &lt;span class="nv"&gt;fingerprint&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;Key fingerprint&lt;span class="o"&gt;]&lt;/span&gt;
-uid                  &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
-sub   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
+gpg:&lt;span class="w"&gt; &lt;/span&gt;checking&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;trustdb
+gpg:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;marginal&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;needed,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;complete&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;needed,&lt;span class="w"&gt; &lt;/span&gt;PGP&lt;span class="w"&gt; &lt;/span&gt;trust&lt;span class="w"&gt; &lt;/span&gt;model
+gpg:&lt;span class="w"&gt; &lt;/span&gt;depth:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;valid:&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;signed:&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;trust:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;-,&lt;span class="w"&gt; &lt;/span&gt;0q,&lt;span class="w"&gt; &lt;/span&gt;0n,&lt;span class="w"&gt; &lt;/span&gt;0m,&lt;span class="w"&gt; &lt;/span&gt;0f,&lt;span class="w"&gt; &lt;/span&gt;1u
+pub&lt;span class="w"&gt;   &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17
+&lt;span class="w"&gt;      &lt;/span&gt;Key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;fingerprint&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Key&lt;span class="w"&gt; &lt;/span&gt;fingerprint&lt;span class="o"&gt;]&lt;/span&gt;
+uid&lt;span class="w"&gt;                  &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;name&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
+sub&lt;span class="w"&gt;   &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Congratulations! The master key has been created!&lt;/p&gt;
 &lt;h2&gt;Set your key to prefer strong hashes&lt;/h2&gt;
 &lt;p&gt;In theory, if hash preferences were set in the &lt;code&gt;gpg.conf&lt;/code&gt; file before creating the key, this step should not be necessary. But better safe than sorry.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --edit-key &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;
-gpg &lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;.4.11&lt;span class="p"&gt;;&lt;/span&gt; Copyright &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;2010&lt;/span&gt; Free Software Foundation, Inc.
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--edit-key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;
+gpg&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;.4.11&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Copyright&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Free&lt;span class="w"&gt; &lt;/span&gt;Software&lt;span class="w"&gt; &lt;/span&gt;Foundation,&lt;span class="w"&gt; &lt;/span&gt;Inc.
+This&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;free&lt;span class="w"&gt; &lt;/span&gt;software:&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;are&lt;span class="w"&gt; &lt;/span&gt;free&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;change&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;redistribute&lt;span class="w"&gt; &lt;/span&gt;it.
+There&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;NO&lt;span class="w"&gt; &lt;/span&gt;WARRANTY,&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;extent&lt;span class="w"&gt; &lt;/span&gt;permitted&lt;span class="w"&gt; &lt;/span&gt;by&lt;span class="w"&gt; &lt;/span&gt;law.
 
-Secret key is available.
+Secret&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;available.
 
-gpg: checking the trustdb
-gpg: &lt;span class="m"&gt;3&lt;/span&gt; marginal&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, &lt;span class="m"&gt;1&lt;/span&gt; complete&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, PGP trust model
-gpg: depth: &lt;span class="m"&gt;0&lt;/span&gt;  valid:   &lt;span class="m"&gt;1&lt;/span&gt;  signed:   &lt;span class="m"&gt;0&lt;/span&gt;  trust: &lt;span class="m"&gt;0&lt;/span&gt;-, 0q, 0n, 0m, 0f, 1u
-pub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: SC
-                     trust: ultimate      validity: ultimate
-sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: E
+gpg:&lt;span class="w"&gt; &lt;/span&gt;checking&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;trustdb
+gpg:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;marginal&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;needed,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;complete&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;needed,&lt;span class="w"&gt; &lt;/span&gt;PGP&lt;span class="w"&gt; &lt;/span&gt;trust&lt;span class="w"&gt; &lt;/span&gt;model
+gpg:&lt;span class="w"&gt; &lt;/span&gt;depth:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;valid:&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;signed:&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;trust:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;-,&lt;span class="w"&gt; &lt;/span&gt;0q,&lt;span class="w"&gt; &lt;/span&gt;0n,&lt;span class="w"&gt; &lt;/span&gt;0m,&lt;span class="w"&gt; &lt;/span&gt;0f,&lt;span class="w"&gt; &lt;/span&gt;1u
+pub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;SC
+&lt;span class="w"&gt;                     &lt;/span&gt;trust:&lt;span class="w"&gt; &lt;/span&gt;ultimate&lt;span class="w"&gt;      &lt;/span&gt;validity:&lt;span class="w"&gt; &lt;/span&gt;ultimate
+sub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;E
 
-gpg&amp;gt; &lt;span class="c1"&gt;# setpref SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 ZLIB BZIP2 ZIP Uncompressed &amp;lt;--&lt;/span&gt;
+gpg&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# setpref SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 ZLIB BZIP2 ZIP Uncompressed &amp;lt;--&lt;/span&gt;
 
-Set preference list to:
-     Cypher: AES256, AES192, AES, CAST5, 3DES
-     Digest: SHA512, SHA384, SHA256, SHA224, SHA1
-     Compression: ZLIB, BZIP2, ZIP, Uncompressed
-     Features: MDC, Keyserver no-modify
-Really update the preferences? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
+Set&lt;span class="w"&gt; &lt;/span&gt;preference&lt;span class="w"&gt; &lt;/span&gt;list&lt;span class="w"&gt; &lt;/span&gt;to:
+&lt;span class="w"&gt;     &lt;/span&gt;Cypher:&lt;span class="w"&gt; &lt;/span&gt;AES256,&lt;span class="w"&gt; &lt;/span&gt;AES192,&lt;span class="w"&gt; &lt;/span&gt;AES,&lt;span class="w"&gt; &lt;/span&gt;CAST5,&lt;span class="w"&gt; &lt;/span&gt;3DES
+&lt;span class="w"&gt;     &lt;/span&gt;Digest:&lt;span class="w"&gt; &lt;/span&gt;SHA512,&lt;span class="w"&gt; &lt;/span&gt;SHA384,&lt;span class="w"&gt; &lt;/span&gt;SHA256,&lt;span class="w"&gt; &lt;/span&gt;SHA224,&lt;span class="w"&gt; &lt;/span&gt;SHA1
+&lt;span class="w"&gt;     &lt;/span&gt;Compression:&lt;span class="w"&gt; &lt;/span&gt;ZLIB,&lt;span class="w"&gt; &lt;/span&gt;BZIP2,&lt;span class="w"&gt; &lt;/span&gt;ZIP,&lt;span class="w"&gt; &lt;/span&gt;Uncompressed
+&lt;span class="w"&gt;     &lt;/span&gt;Features:&lt;span class="w"&gt; &lt;/span&gt;MDC,&lt;span class="w"&gt; &lt;/span&gt;Keyserver&lt;span class="w"&gt; &lt;/span&gt;no-modify
+Really&lt;span class="w"&gt; &lt;/span&gt;update&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;preferences?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
 
 
-You need a passphrase to unlock the secret key &lt;span class="k"&gt;for&lt;/span&gt;
-user: &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
-&lt;span class="m"&gt;4096&lt;/span&gt;-bit RSA key, ID &lt;span class="o"&gt;[&lt;/span&gt;You key ID&lt;span class="o"&gt;]&lt;/span&gt;, created &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
+You&lt;span class="w"&gt; &lt;/span&gt;need&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;passphrase&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;unlock&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;secret&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;
+user:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;name&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
+&lt;span class="m"&gt;4096&lt;/span&gt;-bit&lt;span class="w"&gt; &lt;/span&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;key,&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;You&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;created&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17
 
 &lt;span class="c1"&gt;# Enter passphrase &amp;lt;--&lt;/span&gt;
 
-pub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: SC
-                     trust: ultimate      validity: ultimate
-sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: E   &lt;span class="o"&gt;]&lt;/span&gt;
+pub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;SC
+&lt;span class="w"&gt;                     &lt;/span&gt;trust:&lt;span class="w"&gt; &lt;/span&gt;ultimate&lt;span class="w"&gt;      &lt;/span&gt;validity:&lt;span class="w"&gt; &lt;/span&gt;ultimate
+sub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;E&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
 
-gpg&amp;gt; &lt;span class="c1"&gt;# save&lt;/span&gt;
+gpg&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# save&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Create a signing subkey&lt;/h2&gt;
 &lt;p&gt;When creating a key GPG automatically creates an encryption subkey as well, which means that only the signing subkey needs manual creation.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --edit-key &lt;span class="o"&gt;[&lt;/span&gt;Your email address&lt;span class="o"&gt;]&lt;/span&gt;
-gpg &lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;.4.11&lt;span class="p"&gt;;&lt;/span&gt; Copyright &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;2010&lt;/span&gt; Free Software Foundation, Inc.
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--edit-key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;
+gpg&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;GnuPG&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;.4.11&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Copyright&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Free&lt;span class="w"&gt; &lt;/span&gt;Software&lt;span class="w"&gt; &lt;/span&gt;Foundation,&lt;span class="w"&gt; &lt;/span&gt;Inc.
+This&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;free&lt;span class="w"&gt; &lt;/span&gt;software:&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;are&lt;span class="w"&gt; &lt;/span&gt;free&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;change&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;redistribute&lt;span class="w"&gt; &lt;/span&gt;it.
+There&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;NO&lt;span class="w"&gt; &lt;/span&gt;WARRANTY,&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;extent&lt;span class="w"&gt; &lt;/span&gt;permitted&lt;span class="w"&gt; &lt;/span&gt;by&lt;span class="w"&gt; &lt;/span&gt;law.
 
-Secret key is available.
+Secret&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;available.
 
-gpg: checking the trustdb
-gpg: &lt;span class="m"&gt;3&lt;/span&gt; marginal&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, &lt;span class="m"&gt;1&lt;/span&gt; complete&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; needed, PGP trust model
-gpg: depth: &lt;span class="m"&gt;0&lt;/span&gt;  valid:   &lt;span class="m"&gt;1&lt;/span&gt;  signed:   &lt;span class="m"&gt;0&lt;/span&gt;  trust: &lt;span class="m"&gt;0&lt;/span&gt;-, 0q, 0n, 0m, 0f, 1u
-pub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: SC
-                         trust: ultimate      validity: ultimate
-sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: E   &lt;span class="o"&gt;]&lt;/span&gt;
+gpg:&lt;span class="w"&gt; &lt;/span&gt;checking&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;trustdb
+gpg:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;marginal&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;needed,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;complete&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;needed,&lt;span class="w"&gt; &lt;/span&gt;PGP&lt;span class="w"&gt; &lt;/span&gt;trust&lt;span class="w"&gt; &lt;/span&gt;model
+gpg:&lt;span class="w"&gt; &lt;/span&gt;depth:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;valid:&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;signed:&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;trust:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;-,&lt;span class="w"&gt; &lt;/span&gt;0q,&lt;span class="w"&gt; &lt;/span&gt;0n,&lt;span class="w"&gt; &lt;/span&gt;0m,&lt;span class="w"&gt; &lt;/span&gt;0f,&lt;span class="w"&gt; &lt;/span&gt;1u
+pub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;SC
+&lt;span class="w"&gt;                         &lt;/span&gt;trust:&lt;span class="w"&gt; &lt;/span&gt;ultimate&lt;span class="w"&gt;      &lt;/span&gt;validity:&lt;span class="w"&gt; &lt;/span&gt;ultimate
+sub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;E&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
 
-gpg&amp;gt; &lt;span class="c1"&gt;# addkey &amp;lt;--&lt;/span&gt;
+gpg&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# addkey &amp;lt;--&lt;/span&gt;
 
-Key is protected.
+Key&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;protected.
 
-You need a passphrase to unlock the secret key &lt;span class="k"&gt;for&lt;/span&gt;
-user: &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
-&lt;span class="m"&gt;4096&lt;/span&gt;-bit RSA key, ID &lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;, created &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
+You&lt;span class="w"&gt; &lt;/span&gt;need&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;passphrase&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;unlock&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;secret&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;
+user:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;name&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
+&lt;span class="m"&gt;4096&lt;/span&gt;-bit&lt;span class="w"&gt; &lt;/span&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;key,&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;created&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17
 &lt;span class="c1"&gt;# Enter passphrase &amp;lt;--&lt;/span&gt;
 
-Please &lt;span class="k"&gt;select&lt;/span&gt; what kind of key you want:
-    &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; DSA &lt;span class="o"&gt;(&lt;/span&gt;sign only&lt;span class="o"&gt;)&lt;/span&gt;
-    &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; RSA &lt;span class="o"&gt;(&lt;/span&gt;sign only&lt;span class="o"&gt;)&lt;/span&gt;
-    &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; Elgamal &lt;span class="o"&gt;(&lt;/span&gt;encrypt only&lt;span class="o"&gt;)&lt;/span&gt;
-    &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; RSA &lt;span class="o"&gt;(&lt;/span&gt;encrypt only&lt;span class="o"&gt;)&lt;/span&gt;
-Your selection? &lt;span class="c1"&gt;# 4 &amp;lt;--&lt;/span&gt;
+Please&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;what&lt;span class="w"&gt; &lt;/span&gt;kind&lt;span class="w"&gt; &lt;/span&gt;of&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want:
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;DSA&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;sign&lt;span class="w"&gt; &lt;/span&gt;only&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;sign&lt;span class="w"&gt; &lt;/span&gt;only&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Elgamal&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;encrypt&lt;span class="w"&gt; &lt;/span&gt;only&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;encrypt&lt;span class="w"&gt; &lt;/span&gt;only&lt;span class="o"&gt;)&lt;/span&gt;
+Your&lt;span class="w"&gt; &lt;/span&gt;selection?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# 4 &amp;lt;--&lt;/span&gt;
 
-RSA keys may be between &lt;span class="m"&gt;1024&lt;/span&gt; and &lt;span class="m"&gt;4096&lt;/span&gt; bits long.
-What keysize &lt;span class="k"&gt;do&lt;/span&gt; you want? &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2048&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# 4096 &amp;lt;-- (the longer the better!)&lt;/span&gt;
+RSA&lt;span class="w"&gt; &lt;/span&gt;keys&lt;span class="w"&gt; &lt;/span&gt;may&lt;span class="w"&gt; &lt;/span&gt;be&lt;span class="w"&gt; &lt;/span&gt;between&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1024&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;4096&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;bits&lt;span class="w"&gt; &lt;/span&gt;long.
+What&lt;span class="w"&gt; &lt;/span&gt;keysize&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;do&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2048&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# 4096 &amp;lt;-- (the longer the better!)&lt;/span&gt;
 
-Requested keysize is &lt;span class="m"&gt;4096&lt;/span&gt; bits
-Please specify how long the key should be valid.
-    &lt;span class="nv"&gt;0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; key does not expire
-    &amp;lt;n&amp;gt;  &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n days
-    &amp;lt;n&amp;gt;w &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n weeks
-    &amp;lt;n&amp;gt;m &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n months
-    &amp;lt;n&amp;gt;y &lt;span class="o"&gt;=&lt;/span&gt; key expires &lt;span class="k"&gt;in&lt;/span&gt; n years
-Key is valid &lt;span class="k"&gt;for&lt;/span&gt;? &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# 0 &amp;lt;--&lt;/span&gt;
+Requested&lt;span class="w"&gt; &lt;/span&gt;keysize&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;4096&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;bits
+Please&lt;span class="w"&gt; &lt;/span&gt;specify&lt;span class="w"&gt; &lt;/span&gt;how&lt;span class="w"&gt; &lt;/span&gt;long&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;should&lt;span class="w"&gt; &lt;/span&gt;be&lt;span class="w"&gt; &lt;/span&gt;valid.
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nv"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;does&lt;span class="w"&gt; &lt;/span&gt;not&lt;span class="w"&gt; &lt;/span&gt;expire
+&lt;span class="w"&gt;    &lt;/span&gt;&amp;lt;n&amp;gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;expires&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;n&lt;span class="w"&gt; &lt;/span&gt;days
+&lt;span class="w"&gt;    &lt;/span&gt;&amp;lt;n&amp;gt;w&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;expires&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;n&lt;span class="w"&gt; &lt;/span&gt;weeks
+&lt;span class="w"&gt;    &lt;/span&gt;&amp;lt;n&amp;gt;m&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;expires&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;n&lt;span class="w"&gt; &lt;/span&gt;months
+&lt;span class="w"&gt;    &lt;/span&gt;&amp;lt;n&amp;gt;y&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;expires&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;n&lt;span class="w"&gt; &lt;/span&gt;years
+Key&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;valid&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# 0 &amp;lt;--&lt;/span&gt;
 
-Key does not expire at all
-Is this correct? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
+Key&lt;span class="w"&gt; &lt;/span&gt;does&lt;span class="w"&gt; &lt;/span&gt;not&lt;span class="w"&gt; &lt;/span&gt;expire&lt;span class="w"&gt; &lt;/span&gt;at&lt;span class="w"&gt; &lt;/span&gt;all
+Is&lt;span class="w"&gt; &lt;/span&gt;this&lt;span class="w"&gt; &lt;/span&gt;correct?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
 
-Really create? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
+Really&lt;span class="w"&gt; &lt;/span&gt;create?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
 
 
-pub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: SC
-                         trust: ultimate      validity: ultimate
-sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: E   &lt;span class="o"&gt;]&lt;/span&gt;
-sub  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub ID&lt;span class="o"&gt;]&lt;/span&gt;  created: &lt;span class="m"&gt;2017&lt;/span&gt;-04-17  expires: never       usage: S
+pub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;SC
+&lt;span class="w"&gt;                         &lt;/span&gt;trust:&lt;span class="w"&gt; &lt;/span&gt;ultimate&lt;span class="w"&gt;      &lt;/span&gt;validity:&lt;span class="w"&gt; &lt;/span&gt;ultimate
+sub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;E&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
+sub&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Sub&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;created:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17&lt;span class="w"&gt;  &lt;/span&gt;expires:&lt;span class="w"&gt; &lt;/span&gt;never&lt;span class="w"&gt;       &lt;/span&gt;usage:&lt;span class="w"&gt; &lt;/span&gt;S
 
-gpg&amp;gt; &lt;span class="c1"&gt;# save &amp;lt;--&lt;/span&gt;
+gpg&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# save &amp;lt;--&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Create a revocation certificate&lt;/h2&gt;
 &lt;p&gt;If the master key gets lost or compromised, the revocation certificate is going to be your emergency brake.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --output revoke.asc --gen-revoke &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;
-Create a revocation certificate &lt;span class="k"&gt;for&lt;/span&gt; this key? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
-Please &lt;span class="k"&gt;select&lt;/span&gt; the reason &lt;span class="k"&gt;for&lt;/span&gt; the revocation:
-  &lt;span class="nv"&gt;0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; No reason specified
-  &lt;span class="nv"&gt;1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; Key has been compromised
-  &lt;span class="nv"&gt;2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; Key is superseded
-  &lt;span class="nv"&gt;3&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; Key is no longer used
-  &lt;span class="nv"&gt;Q&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; Cancel
-&lt;span class="o"&gt;(&lt;/span&gt;Probably you want to &lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; here&lt;span class="o"&gt;)&lt;/span&gt;
-Your decision? &lt;span class="c1"&gt;# 1 &amp;lt;--&lt;/span&gt;
-Enter an optional description&lt;span class="p"&gt;;&lt;/span&gt; end it with an empty line:
-&amp;gt; &lt;span class="c1"&gt;# Empty line will do fine here &amp;lt;--&lt;/span&gt;
-Reason &lt;span class="k"&gt;for&lt;/span&gt; revocation: Key has been compromised
-&lt;span class="o"&gt;(&lt;/span&gt;No description given&lt;span class="o"&gt;)&lt;/span&gt;
-Is this okay? &lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--output&lt;span class="w"&gt; &lt;/span&gt;revoke.asc&lt;span class="w"&gt; &lt;/span&gt;--gen-revoke&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;
+Create&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;revocation&lt;span class="w"&gt; &lt;/span&gt;certificate&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;this&lt;span class="w"&gt; &lt;/span&gt;key?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
+Please&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;reason&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;revocation:
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;No&lt;span class="w"&gt; &lt;/span&gt;reason&lt;span class="w"&gt; &lt;/span&gt;specified
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Key&lt;span class="w"&gt; &lt;/span&gt;has&lt;span class="w"&gt; &lt;/span&gt;been&lt;span class="w"&gt; &lt;/span&gt;compromised
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;2&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Key&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;superseded
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;3&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Key&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;no&lt;span class="w"&gt; &lt;/span&gt;longer&lt;span class="w"&gt; &lt;/span&gt;used
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;Q&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Cancel
+&lt;span class="o"&gt;(&lt;/span&gt;Probably&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;here&lt;span class="o"&gt;)&lt;/span&gt;
+Your&lt;span class="w"&gt; &lt;/span&gt;decision?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# 1 &amp;lt;--&lt;/span&gt;
+Enter&lt;span class="w"&gt; &lt;/span&gt;an&lt;span class="w"&gt; &lt;/span&gt;optional&lt;span class="w"&gt; &lt;/span&gt;description&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;end&lt;span class="w"&gt; &lt;/span&gt;it&lt;span class="w"&gt; &lt;/span&gt;with&lt;span class="w"&gt; &lt;/span&gt;an&lt;span class="w"&gt; &lt;/span&gt;empty&lt;span class="w"&gt; &lt;/span&gt;line:
+&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# Empty line will do fine here &amp;lt;--&lt;/span&gt;
+Reason&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;revocation:&lt;span class="w"&gt; &lt;/span&gt;Key&lt;span class="w"&gt; &lt;/span&gt;has&lt;span class="w"&gt; &lt;/span&gt;been&lt;span class="w"&gt; &lt;/span&gt;compromised
+&lt;span class="o"&gt;(&lt;/span&gt;No&lt;span class="w"&gt; &lt;/span&gt;description&lt;span class="w"&gt; &lt;/span&gt;given&lt;span class="o"&gt;)&lt;/span&gt;
+Is&lt;span class="w"&gt; &lt;/span&gt;this&lt;span class="w"&gt; &lt;/span&gt;okay?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;y/N&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# y &amp;lt;--&lt;/span&gt;
 
-You need a passphrase to unlock the secret key &lt;span class="k"&gt;for&lt;/span&gt;
-user: &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
-&lt;span class="m"&gt;4096&lt;/span&gt;-bit RSA key, ID &lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt;, created &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
+You&lt;span class="w"&gt; &lt;/span&gt;need&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;passphrase&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;unlock&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;secret&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;
+user:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;name&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
+&lt;span class="m"&gt;4096&lt;/span&gt;-bit&lt;span class="w"&gt; &lt;/span&gt;RSA&lt;span class="w"&gt; &lt;/span&gt;key,&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;created&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17
 &lt;span class="c1"&gt;# Enter passphrase &amp;lt;--&lt;/span&gt;
 
-Revocation certificate created.
+Revocation&lt;span class="w"&gt; &lt;/span&gt;certificate&lt;span class="w"&gt; &lt;/span&gt;created.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Make several copies of it and save it in a safe place (ideally not the same one as the master key!)&lt;/p&gt;
 &lt;h2&gt;Remove the master key&lt;/h2&gt;
 &lt;p&gt;Before proceeding, make sure to have backups of the &lt;code&gt;.gpg&lt;/code&gt; folder (perhaps on an encrypted media)&lt;/p&gt;
 &lt;p&gt;Temporarily export the subkeys:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --export-secret-subkeys &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt; &amp;gt; /media/encrypted-media/subkeys
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--export-secret-subkeys&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;/media/encrypted-media/subkeys
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Delete the master key:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --delete-secret-key 0x6F87F32E2234961E
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--delete-secret-key&lt;span class="w"&gt; &lt;/span&gt;0x6F87F32E2234961E
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Re-import the subkeys and remove the temporary export:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --import /media/encrypted-usb/subkeys
-$ shred -u /media/encrypted-usb/subkeys
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--import&lt;span class="w"&gt; &lt;/span&gt;/media/encrypted-usb/subkeys
+$&lt;span class="w"&gt; &lt;/span&gt;shred&lt;span class="w"&gt; &lt;/span&gt;-u&lt;span class="w"&gt; &lt;/span&gt;/media/encrypted-usb/subkeys
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Check that everything worked as intended - the hash (#) next to the &lt;code&gt;sec&lt;/code&gt; line means that the master key is missing.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg -K &lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;-K&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;
 
 /home/username/.gnupg/secring.gpg
 -----------------------------
-sec#  4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your key ID&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
-uid                  &lt;span class="o"&gt;[&lt;/span&gt;Your name&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your email address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
-ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]&lt;/span&gt;   &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
-ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]&lt;/span&gt;   &lt;span class="m"&gt;2017&lt;/span&gt;-04-17
+sec#&lt;span class="w"&gt;  &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17
+uid&lt;span class="w"&gt;                  &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;Your&lt;span class="w"&gt; &lt;/span&gt;name&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;lt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;email&lt;span class="w"&gt; &lt;/span&gt;address&lt;span class="o"&gt;]&lt;/span&gt;&amp;gt;
+ssb&lt;span class="w"&gt;   &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17
+ssb&lt;span class="w"&gt;   &lt;/span&gt;4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;2017&lt;/span&gt;-04-17
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Upload the key to a keyserver&lt;/h2&gt;
 &lt;p&gt;Keyservers syncs keys with each other, so any keyserver would do.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --keyserver pgp.mit.edu --send-key &lt;span class="o"&gt;[&lt;/span&gt;your key ID&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--keyserver&lt;span class="w"&gt; &lt;/span&gt;pgp.mit.edu&lt;span class="w"&gt; &lt;/span&gt;--send-key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;ID&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Using your master key&lt;/h2&gt;
 &lt;p&gt;Assuming that the &lt;code&gt;.gpg&lt;/code&gt; folder is on some kind of encrypted media:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gpg --homedir&lt;span class="o"&gt;=&lt;/span&gt;/media/encrypted-media/.gnupg/ &lt;span class="o"&gt;[&lt;/span&gt;gpg command&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;--homedir&lt;span class="o"&gt;=&lt;/span&gt;/media/encrypted-media/.gnupg/&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;gpg&lt;span class="w"&gt; &lt;/span&gt;command&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Parting thoughts&lt;/h2&gt;
@@ -627,7 +648,7 @@ ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]
 &lt;h2&gt;Using the &lt;code&gt;--ds&lt;/code&gt; option&lt;/h2&gt;
 &lt;p&gt;This is probably a no-brainer, but the most obvious way to make sure pytest-django picks up the right settings file is to pass the &lt;code&gt;--ds&lt;/code&gt; option when invoking &lt;code&gt;pytest&lt;/code&gt; from the command line.&lt;/p&gt;
 &lt;p&gt;While it certainly works, it adds quite a lot of typing - especially if you use a &lt;a href="https://www.rdegges.com/2011/the-perfect-django-settings-file/"&gt;settings module instead of a single setting file&lt;/a&gt;, since it could easily translate into&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pytest --ds&lt;span class="o"&gt;=&lt;/span&gt;project_folder.settings_folder.settings_file
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;pytest&lt;span class="w"&gt; &lt;/span&gt;--ds&lt;span class="o"&gt;=&lt;/span&gt;project_folder.settings_folder.settings_file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Certainly not something I'd like to do every time I want to run the test suite.&lt;/p&gt;
@@ -637,19 +658,19 @@ ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]
 &lt;h2&gt;Using &lt;code&gt;addopts&lt;/code&gt; in the &lt;code&gt;pytest.ini&lt;/code&gt; file&lt;/h2&gt;
 &lt;p&gt;Wouldn't be awesome if you could just use the &lt;code&gt;pytest.ini&lt;/code&gt; file, set all the necessary settings in there, and not have to worry ever again? Actually you can, thanks to &lt;a href="http://doc.pytest.org/en/3.0.2/customize.html#confval-addopts"&gt;&lt;code&gt;addopts&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;What &lt;code&gt;addopts&lt;/code&gt; does is to add options (hence the double d!) to your test run as if they were specified via command line. So, for example, if you want to update and export coverage every time you run the suite, you would write this in the &lt;code&gt;pytest.ini&lt;/code&gt; file&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[pytest]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="na"&gt;addopts&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;--cov&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;--cov-report&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;html&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[pytest]&lt;/span&gt;
+&lt;span class="na"&gt;addopts&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;--cov&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;.&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;--cov-report&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;html&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and every time you run &lt;code&gt;pytest&lt;/code&gt; it will, behind the scene, be interpreted as if you have run&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pytest --cov&lt;span class="o"&gt;=&lt;/span&gt;. --cov-report&lt;span class="o"&gt;=&lt;/span&gt;html
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;pytest&lt;span class="w"&gt; &lt;/span&gt;--cov&lt;span class="o"&gt;=&lt;/span&gt;.&lt;span class="w"&gt; &lt;/span&gt;--cov-report&lt;span class="o"&gt;=&lt;/span&gt;html
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Thus, by adding &lt;code&gt;--ds=project_folder.settings_folder.settings_file&lt;/code&gt; to &lt;code&gt;addopts&lt;/code&gt; it is possible to override pytest-django discovery order and make sure that the value in the &lt;code&gt;pytest.ini&lt;/code&gt; file gets read instead of environment variable.&lt;/p&gt;
 &lt;p&gt;Ok, but what if you want to point pytest to a different settings file for one run only? No problem! One of the perks of this method is that you can esplicitly pass the &lt;code&gt;--ds&lt;/code&gt; option from the command line to override the one in the &lt;code&gt;pytest.ini&lt;/code&gt; file. So running&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pytest --ds&lt;span class="o"&gt;=&lt;/span&gt;other_settings_file
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;pytest&lt;span class="w"&gt; &lt;/span&gt;--ds&lt;span class="o"&gt;=&lt;/span&gt;other_settings_file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;will just work as usual. Neat!&lt;/p&gt;</content><category term="dev"></category><category term="django"></category><category term="pytest"></category><category term="pytest-django"></category><category term="environment variables"></category></entry><entry><title>Using pyvenv with virtualenvwrapper</title><link href="https://railslide.io/pyvenv-virtualenvwrapper.html" rel="alternate"></link><published>2016-06-07T00:00:00+02:00</published><updated>2016-06-07T00:00:00+02:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2016-06-07:/pyvenv-virtualenvwrapper.html</id><summary type="html">&lt;p&gt;After reading that it might be possible to use virtualenvwrapper with pyvenv, I decided to fire up a couple of virtual machines and to find it out.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Python 3 ships with pyvenv, a built-in virtualenv manager. Although I welcomed the news as a definitely good one, the absence of a virtualenvwrapper-like tool for pyvenv has always stopped me from giving it a try. I consider virtualenvwrapper to be a super neat tool (I even wrote a plugin for it!) and I don't see why I would want to type the path to my virtual environment activation script every time I want to activate it, when I can just use a way more pythonic &lt;code&gt;workon my_venv&lt;/code&gt;.&lt;/p&gt;
@@ -657,13 +678,13 @@ ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]
 &lt;h2&gt;The Ubuntu mess&lt;/h2&gt;
 &lt;p&gt;According to Python documentation I should be able to invoke pyvenv by simply calling &lt;code&gt;pyvenv [args]&lt;/code&gt;. However, that is not the case for Ubuntu. Thus, my first attempt to set my &lt;code&gt;VIRTUALENVWRAPPER_VIRTUALENV&lt;/code&gt; variable equal to &lt;code&gt;pyvenv&lt;/code&gt; resulted in my vagrant machine complaining because it could not find it in my path. Setting it to &lt;code&gt;pyvenv-3.4&lt;/code&gt; solved it (I was initially testing on Ubuntu 14.04, which ships with Python 3.4). Though having to manually change it whenever I decide to update my Python version is far from optimal.&lt;/p&gt;
 &lt;p&gt;So I set &lt;code&gt;pyvenv-3.4&lt;/code&gt; as &lt;code&gt;VIRTUALENVWRAPPER_VIRTUALENV&lt;/code&gt;, created a new virtualenv and...&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Error: Command &lt;span class="s1"&gt;&amp;#39;[&amp;#39;&lt;/span&gt;/home/vagrant/.virtualenvs/test/bin/python3.4&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;-Im&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;ensurepip&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;--upgrade&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;--default-pip&lt;span class="s1"&gt;&amp;#39;]&amp;#39;&lt;/span&gt; returned non-zero &lt;span class="nb"&gt;exit&lt;/span&gt; status &lt;span class="m"&gt;1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Error:&lt;span class="w"&gt; &lt;/span&gt;Command&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;[&amp;#39;&lt;/span&gt;/home/vagrant/.virtualenvs/test/bin/python3.4&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;-Im&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;ensurepip&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;--upgrade&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;--default-pip&lt;span class="s1"&gt;&amp;#39;]&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;returned&lt;span class="w"&gt; &lt;/span&gt;non-zero&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;status&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Ok, not exactly what I was hoping for.&lt;/p&gt;
 &lt;p&gt;After a bit of digging, it came out that it is due &lt;a href="https://bugs.launchpad.net/ubuntu/+source/python3.4/+bug/1290847"&gt;to a bug with ensurepip&lt;/a&gt; in the first release of Ubuntu 14.04. However, it is possible to bypass the problem by first creating the virtualenv without pip and then manually installing it once inside it.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ mkvirtualenv --without-pip my_venv
-&lt;span class="o"&gt;(&lt;/span&gt;my_venv&lt;span class="o"&gt;)&lt;/span&gt;$ curl https://bootstrap.pypa.io/get-pip.py &lt;span class="p"&gt;|&lt;/span&gt; python
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;mkvirtualenv&lt;span class="w"&gt; &lt;/span&gt;--without-pip&lt;span class="w"&gt; &lt;/span&gt;my_venv
+&lt;span class="o"&gt;(&lt;/span&gt;my_venv&lt;span class="o"&gt;)&lt;/span&gt;$&lt;span class="w"&gt; &lt;/span&gt;curl&lt;span class="w"&gt; &lt;/span&gt;https://bootstrap.pypa.io/get-pip.py&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;python
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Quite a lot to type, plus you have to wait for Pip to install. Definitely not optimal.&lt;/p&gt;
@@ -687,7 +708,7 @@ ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]
 
 &lt;p&gt;&lt;code&gt;cpvirtualenv&lt;/code&gt; is instead a bit weird, since it does copy the virtualenv, but it displays the name of the original one in front of the prompt of all its copies. Even making copies of a copy doesn't change the result: it still shows the name of the first original. The &lt;code&gt;$VIRTUAL_ENV&lt;/code&gt; variable and the interpreter point to the correct folder tho...&lt;/p&gt;
 &lt;p&gt;Last but not least, is probably worthy mentioning that - by design - pyvenv doesn't offer the possibility to specify a Python interpreter for virtual environments, so&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ mkvirtualenv -p /path/to/python/interpreter my_venv
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;mkvirtualenv&lt;span class="w"&gt; &lt;/span&gt;-p&lt;span class="w"&gt; &lt;/span&gt;/path/to/python/interpreter&lt;span class="w"&gt; &lt;/span&gt;my_venv
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;no longer works, which means no way to get a Python 2.7 virtualenv out of it.&lt;/p&gt;
@@ -725,10 +746,10 @@ ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]
 &lt;h2&gt;Which mock?&lt;/h2&gt;
 &lt;p&gt;Ok, so back to my mocks! Now they get imported and patch what they need to patch, but still don't seem to work as expected. Or rather, it looks like there's something off with the &lt;code&gt;mock_open&lt;/code&gt; helper, since for some reason it returns a &lt;code&gt;MagicMock&lt;/code&gt; instance instead of the specified &lt;code&gt;read_data&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;After a bit of head scratching and googling, I found a &lt;a href="https://github.com/travis-ci/travis-ci/issues/5849"&gt;feature request&lt;/a&gt; to Travis that shaded light over my own problem. Thanks to it I got to discover that Travis runs an old version of Mock (I haven't figured out which one exactly, but for sure older than 1.3.0) which does not implement &lt;code&gt;mock_open&lt;/code&gt; as later versions do. Thankfully the same issue suggested also a workaround for it, i.e. to add an explicit install command for the desired version to the configuration file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nt"&gt;install&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pip install .&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pip install mock==2.0&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pip install -r requirements.txt&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nt"&gt;install&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pip install .&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pip install mock==2.0&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pip install -r requirements.txt&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Mock and Python 3.3&lt;/h2&gt;
@@ -753,21 +774,21 @@ ssb   4096R/&lt;span class="o"&gt;[&lt;/span&gt;Subkey ID&lt;span class="o"&gt;]
 &lt;p&gt;Github interface it is certainly nice, but it comes to the price of making your release workflow dependent on Github. What if a certain point you decide that you want to move your code away from Github? Also wouldn't be awesome if you could take care of your releases directly from your trusted terminal? Well, it turns out that you can, since what Github does behind the scene is to create and set a Git tag on the repository.&lt;/p&gt;
 &lt;p&gt;Tags in Git are a way to set a reference to a specific point in history. You can think of them as a way to &lt;em&gt;bookmark&lt;/em&gt; a specific commit. So when you download the source code for your-awesome-project.v1.1.0 you're basically saying "Hey Git, fetch me the code up to the point that correspond to the commit tagged with the name your-awesome-project.v1.1.0".&lt;/p&gt;
 &lt;p&gt;You can set a tag with the &lt;code&gt;git tag&lt;/code&gt; command. However, before you go git-tagging all the things, you should probably be aware that there are two kinds of tags in Git: annotated and lightweight. As the man page for &lt;code&gt;git-tag&lt;/code&gt; explains:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;Tag&lt;/span&gt; &lt;span class="nv"&gt;objects&lt;/span&gt; &lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;created&lt;/span&gt; &lt;span class="nv"&gt;with&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;a&lt;/span&gt;, &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;s&lt;/span&gt;, &lt;span class="nv"&gt;or&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;u&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt; &lt;span class="nv"&gt;are&lt;/span&gt; &lt;span class="nv"&gt;called&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;annotated&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="nv"&gt;tags&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
-&lt;span class="nv"&gt;they&lt;/span&gt; &lt;span class="nv"&gt;contain&lt;/span&gt; &lt;span class="nv"&gt;a&lt;/span&gt; &lt;span class="nv"&gt;creation&lt;/span&gt; &lt;span class="nv"&gt;date&lt;/span&gt;, &lt;span class="nv"&gt;the&lt;/span&gt; &lt;span class="nv"&gt;tagger&lt;/span&gt; &lt;span class="nv"&gt;name&lt;/span&gt; &lt;span class="nv"&gt;and&lt;/span&gt; &lt;span class="nv"&gt;e&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;mail&lt;/span&gt;, &lt;span class="nv"&gt;a&lt;/span&gt; &lt;span class="nv"&gt;tagging&lt;/span&gt;
-&lt;span class="nv"&gt;message&lt;/span&gt;, &lt;span class="nv"&gt;and&lt;/span&gt; &lt;span class="nv"&gt;an&lt;/span&gt; &lt;span class="nv"&gt;optional&lt;/span&gt; &lt;span class="nv"&gt;GnuPG&lt;/span&gt; &lt;span class="nv"&gt;signature&lt;/span&gt;. &lt;span class="nv"&gt;Whereas&lt;/span&gt; &lt;span class="nv"&gt;a&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;lightweight&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="nv"&gt;tag&lt;/span&gt;
-&lt;span class="nv"&gt;is&lt;/span&gt; &lt;span class="nv"&gt;simply&lt;/span&gt; &lt;span class="nv"&gt;a&lt;/span&gt; &lt;span class="nv"&gt;name&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="nv"&gt;an&lt;/span&gt; &lt;span class="nv"&gt;object&lt;/span&gt; &lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;usually&lt;/span&gt; &lt;span class="nv"&gt;a&lt;/span&gt; &lt;span class="nv"&gt;commit&lt;/span&gt; &lt;span class="nv"&gt;object&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;.
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;Tag&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;objects&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;created&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;with&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;a&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;s&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;u&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;are&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;called&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;annotated&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;tags&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+&lt;span class="nv"&gt;they&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;contain&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;creation&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;date&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;the&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;tagger&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;and&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;e&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;mail&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;tagging&lt;/span&gt;
+&lt;span class="nv"&gt;message&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;and&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;an&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;optional&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;GnuPG&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;signature&lt;/span&gt;.&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;Whereas&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;lightweight&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;tag&lt;/span&gt;
+&lt;span class="nv"&gt;is&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;simply&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;an&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;object&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;usually&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;commit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;object&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;.
 
-&lt;span class="nv"&gt;Annotated&lt;/span&gt; &lt;span class="nv"&gt;tags&lt;/span&gt; &lt;span class="nv"&gt;are&lt;/span&gt; &lt;span class="nv"&gt;meant&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="nv"&gt;release&lt;/span&gt; &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="nv"&gt;lightweight&lt;/span&gt; &lt;span class="nv"&gt;tags&lt;/span&gt; &lt;span class="nv"&gt;are&lt;/span&gt; &lt;span class="nv"&gt;meant&lt;/span&gt;
-&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="nv"&gt;private&lt;/span&gt; &lt;span class="nv"&gt;or&lt;/span&gt; &lt;span class="nv"&gt;temporary&lt;/span&gt; &lt;span class="nv"&gt;object&lt;/span&gt; &lt;span class="nv"&gt;labels&lt;/span&gt;. &lt;span class="k"&gt;For&lt;/span&gt; &lt;span class="nv"&gt;this&lt;/span&gt; &lt;span class="nv"&gt;reason&lt;/span&gt;, &lt;span class="nv"&gt;some&lt;/span&gt; &lt;span class="nv"&gt;git&lt;/span&gt;
-&lt;span class="nv"&gt;commands&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="nv"&gt;naming&lt;/span&gt; &lt;span class="nv"&gt;objects&lt;/span&gt; &lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;like&lt;/span&gt; &lt;span class="nv"&gt;git&lt;/span&gt; &lt;span class="nv"&gt;describe&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt; &lt;span class="nv"&gt;will&lt;/span&gt; &lt;span class="nv"&gt;ignore&lt;/span&gt; &lt;span class="nv"&gt;lightweight&lt;/span&gt;
-&lt;span class="nv"&gt;tags&lt;/span&gt; &lt;span class="nv"&gt;by&lt;/span&gt; &lt;span class="nv"&gt;default&lt;/span&gt;.
+&lt;span class="nv"&gt;Annotated&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;tags&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;are&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;meant&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;release&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;lightweight&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;tags&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;are&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;meant&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;private&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;temporary&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;object&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;labels&lt;/span&gt;.&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;For&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;this&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;reason&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;some&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;git&lt;/span&gt;
+&lt;span class="nv"&gt;commands&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;naming&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;objects&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;like&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;git&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;describe&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;will&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;ignore&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;lightweight&lt;/span&gt;
+&lt;span class="nv"&gt;tags&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;by&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;default&lt;/span&gt;.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;To be honest, I still haven't yet figured out a good case for lightweight tags - if you have, give me a shout 'cause I'd love to know! Anyways, the bottom line is: &lt;strong&gt;do not forget the &lt;code&gt;-a&lt;/code&gt; flag when you're trying to make a release&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;Ok, back to our release!&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ git tag -a v1.0.0 -m &lt;span class="s2"&gt;&amp;quot;My awesome message for v1.0.0&amp;quot;&lt;/span&gt;
-$ git push --tags  &lt;span class="c1"&gt;# tags need to be pushed explicitly&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;git&lt;span class="w"&gt; &lt;/span&gt;tag&lt;span class="w"&gt; &lt;/span&gt;-a&lt;span class="w"&gt; &lt;/span&gt;v1.0.0&lt;span class="w"&gt; &lt;/span&gt;-m&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;My awesome message for v1.0.0&amp;quot;&lt;/span&gt;
+$&lt;span class="w"&gt; &lt;/span&gt;git&lt;span class="w"&gt; &lt;/span&gt;push&lt;span class="w"&gt; &lt;/span&gt;--tags&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="c1"&gt;# tags need to be pushed explicitly&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Done!&lt;/p&gt;
@@ -799,9 +820,9 @@ $ git push --tags  &lt;span class="c1"&gt;# tags need to be pushed explicitly&lt
 &lt;p&gt;Finally, you have to &lt;em&gt;echo all the things&lt;/em&gt; in order to keep track of the different installation steps - reducing thus the readability of the script.&lt;/p&gt;
 &lt;p&gt;Of course these are trivial problems and I've happily coped with them for quite some time. But then I had the chance to have a look at Ansible - and it has been a game changer!&lt;/p&gt;
 &lt;p&gt;Ansible uses yaml as a language for its orchestration files (aka playbook), which makes them extremely easy to read. For example, this is how a task for installing Git could look&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;Install git&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;sudo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;yes&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;apt&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pkg=git state=latest&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;Install git&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;sudo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;yes&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;apt&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pkg=git state=latest&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Pretty easy to figure out what it does! On top of that, Ansible outputs the name of your tasks when running them, making it trivial for you to keep track of what's going on behind the scenes.&lt;/p&gt;
@@ -840,7 +861,7 @@ $ git push --tags  &lt;span class="c1"&gt;# tags need to be pushed explicitly&lt
 &lt;/ul&gt;</content><category term="cryptography"></category><category term="GPG"></category><category term="cryptography"></category></entry><entry><title>How to encrypt a removable disk in Ubuntu 14.04</title><link href="https://railslide.io/encrypt-removable-disk-ubuntu-1404.html" rel="alternate"></link><published>2015-04-27T00:00:00+02:00</published><updated>2015-04-27T00:00:00+02:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2015-04-27:/encrypt-removable-disk-ubuntu-1404.html</id><summary type="html">&lt;p&gt;Most of the guides on how to encrypt a removable disk in Ubuntu still refer to Ubuntu 12.04. Here's how to do it in Ubuntu 14.04 and to cope with the changes it introduces to the disks manager tool.&lt;/p&gt;</summary><content type="html">&lt;p&gt;The other day, while encrypting a USB stick, I discovered that most of the available howtos (including the community wiki) refers to Ubuntu 12.04. So, here's how to do it in Ubuntu 14.04, taking into account the changes that the latest LTS introduced to the disks manager tool.&lt;/p&gt;
 &lt;h2&gt;1. Install cryptsetup&lt;/h2&gt;
 &lt;p&gt;The first thing you need to do is to install &lt;code&gt;cryptsetup&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo apt-get install cryptsetup
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;cryptsetup
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;You can also install it from the Software center if you feel more comfortable with a graphical interface.&lt;/p&gt;
@@ -892,33 +913,33 @@ $ git push --tags  &lt;span class="c1"&gt;# tags need to be pushed explicitly&lt
 
 &lt;p&gt;and at the end of the file the lines taking care of the magic:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks&lt;/span&gt;
-&lt;span class="k"&gt;for&lt;/span&gt; file &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nv"&gt;$files&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
-    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -a ~/.&lt;span class="nv"&gt;$file&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;    &lt;span class="c1"&gt;# check if a dotfile already exists&lt;/span&gt;
-        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Moving any existing dotfiles from ~ to &lt;/span&gt;&lt;span class="nv"&gt;$olddir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
-        mv ~/.&lt;span class="nv"&gt;$file&lt;/span&gt; &lt;span class="nv"&gt;$olddir&lt;/span&gt;
-    &lt;span class="k"&gt;fi&lt;/span&gt;
-    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Creating symlink to &lt;/span&gt;&lt;span class="nv"&gt;$file&lt;/span&gt;&lt;span class="s2"&gt; in home directory.&amp;quot;&lt;/span&gt;
-    ln -s &lt;span class="nv"&gt;$dir&lt;/span&gt;/&lt;span class="nv"&gt;$file&lt;/span&gt; ~/.&lt;span class="nv"&gt;$file&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;file&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$files&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;do&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-a&lt;span class="w"&gt; &lt;/span&gt;~/.&lt;span class="nv"&gt;$file&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="c1"&gt;# check if a dotfile already exists&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Moving any existing dotfiles from ~ to &lt;/span&gt;&lt;span class="nv"&gt;$olddir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;mv&lt;span class="w"&gt; &lt;/span&gt;~/.&lt;span class="nv"&gt;$file&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$olddir&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Creating symlink to &lt;/span&gt;&lt;span class="nv"&gt;$file&lt;/span&gt;&lt;span class="s2"&gt; in home directory.&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;ln&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$dir&lt;/span&gt;/&lt;span class="nv"&gt;$file&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;~/.&lt;span class="nv"&gt;$file&lt;/span&gt;
 &lt;span class="k"&gt;done&lt;/span&gt;
 
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Create symlink for Sublime Text User directory&lt;/span&gt;
-&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -d &lt;span class="nv"&gt;$sublimedir&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt; &lt;span class="c1"&gt;# check whether the directory already exists&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-d&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# check whether the directory already exists&lt;/span&gt;
 
-    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -L &lt;span class="nv"&gt;$sublimedir&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
-        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Removing old symlink&amp;quot;&lt;/span&gt;
-        rm &lt;span class="nv"&gt;$sublimedir&lt;/span&gt;
-        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
-    &lt;span class="k"&gt;else&lt;/span&gt;
-        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Moving the existing Sublime Text Users directory from &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;&lt;span class="s2"&gt; to &lt;/span&gt;&lt;span class="nv"&gt;$olddir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
-        mv &lt;span class="nv"&gt;$sublimedir&lt;/span&gt; &lt;span class="nv"&gt;$olddir&lt;/span&gt;
-        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
-    &lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-L&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Removing old symlink&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;rm&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;else&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Moving the existing Sublime Text Users directory from &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;&lt;span class="s2"&gt; to &lt;/span&gt;&lt;span class="nv"&gt;$olddir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;mv&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$olddir&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;fi&lt;/span&gt;
 &lt;span class="k"&gt;fi&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Creating symlink to User in &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
-ln -s &lt;span class="nv"&gt;$dir&lt;/span&gt;/sublime/User &lt;span class="nv"&gt;$sublimedir&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Creating symlink to User in &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+ln&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$dir&lt;/span&gt;/sublime/User&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$sublimedir&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;...done&amp;quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The full script can be found on &lt;a href="https://github.com/Railslide/dotfiles/blob/master/installdotfiles.sh"&gt;github&lt;/a&gt;.&lt;/p&gt;
@@ -937,33 +958,33 @@ output/
 &lt;p&gt;Before installing Pelican, I would recommend to create a new virtualenv. It is not mandatory, but it is definitely a good practice and would prevent the risk of conflicts between installed packages.&lt;/p&gt;
 &lt;p&gt;NOTE: Pelican documentation recommends to use Pelican with Python 2.7. I am keeping up with &lt;a href="https://railslide.io/virtualenvwrapper-python3.html"&gt;my pledge of using Python 3 whenever possible&lt;/a&gt;, as well as giving a try with Python 3.4 (Ubuntu 14.04 default version). Everything works fine so far and anyways these instructions are version agnostic - just be aware of it and choose your Python version accordingly.&lt;/p&gt;
 &lt;p&gt;Install pelican and ghp-import&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pip install pelican
-pip install -e git+git://github.com/davisp/ghp-import.git#egg&lt;span class="o"&gt;=&lt;/span&gt;ghp-import
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pip&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;pelican
+pip&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;-e&lt;span class="w"&gt; &lt;/span&gt;git+git://github.com/davisp/ghp-import.git#egg&lt;span class="o"&gt;=&lt;/span&gt;ghp-import
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Next run &lt;code&gt;pelican-quickstart&lt;/code&gt; and get ready to answer to a bunch of questions. Most of them are pretty straightforward and anyway you'll be able to change them later in your settings files. These are the only ones you need to care about for the moment:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Where &lt;span class="k"&gt;do&lt;/span&gt; you want to create your new web site? &lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="c1"&gt;# Press enter&lt;/span&gt;
-Do you want to specify a URL prefix? e.g., http://example.com &lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y&lt;/span&gt;
-What is your URL prefix? &lt;span class="o"&gt;(&lt;/span&gt;see above example&lt;span class="p"&gt;;&lt;/span&gt; no trailing slash&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# http://username.github.io/repository&lt;/span&gt;
-Do you want to generate a Fabfile/Makefile to automate generation and publishing? &lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# y&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Where&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;do&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;create&lt;span class="w"&gt; &lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;new&lt;span class="w"&gt; &lt;/span&gt;web&lt;span class="w"&gt; &lt;/span&gt;site?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# Press enter&lt;/span&gt;
+Do&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;specify&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;URL&lt;span class="w"&gt; &lt;/span&gt;prefix?&lt;span class="w"&gt; &lt;/span&gt;e.g.,&lt;span class="w"&gt; &lt;/span&gt;http://example.com&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# y&lt;/span&gt;
+What&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;URL&lt;span class="w"&gt; &lt;/span&gt;prefix?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;see&lt;span class="w"&gt; &lt;/span&gt;above&lt;span class="w"&gt; &lt;/span&gt;example&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;no&lt;span class="w"&gt; &lt;/span&gt;trailing&lt;span class="w"&gt; &lt;/span&gt;slash&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# http://username.github.io/repository&lt;/span&gt;
+Do&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;generate&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;Fabfile/Makefile&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;automate&lt;span class="w"&gt; &lt;/span&gt;generation&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;publishing?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;Y/n&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# y&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Answer &lt;code&gt;n&lt;/code&gt; to all the questions about uploading your website and you are ready to go.&lt;/p&gt;
 &lt;h1&gt;3. Writing content&lt;/h1&gt;
 &lt;p&gt;Fire up your favorite text editor and write your blog content in either Markdown or reStructuredText. Once you have done, save it in the content folder. For previewing it:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;make devserver
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;make&lt;span class="w"&gt; &lt;/span&gt;devserver
 &lt;span class="c1"&gt;# go to http://localhost:8000 and check if everything looks good&lt;/span&gt;
-^C &lt;span class="c1"&gt;# note that CTRL+C won&amp;#39;t stop dev server&lt;/span&gt;
-./develop_server.sh stop &lt;span class="c1"&gt;# manually stop the dev server&lt;/span&gt;
+^C&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# note that CTRL+C won&amp;#39;t stop dev server&lt;/span&gt;
+./develop_server.sh&lt;span class="w"&gt; &lt;/span&gt;stop&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# manually stop the dev server&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;4. Publishing and pushing&lt;/h1&gt;
 &lt;p&gt;Ok this is the easy part.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# pushing the source repo&lt;/span&gt;
-git push origin master
+git&lt;span class="w"&gt; &lt;/span&gt;push&lt;span class="w"&gt; &lt;/span&gt;origin&lt;span class="w"&gt; &lt;/span&gt;master
 
 &lt;span class="c1"&gt;# push the output folder to GitHub pages&lt;/span&gt;
-make github
+make&lt;span class="w"&gt; &lt;/span&gt;github
 
 &lt;span class="c1"&gt;# celebrate!&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -1000,17 +1021,17 @@ make github
 &lt;p&gt;Virtualenwrapper documentation specifies that Virtualenvwrapper has been tested under Python 2.6-3.3, but no mention of Python 3.4. Being lazy and not really willing to install a third version of Python on my computer (Ubuntu 14.04 comes with Python 2.7.6 and Python 3.4 by default), I decided to give it try with what I had. Everything seems to work flawlessly so far, just keep it in mind in case you want to try to follow these instructions.&lt;/p&gt;
 &lt;h2&gt;Setting up Virtualenvwrapper&lt;/h2&gt;
 &lt;p&gt;Install pip for Python 3:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo apt-get install python3-pip
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;python3-pip
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Install Virtualenvwrapper for Python 3:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo pip3 install virtualenvwrapper
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;pip3&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;virtualenvwrapper
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;So far so good. Now it is time to configure Virtualenvwrapper.&lt;/p&gt;
 &lt;p&gt;Create a folder for your virtualenvs (I use ~/.virtualenvs) and set it as WORKON_HOME:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkdir ~/.virtualenvs
-&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;WORKON_HOME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/.virtualenvs
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkdir&lt;span class="w"&gt; &lt;/span&gt;~/.virtualenvs
+&lt;span class="nb"&gt;export&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;WORKON_HOME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/.virtualenvs
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Add the following lines to ~/.bashrc:&lt;/p&gt;
@@ -1019,9 +1040,9 @@ source /usr/local/bin/virtualenvwrapper.sh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Close and re-open your shell and you're ready to go. Here are the basic commands for using virtualenvwrapper:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkvirtualenv virtualenv_name &lt;span class="c1"&gt;# Create virtualenv&lt;/span&gt;
-workon virtualenv_name &lt;span class="c1"&gt;# Activate/switch to a virtualenv&lt;/span&gt;
-deactivate virtualenv_name &lt;span class="c1"&gt;# Deactivate virtualenv&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkvirtualenv&lt;span class="w"&gt; &lt;/span&gt;virtualenv_name&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# Create virtualenv&lt;/span&gt;
+workon&lt;span class="w"&gt; &lt;/span&gt;virtualenv_name&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# Activate/switch to a virtualenv&lt;/span&gt;
+deactivate&lt;span class="w"&gt; &lt;/span&gt;virtualenv_name&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# Deactivate virtualenv&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Congratulations! Your Virtualenvwrapper for Python 3 is now ready to use.&lt;/p&gt;
@@ -1035,12 +1056,12 @@ source /usr/local/bin/virtualenvwrapper.sh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now, when typing&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkproject my_project
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkproject&lt;span class="w"&gt; &lt;/span&gt;my_project
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Virtualenvwrapper will automatically create a virtualenv and a folder called &lt;em&gt;my_project&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;Cherry on top, projects automaticatilly navigates to the project folder when activating the virtualenv. Thus, when typing&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;workon my_project
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;workon&lt;span class="w"&gt; &lt;/span&gt;my_project
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Virtualenvwrapper activates the virtualenv and teleports me to ~/Projects/my_project. Neat!&lt;/p&gt;</content><category term="dev"></category><category term="virtualenvwrapper"></category><category term="virtualenv"></category><category term="python3"></category></entry><entry><title>Up and running!</title><link href="https://railslide.io/up-and-running.html" rel="alternate"></link><published>2014-06-03T00:00:00+02:00</published><updated>2014-06-03T00:00:00+02:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2014-06-03:/up-and-running.html</id><summary type="html">&lt;p&gt;Celebrating the first post of the blog and what to do next.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Ok, my Pelican and GitHub pages powered blog seems to be up and running! Yay!&lt;/p&gt;

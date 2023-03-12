@@ -69,21 +69,21 @@
 <p>Ok, and what about Lua? When I started my <a href="https://railslide.io/learning-vim-in-2022.html">Vim adventure</a> I felt like I didn't know enough about Vim and Neovim to have a strong preference for one over the other, so I just placed all my config in <code>.vimrc</code> as that was compatible with both. But then time passed and two things happened: first, I realized I have never went back once to Vim after trying Neovim; second, Vim announced that from version 9.0 it will introduce a new scripting language (Vim 9 Script), which will not be completely backward-compatible with the old VimScript. For me that meant that, no matter which editor I chose, I would have to learn a new language. And if I have to put the effort, I'd rather do it for something multipurpose like Lua, than for a language that only applies to my editor.</p>
 <h2>The structure</h2>
 <p>After a bit of back and forth, this is what the directory structure of my config currently looks like:</p>
-<div class="highlight"><pre><span></span><code>nvim
-├── after
-│   └── plugin
-│       ├── ale.lua
-│       ├── lightline.vim.lua
-│       ├── onedark.lua
-│       └── telescope.lua
-├── init.lua
-├── lua
-│   └── railslide
-│       ├── mappings.lua
-│       ├── options.lua
-│       └── plugin-manager.lua
-└── plugin
-    └── packer_compiled.lua
+<div class="highlight"><pre><span></span><code><span class="n">nvim</span>
+<span class="n">├── after</span>
+<span class="n">│   └── plugin</span>
+<span class="n">│       ├── ale.lua</span>
+<span class="n">│       ├── lightline.vim.lua</span>
+<span class="n">│       ├── onedark.lua</span>
+<span class="n">│       └── telescope.lua</span>
+<span class="n">├── init.lua</span>
+<span class="n">├── lua</span>
+<span class="n">│   └── railslide</span>
+<span class="n">│       ├── mappings.lua</span>
+<span class="n">│       ├── options.lua</span>
+<span class="n">│       └── plugin-manager.lua</span>
+<span class="n">└── plugin</span>
+<span class="n">    └── packer_compiled.lua</span>
 </code></pre></div>
 
 <p>The <code>lua/railside</code> folder is where I keep my general configuration. The <code>lua</code> folder is included in Neovim <code>runtimepath</code> and it's where Neovim looks for Lua plugins by default. Inside that I created a directory with my own username in order to avoid namespace conflicts (the name per se doesn't actually matter, as long as it's something unlikely to be used by something else you're good to go).</p>

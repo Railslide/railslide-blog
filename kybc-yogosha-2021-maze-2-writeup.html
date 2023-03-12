@@ -65,19 +65,19 @@
             </section>
             <p><em>In order to start this challenge it was necessary to complete <a href="https://railslide.io/kybc-yogosha-2021-maze-1-writeups.html">Maze 1</a> first</em></p>
 <p>After catching the first flag, let's check what's in <code>home/ctf_user2</code>. There is a flag file, but this time concatenating it doesn't work since the current user (<code>ctf_user1</code>) doesn't have read permissions to it. The only other interesting thing is a file called <code>sysadmin.c</code>. Permissions are in my favor this time, so let's have a look at the content:</p>
-<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span>
 
-<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
 
-<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello sysadmin :) </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Today date : </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">setreuid</span><span class="p">(</span><span class="n">geteuid</span><span class="p">(),</span><span class="w"> </span><span class="n">getuid</span><span class="p">());</span><span class="w"></span>
-<span class="w">    </span><span class="n">system</span><span class="p">(</span><span class="s">&quot;date&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello sysadmin :) </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Today date : </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setreuid</span><span class="p">(</span><span class="n">geteuid</span><span class="p">(),</span><span class="w"> </span><span class="n">getuid</span><span class="p">());</span>
+<span class="w">    </span><span class="n">system</span><span class="p">(</span><span class="s">&quot;date&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
 </code></pre></div>
 
 <p>That <code>system("date")</code> call looks promising, so let's try to replace it with some useful bash statement instead:</p>

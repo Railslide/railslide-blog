@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="https://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>Make pyenv and pyright play nice together // Railslide // Code, experiments, and thoughts</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/puremorning.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="links"><a href="/about.html">About</a></p>
+                                <p class="links"><a href="/categories.html">Categories</a></p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Make pyenv and pyright play nice together</h1>
+                        <p class="post-meta">
+                        category: <a href="https://railslide.io/category/dev.html">dev</a>, date: 12-03-2023
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="https://railslide.io/tag/python.html">python</a>
+                                <a class="post-category" href="https://railslide.io/tag/neovim.html">neovim</a>
+                </header>
+            </section>
+            <p>Some time ago I started looking into setting up the built-in LSPs in Neovim, and being Python my main programming language, I set up <a href="https://github.com/microsoft/pyright/">Pyright</a> as my first language server and gave it a spin. While all the basics things worked out of the box, I kept getting a bunch of <code>Import "some_module" could not be resolved</code>. After having ruled out the classic mistakes (i.e. forgetting to install dependencies, or running Neovim from the wrong folder), and ran some test (<a href="https://github.com/dense-analysis/ale">Ale</a> recognized my virtualenv as expected), all that was left was that somehow Pyright did not play along with my virtualenv.</p>
+<h2>Why it happens</h2>
+<p>By default Pyright tries to be smart and to automatically pick up existing virtualenvs. When it comes to Pyenv, Pyright checks whether <code>$PYENV_VERSION</code> is set and determines which Python interpreter to use from its value. So far so good.</p>
+<p>The problems however start when using <code>pyenv local</code>. Basically <a href="https://github.com/pyenv/pyenv-virtualenv">pyenv-virtualenv</a> has this super nifty function that couples the specified virtualenv with the current folder, so that it gets automatically activated whenever you <code>cd</code> into the directory (and deactivate once you move away from it). However, whenever the virtualenv gets automagically activated, the <code>$PYENV_VERSION</code> variable doesn't get set (and apparently that's <a href="https://github.com/pyenv/pyenv/issues/1760">by design</a>, and hence unlikely to change anytime soon).</p>
+<h2>How to solve(ish)</h2>
+<p>If you need to fix something on the fly, forcing Pyenv to set the environment variable by using <code>pyenv shell &lt;env_name&gt;</code> is a quick way to work around the issue. It's worth mentioning, however, that it's only temporary and that you will have type it again every time you start a new shell. So great for debugging, but not ideal as a long term solution.</p>
+<p>A more long term solution is to leverage Pyright configuration options. For doing so, you need to create a <code>pyrightconfig.json</code> file in the root of your project with the following content</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;venvPath&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;PYENV_ROOT&gt;/versions&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;venv&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;ENV_NAME&gt;&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>where <code>PYENV_ROOT</code> is the output of <code>echo $PYENV_ROOT</code> and <code>ENV_NAME</code> is the name of your virtualenv.</p>
+<p>Keep in mind though that <code>pyrightconfig.json</code> <u>does not support shell variables</u>, so stuff like <code>~/.pyenv/versions</code> won't work.</p>
+<p>While this is a way better method, it still requires a lot of typing. Wouldn't be great if it was possible to automate this somehow? Enter <a href="https://github.com/alefpereira/pyenv-pyright">pyenv-pyright</a>, a Pyenv plugin that takes care of handling <code>pyrightconfig.json</code> on your behalf. So now all you have to do is to type <code>pyenv pyright</code> once and you're ready to go!</p>
+<p>Happy coding!</p>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://github.com/alefpereira/pyenv-pyright">pyenv-pyright</a></li>
+<li><a href="https://github.com/microsoft/pyright/blob/main/docs/configuration.md">Pyright configuration options</a></li>
+</ul>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>
