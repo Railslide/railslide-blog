@@ -15,8 +15,7 @@ def prepare_content(filename):
 
     return (
         content.replace("{TITLE}", title)
-        .replace("{SLUG}", slug)
-        .replace("1970-01-01", date_string)
+        .replace("{DATE}", date_string)
     )
 
 

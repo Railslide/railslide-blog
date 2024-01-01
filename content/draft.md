@@ -1,7 +1,6 @@
 Title: {TITLE}
-Date: 1970-01-01
+Date: {DATE}
 Tags:
-Slug: {SLUG}
 Summary:
 Status: draft
 
