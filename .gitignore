@@ -134,3 +134,6 @@ dmypy.json
 
 # pyright
 pyrightconfig.json
+
+# ruff Python linter
+.ruff_cache/
