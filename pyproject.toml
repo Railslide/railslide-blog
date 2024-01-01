@@ -2,7 +2,7 @@
 name = "railslide-blog"
 version = "0.1.0"
 description = "My personal blog"
-authors = ["Giulia Vergottini"]
+authors = [{name = "Giulia Vergottini"}]
 
 dependencies = [
   "pelican[markdown]",
@@ -13,3 +13,12 @@ dependencies = [
 dev = [
   "pip-tools"
 ]
+
+# The stuff below are needed so that pip-tools and setuptools works nicely together
+# See https://github.com/jazzband/pip-tools/issues/1711#issuecomment-1666650423
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = []
