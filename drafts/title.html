@@ -7,7 +7,7 @@
 
         <link rel="alternate"  href="https://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
 
-        <title>About // Railslide // Code, experiments, and thoughts</title>
+        <title>{TITLE} // Railslide // Code, experiments, and thoughts</title>
 
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
@@ -16,6 +16,12 @@
     <link rel="stylesheet" href="https://railslide.io/theme/css/pygments.css">
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
 </head>
 
 <body>
@@ -42,16 +48,19 @@
                 </div>
             </div>
         </div>
-    <div class="pure-u-1">
+    <div class="pure-u">
         <div class="content">
-            <h1 class="content-subhead">About</h1>
-            <p><p>I'm a software developer with a MA in History and a passion for security.</p>
-<hr class="invisible-spacer">
-
-<h5>Contacts</h5>
-<p>You can drop me an email at <em>hello</em> at this domain.</p></p>
-
-
+            <section class="post">
+                <header class="post-header">
+                    <h1>{TITLE}</h1>
+                        <p class="post-meta">
+                        category: <a href="https://railslide.io/category/misc.html">misc</a>, date: 1970-01-01
+                        </p>
+                        <p class="post-meta">
+                            tags =                 </header>
+            </section>
+            <p><em>Content goes here</em></p>
+            <a href="#" class="go-top">Go Top</a>
 <footer class="footer">
     <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
         Built with <a href="http://blog.getpelican.com/">Pelican</a>
