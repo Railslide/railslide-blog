@@ -1,5 +1,10 @@
-.idea/
 *.pid
 *.pyc
 output/
 cache/
+
+# pyenv
+.python-version
+
+# pyright
+pyrightconfig.json
