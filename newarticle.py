@@ -15,7 +15,7 @@ def prepare_content(filename):
 
     return (
         content.replace("{TITLE}", title)
-        .replace("{SLUG}", slug)
+        # Pelican throws errors if it's not a valid date, hence the dummy one.
         .replace("1970-01-01", date_string)
     )
 

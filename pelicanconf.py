@@ -1,46 +1,34 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*- #
-from __future__ import unicode_literals
+AUTHOR = 'Giulia'
 
-AUTHOR = "Giulia"
-SITENAME = "Railslide"
+SITENAME = 'Railslide'
 TAGLINE = "Code, experiments, and thoughts"
 SITEURL = ""
 
-TIMEZONE = "Europe/Paris"
+PATH = "content"
 
-DEFAULT_LANG = "en"
+TIMEZONE = 'Europe/Stockholm'
 
-# Avoid creating authors page, since this is a one woman show
-AUTHOR_SAVE_AS = ""
-AUTHORS_SAVE_AS = ""
+DEFAULT_LANG = 'en'
 
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
 CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
-
-# Social widget
-SOCIAL = (
-    ("github", "https://github.com/Railslide/"),
-    ("rss", "feeds/all.atom.xml"),
-)
+AUTHOR_FEED_ATOM = None
+AUTHOR_FEED_RSS = None
 
 DEFAULT_PAGINATION = 10
 
 # Uncomment following line if you want document-relative URLs when developing
 # RELATIVE_URLS = True
 
-DEFAULT_DATE_FORMAT = "%d-%m-%Y"
+# Avoid creating authors page, since this is a one woman show
+AUTHOR_SAVE_AS = ""
+AUTHORS_SAVE_AS = ""
 
-# Static paths
-STATIC_PATHS = ["CNAME", "images"]
+DEFAULT_DATE_FORMAT = "%Y-%m-%d"
 
-# Theme
-THEME = "themes/puremorning"
-
-
-# Pages
+# Pages url
 PAGE_URL = PAGE_SAVE_AS = "{slug}.html"
 
 # Sidebar menu
@@ -48,3 +36,14 @@ MENUITEMS = [
     ("About", "/about.html"),
     ("Categories", "/categories.html"),
 ]
+
+# Social widgets
+SOCIAL = (
+    ("github", "https://github.com/Railslide/"),
+    ("rss", "feeds/all.atom.xml"),
+)
+
+# Prevent CNAME from showing up in the site
+STATIC_PATHS = ["CNAME", "images"]
+
+THEME = 'themes/puremorning'
