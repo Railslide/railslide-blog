@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="https://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>Exploring xmonad: Getting started // Railslide // Code, experiments, and thoughts</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/puremorning.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="links"><a href="/about.html">About</a></p>
+                                <p class="links"><a href="/categories.html">Categories</a></p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Exploring xmonad: Getting started</h1>
+                        <p class="post-meta">
+                        category: <a href="https://railslide.io/category/tiling-window-managers.html">tiling-window-managers</a>, date: 2024-02-05
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="https://railslide.io/tag/xmonad.html">xmonad</a>
+                </header>
+            </section>
+            <p>This is the first article of a series about my experience with setting up xmonad. The idea is to keep track of my journey and to write some handy guides for either someone who might be curious about xmonad as well and/or my future self.</p>
+<h2>Installing all the things</h2>
+<p>What a better place for starting than installing xmonad?</p>
+<p>Ideally you want to install the following</p>
+<ul>
+<li><code>xmonad</code> (duh!)</li>
+<li><code>xmonad-contrib</code>, xmonad extensions (you can't do much without it!)</li>
+<li><code>dmenu</code>, launcher/menu for applications</li>
+<li><code>xterm</code>, xmonad default terminal emulator. You can switch to your favourite emulator later, but it's good to have xterm available as a fallback.</li>
+</ul>
+<p>For Arch, I installed all the above via Yay/Pacman and then added a <a href="https://wiki.archlinux.org/title/Xmonad#Problems_with_finding_shared_libraries_after_update">Pacman hook</a> to avoid future headaches when updating.</p>
+<h2>Basic configuration</h2>
+<p>Next I created a basic config file. You don't necessarily need one, but I wanted to customize a couple of things already from the start.</p>
+<div class="highlight"><pre><span></span><code><span class="kr">import</span><span class="w"> </span><span class="nn">XMonad</span>
+
+<span class="nf">myModMask</span><span class="w">  </span><span class="ow">=</span><span class="w"> </span><span class="n">mod4Mask</span><span class="w"> </span><span class="c1">-- Use Super as the mod key</span>
+<span class="nf">myTerminal</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;alacritty&quot;</span>
+
+<span class="c1">-- Actions to perform whenever xmonad starts or is restarted</span>
+<span class="nf">myStartupHook</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span>
+<span class="w">  </span><span class="n">spawn</span><span class="w"> </span><span class="s">&quot;setxkbmap -layout us&quot;</span>
+
+<span class="nf">myConfig</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">def</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="n">terminal</span><span class="w">    </span><span class="ow">=</span><span class="w"> </span><span class="n">myTerminal</span><span class="p">,</span>
+<span class="w">    </span><span class="n">modMask</span><span class="w">     </span><span class="ow">=</span><span class="w"> </span><span class="n">myModMask</span><span class="p">,</span>
+<span class="w">    </span><span class="n">startupHook</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">myStartupHook</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="c1">-- Run xmonad with the settings specified above</span>
+<span class="nf">main</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="nb">()</span>
+<span class="nf">main</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">xmonad</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="n">myConfig</span>
+</code></pre></div>
+
+<p>and saved it into <code>~/.xmonad/xmonad.hs</code>.</p>
+<p>Note that the above configuration will not work with xmonad&lt;0.17.</p>
+<p>It's also worth nothing that the location of the config might vary. According to xmonad doc it should go into <code>~/.config/xmonad/xmonad.hs</code>, which however didn't work for me (thankfully I had xterm installed, otherwise I wouldn't have been able to do anything once I logged into xmonad!). Arch wiki tells you instead to place it into <code>~/.xmonad/xmonad.hs</code>, which in my case resulted in the config being picked up correctly.</p>
+<h2>Getting around in xmonad</h2>
+<p>Next is to log into xmonad and test if the config is loaded correctly.</p>
+<p>If <code>Super+Shift+Enter</code> launches Alacritty, you're good to go. If not, try moving the config to a different location (see above).</p>
+<p>Here are a list of useful keybindings to start with</p>
+<table>
+<thead>
+<tr>
+<th>Keybinding</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><kbd>mod</kbd> <kbd>shift</kbd> <kbd>return</kbd></td>
+<td>Launch terminal</td>
+</tr>
+<tr>
+<td><kbd>mod</kbd> <kbd>p</kbd></td>
+<td>Launch dmenu</td>
+</tr>
+<tr>
+<td><kbd>mod</kbd> <kbd>shift</kbd> <kbd>c</kbd></td>
+<td>Close the focused window</td>
+</tr>
+<tr>
+<td><kbd>mod</kbd> <kbd>shift</kbd> <kbd>q</kbd></td>
+<td>Quit xmonad</td>
+</tr>
+<tr>
+<td><kbd>mod</kbd> <kbd>q</kbd></td>
+<td>Restart xmonad</td>
+</tr>
+</tbody>
+</table>
+<h2>References</h2>
+<ul>
+<li><a href="https://xmonad.org/documentation.html">Xmonad docs</a></li>
+<li><a href="https://wiki.archlinux.org/title/xmonad">Xmonad - Arch linux wiki</a></li>
+</ul>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>
