@@ -2,7 +2,6 @@ Title: Xmonad keybindings and media keys
 Date: 2024-02-18
 Tags: xmonad
 Summary: How to set up keybindings and make media keys work in Xmonad
-Status: draft
 
 One of the first things I wanted to get to work once I installed Xmonad were the media keys. I use music as a way to concentrate when coding and having to go through the hassle of finding the player window, reaching for my mouse, and clicking on the control buttons is a waste of time and focus. So controlling playback from my keyboard is a must.
 
