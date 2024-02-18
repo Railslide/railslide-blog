@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="https://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>Xmonad keybindings and media keys // Railslide // Code, experiments, and thoughts</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/puremorning.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="links"><a href="/about.html">About</a></p>
+                                <p class="links"><a href="/categories.html">Categories</a></p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Xmonad keybindings and media keys</h1>
+                        <p class="post-meta">
+                        category: <a href="https://railslide.io/category/tiling-window-managers.html">tiling-window-managers</a>, date: 2024-02-18
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="https://railslide.io/tag/xmonad.html">xmonad</a>
+                </header>
+            </section>
+            <p>One of the first things I wanted to get to work once I installed Xmonad were the media keys. I use music as a way to concentrate when coding and having to go through the hassle of finding the player window, reaching for my mouse, and clicking on the control buttons is a waste of time and focus. So controlling playback from my keyboard is a must.</p>
+<p>However Xmonad doesn't support media keys out of the box, so in order to have them working I had to define some keybindings.</p>
+<h2>How keybindings work</h2>
+<p>First I had to import the <code>XMonad.Util.EZConfig</code> module at the top of my config.</p>
+<div class="highlight"><pre><span></span><code><span class="kr">import</span><span class="w"> </span><span class="nn">XMonad.Util.EZConfig</span>
+</code></pre></div>
+
+<p>The <code>XMonad.Util.EZConfig</code> includes <code>additionalKeys</code> which can be used to define keybindings. The syntax is the following</p>
+<div class="highlight"><pre><span></span><code><span class="nf">myKeyBindings</span><span class="w"> </span><span class="ow">=</span>
+<span class="w">  </span><span class="p">[</span><span class="w"> </span><span class="p">((</span><span class="n">mod1Mask</span><span class="p">,</span><span class="w"> </span><span class="n">xK_f</span><span class="p">),</span><span class="w"> </span><span class="n">spawn</span><span class="w"> </span><span class="s">&quot;firefox&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">-- mod+f launches Firefox</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="p">((</span><span class="n">noModMask</span><span class="p">,</span><span class="w"> </span><span class="n">xK_Print</span><span class="p">),</span><span class="w"> </span><span class="n">spawn</span><span class="w"> </span><span class="s">&quot;scrot -s&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">-- PrtScr takes a screenshot</span>
+<span class="w">  </span><span class="p">]</span>
+
+<span class="nf">myConfig</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">def</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="n">terminal</span><span class="w">    </span><span class="ow">=</span><span class="w"> </span><span class="n">myTerminal</span><span class="p">,</span>
+<span class="w">    </span><span class="n">modMask</span><span class="w">     </span><span class="ow">=</span><span class="w"> </span><span class="n">myModMask</span><span class="p">,</span>
+<span class="w">    </span><span class="n">startupHook</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">myStartupHook</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="p">`</span><span class="n">additionalKeys</span><span class="p">`</span><span class="w"> </span><span class="n">myKeyBindings</span>
+</code></pre></div>
+
+<p>where <code>noModMask</code> is used for when you don't need a modifier, like in the example above where <kdb>PrtScr</kbd> is all you need to press in order to take a screenshot.</p>
+<p>While that certainly works, it's not exactly the most straightforward syntax. Thankfully the very same module also includes <code>additionalKeysP</code>, which helps solving exactly that. According to the docs, it uses <em>"Emacs-style keybinding specifications"</em>, which I would have rather called human-friendly specifications but I guess that wasn't equally catchy.</p>
+<p>So with the new syntax, the config becomes</p>
+<div class="highlight"><pre><span></span><code><span class="n">myKeyBindings</span><span class="w"> </span><span class="o">=</span>
+<span class="w">  </span><span class="err">[</span><span class="w"> </span><span class="p">(</span><span class="s2">&quot;M-f&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">spawn</span><span class="w"> </span><span class="s2">&quot;firefox&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="s2">&quot;&lt;Print&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">spawn</span><span class="w"> </span><span class="s2">&quot;scrot -s&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="err">]</span>
+
+<span class="n">myConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">def</span>
+<span class="w">  </span><span class="err">{</span>
+<span class="w">    </span><span class="n">terminal</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">myTerminal</span><span class="p">,</span>
+<span class="w">    </span><span class="n">modMask</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">myModMask</span><span class="p">,</span>
+<span class="w">    </span><span class="n">startupHook</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">myStartupHook</span>
+<span class="w">  </span><span class="err">}</span><span class="w"> </span><span class="n n-Quoted">`additionalKeysP`</span><span class="w"> </span><span class="n">myKeyBindings</span>
+</code></pre></div>
+
+<p>Much better! A full list of the supported special keys can be found in <a href="https://hackage.haskell.org/package/xmonad-contrib-0.18.0/docs/XMonad-Util-EZConfig.html#g:3">Xmonad docs</a>.</p>
+<h2>Setting media keys up</h2>
+<p>Next was to set up media keys. In order for them to work, besides a keybinding, I also needed something to control the currently active player. For that I installed <code>playerctl</code> which worked great both from my keyboard and from my headphones.</p>
+<div class="highlight"><pre><span></span><code><span class="nf">myKeyBindings</span><span class="w"> </span><span class="ow">=</span>
+<span class="w">  </span><span class="p">[</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;M-f&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">spawn</span><span class="w"> </span><span class="s">&quot;firefox&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;&lt;Print&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">spawn</span><span class="w"> </span><span class="s">&quot;scrot -s&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="c1">-- Media keys</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;&lt;XF86AudioPlay&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">spawn</span><span class="w"> </span><span class="s">&quot;playerctl play-pause&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;&lt;XF86AudioNext&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">spawn</span><span class="w"> </span><span class="s">&quot;playerctl next&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;&lt;XF86AudioPrev&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">spawn</span><span class="w"> </span><span class="s">&quot;playerctl previous&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">]</span>
+</code></pre></div>
+
+<p>Note that if you are using <code>additionalKeys</code>, you will have to import <code>Graphics.X11.ExtraTypes.XF86</code> in order to use <code>xF86XK_AudioPlay</code> and co.</p>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://xmonad.org/TUTORIAL.html">Xmonad configuration tutorial</a></li>
+<li><a href="https://hackage.haskell.org/package/xmonad-contrib-0.18.0/docs/XMonad-Util-EZConfig.html">XMonad.Util.EZConfig docs</a></li>
+</ul>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>
