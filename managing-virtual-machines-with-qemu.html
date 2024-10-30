@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="https://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>Managing virtual machines with Qemu // Railslide // Code, experiments, and thoughts</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/puremorning.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="links"><a href="/about.html">About</a></p>
+                                <p class="links"><a href="/categories.html">Categories</a></p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Managing virtual machines with Qemu</h1>
+                        <p class="post-meta">
+                        category: <a href="https://railslide.io/category/dev.html">dev</a>, date: 2024-10-30
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="https://railslide.io/tag/virtual-machines.html">virtual-machines</a>
+                                <a class="post-category" href="https://railslide.io/tag/virtualization.html">virtualization</a>
+                                <a class="post-category" href="https://railslide.io/tag/qemu.html">qemu</a>
+                                <a class="post-category" href="https://railslide.io/tag/gnome-boxes.html">gnome-boxes</a>
+                                <a class="post-category" href="https://railslide.io/tag/virt-manager.html">virt-manager</a>
+                </header>
+            </section>
+            <p>A while ago I switched from Virtualbox to Qemu for virtual machines management. Here are my notes on how to set it up and all the gotchas I stumbled upon while doing it.</p>
+<h2>Step 0: check if you can run it</h2>
+<p>First thing first, it might be a good idea to verify that your system supports this kind of virtualization. A quick way to verify is to run</p>
+<div class="highlight"><pre><span></span><code>grep<span class="w"> </span>-Ec<span class="w"> </span><span class="s1">&#39;(vmx|svm)&#39;</span><span class="w"> </span>/proc/cpuinfo
+</code></pre></div>
+
+<p>and check if the output is greater than zero.</p>
+<h2>Gnome-boxes, aka my go-to solution</h2>
+<p>When I first started playing around with Qemu I went for the manual installation (more on that below). Then I discovered gnome-boxes and never looked back. Gnome-boxes basically has everything I need for 99% of my user cases: it is simple stupid to create and manage VMs through it, it automatically resizes the guest screen to fit the host window, transferring files to the VM is super straightforward and it doesn't require you to actually drag-and-drop things.</p>
+<p>Gnome-boxes also allows to download ISO files directly through it. Besides being a nice time-saver (i.e. no more need of switch to browser, download the ISO, import the ISO, etc.), it will also automagically set up copy-paste and file transfer for you!</p>
+<p>Ok, so gnome-boxes sounds great - are there any cons to it? Well, while not dealbreakers, there are definitely a couple of gotchas. First of all, the ISO download function doesn't support all the distros (e.g. Kali cannot be downloaded through it). So if you need one of those, just be aware that - besides getting the ISO file yourself - you'll also have to take care of enabling copy-paste and file transfer on the VM (see below for how to do it).</p>
+<p>Also, while simplicity is definitely one of the strenghts of gnome-boxes, there are cases where you might need more granular control over the settings of your VM. A good example for it is if you are trying to use a distro using Sway as desktop enviroment: default graphical settings don't work in Sway and gnome-boxes doesn't offer a workaround for it. So if you want to run a Sway-based machine, you'll have to install virt-manager and adjust the settings from there (again, see below for how to do it).</p>
+<h2>Manually enable copy-paste &amp; file transfer</h2>
+<p>If the distro you wanted was not in gnome-boxes OS list, you'll need to manually enable up copy-paste and file transfers. To do so, install <code>spice-vdagent</code> on the guest system. Reboot the VM after installing it and you are good to go.</p>
+<h2>Installing Qemu manually</h2>
+<p>If gnome-boxes is not your thing, you can install Qemu manually. The dark side of it is that the package has different names in different distros (e.g. on Arch it's called <code>qemu-full</code>, on Ubuntu Jammy is <code>qemu-kvm</code>, while in newer Ubuntu version is called <code>qemu-system</code>. So arm yourself of Google, find what's the package is called in your distro and install it with your favorite package manager.</p>
+<p>After that, you'll likely want to install <code>virt-manager</code> as Qemu doesn't come with a GUI by default.</p>
+<h2>Installing virt-manager</h2>
+<p>First, install the <code>virt-manager</code> package (which thankfully maintains the same name across distros!) using your distro's package manager.</p>
+<p>In order for <code>virt-manager</code> to work, your user needs to have access to the <code>libvirtd</code> daemon and the easiest way to achieve that is to add yourself to the <code>libvirt</code> user group</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>usermod<span class="w"> </span>-aG<span class="w"> </span>libvirt<span class="w"> </span><span class="nv">$USER</span>
+</code></pre></div>
+
+<p>Next start and enable the <code>libvirt</code> daemon</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>libvirtd
+$<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>libvirtd
+</code></pre></div>
+
+<p>Launch <code>virt-manager</code> and if it succesfully connects to Qemu/KVM (you might need to double click on it), you are good to go!</p>
+<h2>VM Gotchas and troubleshooting</h2>
+<p>Creating VMs is pretty straightforward as both gnome-boxes and virt-manager interfaces are extremely intuitive. Tweaking the machines might be a bit more fiddly though, so here's a list of tips and tricks that might come in handy.</p>
+<h3>Sway</h3>
+<p>Sway on Qemu comes with its own specific weird behaviors/bugs.</p>
+<p>In order to prevent the screen from constantly flickering, you will have to manage the VM through virt-manager and change its video settings before installing it. To do so, select the checkbox for customizing configuration (if you forget, you can still reach those settings from Edit -&gt; Preferences on the guest menu), then select <code>Video Virtio</code> and change the model from <code>Virtio</code> to <code>VGA</code> to avoid any graphical glitch.</p>
+<p>Copy-paste and drag-and-drop don't work in Sway. For copy-paste, you can use <a href="https://www.reddit.com/r/swaywm/comments/pg0rqi/clipboard_sharing_using_spicevdagent_not_working/"><code>xsel</code> as a workaround</a>, while for drag-and-drop I have yet to find one.</p>
+<h3>Scaling and resolution on virt-manager</h3>
+<p>After launching the VM, in the guest menu select View -&gt; Scale display -&gt; Always. Select the "Autoresize VM with window" checkbox as well.</p>
+<p>Or even better, you set scaling on all the machines by default by going to Edit -&gt; Preferences -&gt; Console in the host menu.</p>
+<p>Just note that after that you might still need to play around resolution from inside the VM os.</p>
+<h2>References</h2>
+<ul>
+<li><a href="https://apps.gnome.org/Boxes/">Gnome-boxes</a></li>
+<li><a href="https://www.qemu.org/">Qemu</a></li>
+<li><a href="https://virt-manager.org/">Virt-manager</a></li>
+</ul>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>
