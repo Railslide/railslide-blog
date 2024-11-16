@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="https://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>Uv gotchas // Railslide // Code, experiments, and thoughts</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/puremorning.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="links"><a href="/about.html">About</a></p>
+                                <p class="links"><a href="/categories.html">Categories</a></p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Uv gotchas</h1>
+                        <p class="post-meta">
+                        category: <a href="https://railslide.io/category/dev.html">dev</a>, date: 2024-11-16
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="https://railslide.io/tag/python.html">python</a>
+                                <a class="post-category" href="https://railslide.io/tag/virtualenv.html">virtualenv</a>
+                                <a class="post-category" href="https://railslide.io/tag/virtual-environments.html">virtual-environments</a>
+                                <a class="post-category" href="https://railslide.io/tag/uv.html">uv</a>
+                </header>
+            </section>
+            <p>Since <a href="https://docs.astral.sh/uv/">uv</a> seems to be the new cool kid on the python packaging and project management scene, I decided to trying it out. I mostly explored the virtual environment part, as I was trying to see if I could replace pyenv with it. Here are things that caught me off guard while doing so.</p>
+<h2>Running <code>uv venv</code> again will wipe your environment</h2>
+<p>Since the list of things I want to do it's constantly growing and time is limited, it's not uncommon for me to go back to an existing project after some months of break. Consequently, I often don't remember whether I had created a virtual environment for the project already. Now, with pyenv I'd rely on the virtualenv name been prepended to my terminal prompt (at least until that feature gets removed). That won't work with uv though, unless I manually activate the environment first. So my automatic reaction was to run <code>uv venv</code>, expecting it to throw an error if the virtualenv already exists. However, what has happened instead was that my existing virtualenv was completely wiped and created anew.</p>
+<p>There is an <a href="https://github.com/astral-sh/uv/issues/1472">ongoing discussion about this issue</a>, so this will hopefully change in the future.</p>
+<h2>If you run <code>pip</code> instead of <code>uv pip</code> you might get confused</h2>
+<p>If you want to install a package in your uv-based virtualenv you'll likely do</p>
+<div class="highlight"><pre><span></span><code><span class="nx">uv</span><span class="w"> </span><span class="nx">pip</span><span class="w"> </span><span class="nx">install</span><span class="w"> </span><span class="nx">some_package</span>
+</code></pre></div>
+
+<p>and if you want to list the packages installed you would do:</p>
+<div class="highlight"><pre><span></span><code>uv pip freeze
+</code></pre></div>
+
+<p>Now, if you by mistake forget to type <code>uv</code> at the start due to years of muscle memory, you might be accidentally installing a package in the wrong place or getting a very confusing freezing output as you might accidentally get the one system one instead.</p>
+<p>A good workaround I found is to configure pip to require a virtualenv. That way, if I accidentally forget to type <code>uv</code>, I'll get a clear error telling me that pip cannot find a virtual environment.</p>
+<p>To do so, I simply added a config file <code>~/.config/pip/pip.conf</code> with the following content</p>
+<div class="highlight"><pre><span></span><code><span class="k">[global]</span>
+<span class="na">require-virtualenv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
+</code></pre></div>
+
+<h2>Out-of-env <code>uv pip</code> commands won't work with non-default named envs</h2>
+<p>When creating an environment you have the possibility to specify a name/path, i.e. if you run</p>
+<div class="highlight"><pre><span></span><code>uv venv foobar
+</code></pre></div>
+
+<p>the virtualenv will be created in a folder called <code>foobar</code> instead of <code>.venv</code>.</p>
+<p>However, doing so will also prevent all the <code>uv pip</code> commands from working as expected if you don't activate the environment first.</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>some_package
+error:<span class="w"> </span>No<span class="w"> </span>virtual<span class="w"> </span>environment<span class="w"> </span>found<span class="p">;</span><span class="w"> </span>run<span class="w"> </span><span class="sb">`</span>uv<span class="w"> </span>venv<span class="sb">`</span><span class="w"> </span>to<span class="w"> </span>create<span class="w"> </span>an<span class="w"> </span>environment,<span class="w"> </span>or<span class="w"> </span>pass<span class="w"> </span><span class="sb">`</span>--system<span class="sb">`</span><span class="w"> </span>to<span class="w"> </span>install<span class="w"> </span>into<span class="w"> </span>a<span class="w"> </span>non-virtual<span class="w"> </span>environment
+
+$<span class="w"> </span><span class="nb">source</span><span class="w"> </span>foobar/bin/activate
+<span class="o">(</span>foobar<span class="o">)</span><span class="w"> </span>$<span class="w"> </span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>some_package
+<span class="c1"># package gets installed...</span>
+</code></pre></div>
+
+<p>And while this is a bit annoying, it is still manageable. Though things get confusing when using <code>uv pip freeze</code>. Depending you setup, <code>uv pip freeze</code> might print the output of your system packages, i.e. it will basically do the same as you would do <code>uv pip freeze --system</code>.</p>
+<p>This has also been reported to Astral and there are currently a bunch of ongoing discussions on how to best address it. This <a href="https://github.com/astral-sh/uv/issues/1625">github issue</a> contains a good overview of the current status.</p>
+<h2>Conclusion</h2>
+<p>While in general I really like the idea behind uv and I still hope for a tool to become THE ONE (instead of the <a href="https://chriswarrick.com/blog/2023/01/15/how-to-improve-python-packaging/">10+ that we currently have</a>), I think this is a good reminder that we are talking about a tool that has yet to reach 1.0 - and hopefully this article will save someone from stumbling upon the very same quirks I encountered. That being said, I still plan to play around more with uv and I am especially curious about its project management functions, so who knows - this article might have follow up :)</p>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>
