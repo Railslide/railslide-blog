@@ -1,8 +1,7 @@
 Title: Advent of Code: reflections of a first timer
-Date: 2025-01-21
+Date: 2025-01-22
 Tags: programming, advent-of-code, musing
 Summary: Some reflections from playing AoC for the first time.
-Status: draft
 
 A while ago a colleague expressed surprise in hearing that I had never played Advent of Code before and she warmly recommended that I gave it a try. So when December came, I asked myself "why not?" and registered myself for the challenge.
 
@@ -21,6 +20,12 @@ This might be an obvious one, but it is nonetheless worth mentioning. The more I
 Basically what I am trying to say is: if it's your first time playing and you feel slow during the initial task, just so that you will get faster in the coming days and years.
 
 ## Technical tests resemblance
-<!-- FINISH!! -->
-If you have been interviewing for software engineer position, you are bound to have stumbled on some kind of automatically-evaluated programming test of sort. I am personally not a huge fan of those (neither as an interviewer nor as a candidate), but if your are interviewing around they are hard to avoid. The interesting part
 
+If you have been interviewing for software engineer position, you are bound to have stumbled on some kind of automatically-evaluated programming test of sort. I am personally not a huge fan of those (neither as an interviewer nor as a candidate), but if your are interviewing around they are hard to avoid. What struck me is how much those tests resemble parts of what I had to implement for Advent of Code. Don't get me wrong, you can totally pass those tests without any AoC experience. Though if I had played AoC before, I'd have probably been a lot quicker in solving them. And that means less of my time spent on them, which to me is a huge win - especially when you are in more than one interview process!
+
+
+## Resources
+
+- [Advent of Code](https://adventofcode.com/) - the competition runs in December, but all the previous problems can be played all year around
+- [@xavdid does Advent of Code](https://advent-of-code.xavd.id/) - great writeups with step by step explanation of the solutions (written in Python)
+- [AoC subreddit](https://www.reddit.com/r/adventofcode/) - solutions, hints, questions, and whatnot
