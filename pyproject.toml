@@ -1,6 +1,6 @@
 [project]
 name = "railslide-blog"
-version = "0.1.0"
+version = "1.0.0"
 description = "My personal blog"
 authors = [{name = "Giulia Vergottini"}]
 
@@ -11,10 +11,9 @@ dependencies = [
   "ghp-import",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
-  "pip-tools",
-  "ruff",
+    "ruff",
 ]
 
 [tool.ruff]
@@ -25,11 +24,3 @@ extend-exclude = ["pelicanconf.py", "publishconf.py"]
 # 1. Enable isort (`I`) rules, in addition to the defaults.
 select = ["E4", "E7", "E9", "F", "I"]
 
-# The stuff below are needed so that pip-tools and setuptools works nicely together
-# See https://github.com/jazzband/pip-tools/issues/1711#issuecomment-1666650423
-[build-system]
-requires = ["setuptools", "setuptools-scm"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools]
-py-modules = []
