@@ -1,11 +1,10 @@
 Title: Setting up Sway: the basics
 Date: 2025-08-08
-Tags: sway, wayland, desktop-enviroments
+Tags: sway, wayland, desktop-enviroments, setting-up-sway
 Summary: The first of a series of article about setting up Sway. How to install Sway, creating a config file, and setting the lock screen up.
-Status: draft
 
 
-A while ago I decided to give window managers a try. After a bit of experimentation I landed on Sway and never go back. So after roughly 1.5 years of using as my daily driver, I decided that it was finally time to dedicate a series of article to how to set it up.
+A while ago I decided to give window managers a try. After a bit of experimentation I landed on Sway and never went back. So after roughly 1.5 years of using it as my daily driver, I decided that it was finally time to dedicate a series of article to how to set it up.
 
 ## Why Sway
 
@@ -64,9 +63,7 @@ Then uncomment the dedicated section in the config file and adjust it to your li
 # resumed. It will also lock your screen before your computer goes to sleep.
 ```
 
-Great, now your screen will lock itself and power off after the specified time of inactivity. Though you probably also want to be able to lock it also when stepping away from keyboard. So let's add a key binding for it.
-
-Add to your config
+Great, now your screen will lock itself and power off after the specified time of inactivity. Though you probably also want to be able to lock it also when stepping away from keyboard. So let's add a key binding to the config for it:
 
 ```
 bindsym $mod+Escape exec killall -SIGUSR1 swayidle
@@ -84,7 +81,7 @@ In other words, if no signal is specified, then `killall` will terminate the pro
 
 So basically what that line does is to bind a key combination to sending a signal to `swaydle`, so that it immediately enters idle state (aka locking the screen).
 
-Note though, that the command as is will only skip the first timeout (i.e. the one for the screen locking). If you want your command to lock AND power off the screen, you'll have to send the signal a second time (basically one signal for every timeout you want to skip), i.e.
+Note though that the command as is will only skip the first timeout (i.e. the one for the screen locking). If you want your command to lock AND power off the screen, you'll have to send the signal a second time (basically one signal for every timeout you want to skip), i.e.
 
 ```
 bindsym $mod+escape exec killall -s SIGUSR1 swayidle && killall -s SIGUSR1 swayidle
