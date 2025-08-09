@@ -1,5 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide - tiling-window-managers</title><link href="https://railslide.io/" rel="alternate"></link><link href="https://railslide.io/feeds/tiling-window-managers.atom.xml" rel="self"></link><id>https://railslide.io/</id><updated>2024-02-18T00:00:00+01:00</updated><entry><title>Xmonad keybindings and media keys</title><link href="https://railslide.io/xmonad-keybindings-and-media-keys.html" rel="alternate"></link><published>2024-02-18T00:00:00+01:00</published><updated>2024-02-18T00:00:00+01:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2024-02-18:/xmonad-keybindings-and-media-keys.html</id><summary type="html">&lt;p&gt;How to set up keybindings and make media keys work in Xmonad&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the first things I wanted to get to work once I installed Xmonad were the media keys. I use music as a way to concentrate when coding and having to go through the hassle of finding the player window, reaching for my mouse, and clicking on the control buttons is a waste of time and focus. So controlling playback from my keyboard is a must.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide - tiling-window-managers</title><link href="https://railslide.io/" rel="alternate"/><link href="https://railslide.io/feeds/tiling-window-managers.atom.xml" rel="self"/><id>https://railslide.io/</id><updated>2025-08-08T00:00:00+02:00</updated><entry><title>Setting up Sway: the basics</title><link href="https://railslide.io/setting-up-sway-the-basics.html" rel="alternate"/><published>2025-08-08T00:00:00+02:00</published><updated>2025-08-08T00:00:00+02:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2025-08-08:/setting-up-sway-the-basics.html</id><summary type="html">&lt;p&gt;The first of a series of article about setting up Sway. How to install Sway, creating a config file, and setting the lock screen up.&lt;/p&gt;</summary><content type="html">&lt;p&gt;A while ago I decided to give window managers a try. After a bit of experimentation I landed on Sway and never went back. So after roughly 1.5 years of using it as my daily driver, I decided that it was finally time to dedicate a series of article to how to set it up.&lt;/p&gt;
+&lt;h2&gt;Why Sway&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;It is super customizable while still being human-friendly&lt;/li&gt;
+&lt;li&gt;It has great docs, an easily understandable config, and a sane defaults set&lt;/li&gt;
+&lt;li&gt;It uses Wayland instead of Xorg, which is deprecated and no longer actively maintained&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So if you are after a minimal tiling window managers that can be completely adapted to you needs, without having to go through to a super steep learning curve (hello xmonad), you should definitely give Sway a try.&lt;/p&gt;
+&lt;h2&gt;Installing Sway&lt;/h2&gt;
+&lt;p&gt;The first step to get started with Sway, is unsurprisingly to install it.&lt;/p&gt;
+&lt;p&gt;So pull up your favorite package manager and install the following:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;sway&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;foot&lt;/code&gt; (default terminal emulator)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;wmenu&lt;/code&gt; (default application menu)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;swaybg&lt;/code&gt; (default wallpaper tool)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You can of course change the terminal emulator and application menu later on, but for now let's stick to the default and get Sway up and running.&lt;/p&gt;
+&lt;p&gt;After that, if you are using a display a display manager, it's a just a matter of logging out from your current desktop environment and logging in into Sway. If not, running &lt;code&gt;sway&lt;/code&gt; in your terminal will do the trick.&lt;/p&gt;
+&lt;p&gt;Here's a list of useful keybindings to start with. The full list can be found in the config file (see below).&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Keybinding&lt;/th&gt;
+&lt;th&gt;Action&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;kbd&gt;mod&lt;/kbd&gt; &lt;kbd&gt;enter&lt;/kbd&gt;&lt;/td&gt;
+&lt;td&gt;Launch terminal&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;kbd&gt;mod&lt;/kbd&gt; &lt;kbd&gt;d&lt;/kbd&gt;&lt;/td&gt;
+&lt;td&gt;Launch wmenu&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;kbd&gt;mod&lt;/kbd&gt; &lt;kbd&gt;shift&lt;/kbd&gt; &lt;kbd&gt;q&lt;/kbd&gt;&lt;/td&gt;
+&lt;td&gt;Close the focused window&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;kbd&gt;mod&lt;/kbd&gt; &lt;kbd&gt;shift&lt;/kbd&gt; &lt;kbd&gt;e&lt;/kbd&gt;&lt;/td&gt;
+&lt;td&gt;Quit Sway&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;kbd&gt;mod&lt;/kbd&gt; &lt;kbd&gt;shift&lt;/kbd&gt; &lt;kbd&gt;c&lt;/kbd&gt;&lt;/td&gt;
+&lt;td&gt;Reload config&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;Getting yourself a config file&lt;/h2&gt;
+&lt;p&gt;The first thing you need in order to configure and customize Sway is a config file. The easiest way to get one is to copy the example configuration file located at &lt;code&gt;/etc/sway/config&lt;/code&gt; to &lt;code&gt;~/.config/sway/config&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The file in itself is fairly easy to read and includes plenty of examples. For any other question not covered in the comments or in these articles, &lt;code&gt;man 5 sway&lt;/code&gt; is your friend.&lt;/p&gt;
+&lt;h2&gt;Idle and lock screen&lt;/h2&gt;
+&lt;p&gt;In order to configure idle and lock screen, you first need to install the packages taking care of them, i.e. &lt;code&gt;swaylock&lt;/code&gt; and &lt;code&gt;swayidle&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Then uncomment the dedicated section in the config file and adjust it to your liking&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="gh"&gt;#&lt;/span&gt; exec swayidle -w \
+&lt;span class="gh"&gt;#&lt;/span&gt;          timeout 300 &amp;#39;swaylock -f -c 000000&amp;#39; \
+&lt;span class="gh"&gt;#&lt;/span&gt;          timeout 600 &amp;#39;swaymsg &amp;quot;output * power off&amp;quot;&amp;#39; resume &amp;#39;swaymsg &amp;quot;output * power on&amp;quot;&amp;#39; \
+&lt;span class="gh"&gt;#&lt;/span&gt;          before-sleep &amp;#39;swaylock -f -c 000000&amp;#39;
+&lt;span class="gh"&gt;#&lt;/span&gt;
+# This will lock your screen after 300 seconds of inactivity, then turn off
+&lt;span class="gh"&gt;#&lt;/span&gt; your displays after another 300 seconds, and turn your screens back on when
+&lt;span class="gh"&gt;#&lt;/span&gt; resumed. It will also lock your screen before your computer goes to sleep.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Great, now your screen will lock itself and power off after the specified time of inactivity. Though you probably also want to be able to lock it also when stepping away from keyboard. So let's add a key binding to the config for it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;bindsym&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;$&lt;span class="nv"&gt;mod&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="nv"&gt;Escape&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;exec&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;killall&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;SIGUSR1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;swayidle&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;That might look like a bit of black magic, so let's break it down. What that line basically does is to set a key binding for &lt;code&gt;$mod+Escape&lt;/code&gt; (mod by default is the logo key) to execute a command.&lt;/p&gt;
+&lt;p&gt;Ok, now for the &lt;code&gt;killall -SIGUSR1 swayidle&lt;/code&gt; part. The man page for &lt;code&gt;killall&lt;/code&gt; tells us that&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;killall&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sends&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;signal&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;processes&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;running&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;any&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;of&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;the&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;specified&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;commands&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;If&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;no&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;signal&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;is&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;specified&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;SIGTERM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;is&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sent&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In other words, if no signal is specified, then &lt;code&gt;killall&lt;/code&gt; will terminate the process, otherwise it will just send the provided signal. Then in the man page of &lt;code&gt;swayidle&lt;/code&gt;, we can see that when receiving &lt;code&gt;SIGUSR1&lt;/code&gt; &lt;code&gt;swayidle&lt;/code&gt; will immediately enter idle state (i.e. it will skip it the timeout).&lt;/p&gt;
+&lt;p&gt;So basically what that line does is to bind a key combination to sending a signal to &lt;code&gt;swaydle&lt;/code&gt;, so that it immediately enters idle state (aka locking the screen).&lt;/p&gt;
+&lt;p&gt;Note though that the command as is will only skip the first timeout (i.e. the one for the screen locking). If you want your command to lock AND power off the screen, you'll have to send the signal a second time (basically one signal for every timeout you want to skip), i.e.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;bindsym&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;$&lt;span class="nv"&gt;mod&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="nv"&gt;escape&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;exec&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;killall&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;s&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;SIGUSR1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;swayidle&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;killall&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;s&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;SIGUSR1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;swayidle&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Great! Now you should have a working Sway and a working lock screen.&lt;/p&gt;
+&lt;h2&gt;References&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;man -k sway&lt;/code&gt;, for a list of all the available Sway man pages&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://wiki.archlinux.org/title/Sway"&gt;Sway - Arch linux wiki&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><category term="tiling-window-managers"/><category term="sway"/><category term="wayland"/><category term="desktop-enviroments"/><category term="setting-up-sway"/></entry><entry><title>Xmonad keybindings and media keys</title><link href="https://railslide.io/xmonad-keybindings-and-media-keys.html" rel="alternate"/><published>2024-02-18T00:00:00+01:00</published><updated>2024-02-18T00:00:00+01:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2024-02-18:/xmonad-keybindings-and-media-keys.html</id><summary type="html">&lt;p&gt;How to set up keybindings and make media keys work in Xmonad&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the first things I wanted to get to work once I installed Xmonad were the media keys. I use music as a way to concentrate when coding and having to go through the hassle of finding the player window, reaching for my mouse, and clicking on the control buttons is a waste of time and focus. So controlling playback from my keyboard is a must.&lt;/p&gt;
 &lt;p&gt;However Xmonad doesn't support media keys out of the box, so in order to have them working I had to define some keybindings.&lt;/p&gt;
 &lt;h2&gt;How keybindings work&lt;/h2&gt;
 &lt;p&gt;First I had to import the &lt;code&gt;XMonad.Util.EZConfig&lt;/code&gt; module at the top of my config.&lt;/p&gt;
@@ -54,7 +140,7 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://xmonad.org/TUTORIAL.html"&gt;Xmonad configuration tutorial&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://hackage.haskell.org/package/xmonad-contrib-0.18.0/docs/XMonad-Util-EZConfig.html"&gt;XMonad.Util.EZConfig docs&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><category term="tiling-window-managers"></category><category term="xmonad"></category></entry><entry><title>Exploring xmonad: Getting started</title><link href="https://railslide.io/exploring-xmonad-getting-started.html" rel="alternate"></link><published>2024-02-05T00:00:00+01:00</published><updated>2024-02-05T00:00:00+01:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2024-02-05:/exploring-xmonad-getting-started.html</id><summary type="html">&lt;p&gt;The first of a series of articles about exploring xmonad and trying to wrap my head around Haskell.&lt;/p&gt;</summary><content type="html">&lt;p&gt;This is the first article of a series about my experience with setting up xmonad. The idea is to keep track of my journey and to write some handy guides for either someone who might be curious about xmonad as well and/or my future self.&lt;/p&gt;
+&lt;/ul&gt;</content><category term="tiling-window-managers"/><category term="xmonad"/></entry><entry><title>Exploring xmonad: Getting started</title><link href="https://railslide.io/exploring-xmonad-getting-started.html" rel="alternate"/><published>2024-02-05T00:00:00+01:00</published><updated>2024-02-05T00:00:00+01:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2024-02-05:/exploring-xmonad-getting-started.html</id><summary type="html">&lt;p&gt;The first of a series of articles about exploring xmonad and trying to wrap my head around Haskell.&lt;/p&gt;</summary><content type="html">&lt;p&gt;This is the first article of a series about my experience with setting up xmonad. The idea is to keep track of my journey and to write some handy guides for either someone who might be curious about xmonad as well and/or my future self.&lt;/p&gt;
 &lt;h2&gt;Installing all the things&lt;/h2&gt;
 &lt;p&gt;What a better place for starting than installing xmonad?&lt;/p&gt;
 &lt;p&gt;Ideally you want to install the following&lt;/p&gt;
@@ -129,4 +215,4 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://xmonad.org/documentation.html"&gt;Xmonad docs&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://wiki.archlinux.org/title/xmonad"&gt;Xmonad - Arch linux wiki&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><category term="tiling-window-managers"></category><category term="xmonad"></category></entry></feed>
+&lt;/ul&gt;</content><category term="tiling-window-managers"/><category term="xmonad"/></entry></feed>

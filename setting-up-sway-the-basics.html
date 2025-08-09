@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="https://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>Setting up Sway: the basics // Railslide // Code, experiments, and thoughts</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/puremorning.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="links"><a href="/about.html">About</a></p>
+                                <p class="links"><a href="/categories.html">Categories</a></p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Setting up Sway: the basics</h1>
+                        <p class="post-meta">
+                        category: <a href="https://railslide.io/category/tiling-window-managers.html">tiling-window-managers</a>, date: 2025-08-08
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="https://railslide.io/tag/sway.html">sway</a>
+                                <a class="post-category" href="https://railslide.io/tag/wayland.html">wayland</a>
+                                <a class="post-category" href="https://railslide.io/tag/desktop-enviroments.html">desktop-enviroments</a>
+                                <a class="post-category" href="https://railslide.io/tag/setting-up-sway.html">setting-up-sway</a>
+                </header>
+            </section>
+            <p>A while ago I decided to give window managers a try. After a bit of experimentation I landed on Sway and never went back. So after roughly 1.5 years of using it as my daily driver, I decided that it was finally time to dedicate a series of article to how to set it up.</p>
+<h2>Why Sway</h2>
+<ul>
+<li>It is super customizable while still being human-friendly</li>
+<li>It has great docs, an easily understandable config, and a sane defaults set</li>
+<li>It uses Wayland instead of Xorg, which is deprecated and no longer actively maintained</li>
+</ul>
+<p>So if you are after a minimal tiling window managers that can be completely adapted to you needs, without having to go through to a super steep learning curve (hello xmonad), you should definitely give Sway a try.</p>
+<h2>Installing Sway</h2>
+<p>The first step to get started with Sway, is unsurprisingly to install it.</p>
+<p>So pull up your favorite package manager and install the following:</p>
+<ul>
+<li><code>sway</code></li>
+<li><code>foot</code> (default terminal emulator)</li>
+<li><code>wmenu</code> (default application menu)</li>
+<li><code>swaybg</code> (default wallpaper tool)</li>
+</ul>
+<p>You can of course change the terminal emulator and application menu later on, but for now let's stick to the default and get Sway up and running.</p>
+<p>After that, if you are using a display a display manager, it's a just a matter of logging out from your current desktop environment and logging in into Sway. If not, running <code>sway</code> in your terminal will do the trick.</p>
+<p>Here's a list of useful keybindings to start with. The full list can be found in the config file (see below).</p>
+<table>
+<thead>
+<tr>
+<th>Keybinding</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><kbd>mod</kbd> <kbd>enter</kbd></td>
+<td>Launch terminal</td>
+</tr>
+<tr>
+<td><kbd>mod</kbd> <kbd>d</kbd></td>
+<td>Launch wmenu</td>
+</tr>
+<tr>
+<td><kbd>mod</kbd> <kbd>shift</kbd> <kbd>q</kbd></td>
+<td>Close the focused window</td>
+</tr>
+<tr>
+<td><kbd>mod</kbd> <kbd>shift</kbd> <kbd>e</kbd></td>
+<td>Quit Sway</td>
+</tr>
+<tr>
+<td><kbd>mod</kbd> <kbd>shift</kbd> <kbd>c</kbd></td>
+<td>Reload config</td>
+</tr>
+</tbody>
+</table>
+<h2>Getting yourself a config file</h2>
+<p>The first thing you need in order to configure and customize Sway is a config file. The easiest way to get one is to copy the example configuration file located at <code>/etc/sway/config</code> to <code>~/.config/sway/config</code>.</p>
+<p>The file in itself is fairly easy to read and includes plenty of examples. For any other question not covered in the comments or in these articles, <code>man 5 sway</code> is your friend.</p>
+<h2>Idle and lock screen</h2>
+<p>In order to configure idle and lock screen, you first need to install the packages taking care of them, i.e. <code>swaylock</code> and <code>swayidle</code>.</p>
+<p>Then uncomment the dedicated section in the config file and adjust it to your liking</p>
+<div class="highlight"><pre><span></span><code><span class="gh">#</span> exec swayidle -w \
+<span class="gh">#</span>          timeout 300 &#39;swaylock -f -c 000000&#39; \
+<span class="gh">#</span>          timeout 600 &#39;swaymsg &quot;output * power off&quot;&#39; resume &#39;swaymsg &quot;output * power on&quot;&#39; \
+<span class="gh">#</span>          before-sleep &#39;swaylock -f -c 000000&#39;
+<span class="gh">#</span>
+# This will lock your screen after 300 seconds of inactivity, then turn off
+<span class="gh">#</span> your displays after another 300 seconds, and turn your screens back on when
+<span class="gh">#</span> resumed. It will also lock your screen before your computer goes to sleep.
+</code></pre></div>
+
+<p>Great, now your screen will lock itself and power off after the specified time of inactivity. Though you probably also want to be able to lock it also when stepping away from keyboard. So let's add a key binding to the config for it:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">bindsym</span><span class="w"> </span>$<span class="nv">mod</span><span class="o">+</span><span class="nv">Escape</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="nv">killall</span><span class="w"> </span><span class="o">-</span><span class="nv">SIGUSR1</span><span class="w"> </span><span class="nv">swayidle</span>
+</code></pre></div>
+
+<p>That might look like a bit of black magic, so let's break it down. What that line basically does is to set a key binding for <code>$mod+Escape</code> (mod by default is the logo key) to execute a command.</p>
+<p>Ok, now for the <code>killall -SIGUSR1 swayidle</code> part. The man page for <code>killall</code> tells us that</p>
+<div class="highlight"><pre><span></span><code><span class="n">killall</span><span class="w"> </span><span class="n">sends</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">signal</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="n">processes</span><span class="w"> </span><span class="n">running</span><span class="w"> </span><span class="n">any</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">specified</span><span class="w"> </span><span class="n">commands</span><span class="o">.</span><span class="w"> </span><span class="n">If</span><span class="w"> </span><span class="n">no</span><span class="w"> </span><span class="k">signal</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">specified</span><span class="p">,</span><span class="w"> </span><span class="n">SIGTERM</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">sent</span><span class="o">.</span>
+</code></pre></div>
+
+<p>In other words, if no signal is specified, then <code>killall</code> will terminate the process, otherwise it will just send the provided signal. Then in the man page of <code>swayidle</code>, we can see that when receiving <code>SIGUSR1</code> <code>swayidle</code> will immediately enter idle state (i.e. it will skip it the timeout).</p>
+<p>So basically what that line does is to bind a key combination to sending a signal to <code>swaydle</code>, so that it immediately enters idle state (aka locking the screen).</p>
+<p>Note though that the command as is will only skip the first timeout (i.e. the one for the screen locking). If you want your command to lock AND power off the screen, you'll have to send the signal a second time (basically one signal for every timeout you want to skip), i.e.</p>
+<div class="highlight"><pre><span></span><code><span class="nv">bindsym</span><span class="w"> </span>$<span class="nv">mod</span><span class="o">+</span><span class="nv">escape</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="nv">killall</span><span class="w"> </span><span class="o">-</span><span class="nv">s</span><span class="w"> </span><span class="nv">SIGUSR1</span><span class="w"> </span><span class="nv">swayidle</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nv">killall</span><span class="w"> </span><span class="o">-</span><span class="nv">s</span><span class="w"> </span><span class="nv">SIGUSR1</span><span class="w"> </span><span class="nv">swayidle</span>
+</code></pre></div>
+
+<p>Great! Now you should have a working Sway and a working lock screen.</p>
+<h2>References</h2>
+<ul>
+<li><code>man -k sway</code>, for a list of all the available Sway man pages</li>
+<li><a href="https://wiki.archlinux.org/title/Sway">Sway - Arch linux wiki</a></li>
+</ul>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>

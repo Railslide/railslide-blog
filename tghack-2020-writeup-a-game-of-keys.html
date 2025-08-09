@@ -123,18 +123,7 @@
 </code></pre></div>
 
 <p>My take from it was that the programs takes four inputs and uses them for creating a key based on a matrix and on the wordlist. If the resulting key is the correct one, the <code>checkdata</code> function is going to print out the flag.</p>
-<p>Running the program confirmed my theory</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>keygame.py
-input<span class="w"> </span>a<span class="w"> </span>number:<span class="w"> </span><span class="m">1</span>
-input<span class="w"> </span>a<span class="w"> </span>number:<span class="w"> </span><span class="m">1</span>
-input<span class="w"> </span>a<span class="w"> </span>number:<span class="w"> </span><span class="m">1</span>
-input<span class="w"> </span>a<span class="w"> </span>number:<span class="w"> </span><span class="m">1</span>
-aa0caa0c
-<span class="m">5</span><span class="p">&amp;</span>RYAW<span class="w">   </span>DASA_BYF
-<span class="w">                           </span>^
-<span class="w">                             </span>^<span class="w"> </span><span class="nv">aa0caa0c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>TG31<span class="o">{</span>tils<span class="w"> </span>gmag!vhotmd<span class="w"> </span>c<span class="sb">`</span><span class="w"> </span>oo!tei%mono<span class="o">}</span>
-</code></pre></div>
-
+<p>Running the program with some random inputs confirmed my theory.</p>
 <p>Now, how to figure out what are the correct inputs? The sources shows that the game is created with a 25x25 matrix (<code>mgame = myGame(25, 25)</code>) and since the inputs are used as indexes for the matrix, any input greater than 24 should be invalid.</p>
 <p>A quick run of the program confirmed this theory as well</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>keygame.py
