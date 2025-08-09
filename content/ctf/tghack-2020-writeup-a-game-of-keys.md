@@ -68,18 +68,7 @@ And had a look at the source code
 
 My take from it was that the programs takes four inputs and uses them for creating a key based on a matrix and on the wordlist. If the resulting key is the correct one, the `checkdata` function is going to print out the flag.
 
-Running the program confirmed my theory
-
-    :::bash
-    $ python keygame.py
-    input a number: 1
-    input a number: 1
-    input a number: 1
-    input a number: 1
-    aa0caa0c
-    5&RYAW   DASA_BYF
-                               ^
-                                 ^ aa0caa0c = TG31{tils gmag!vhotmd c` oo!tei%mono}
+Running the program with some random inputs confirmed my theory.
 
 Now, how to figure out what are the correct inputs? The sources shows that the game is created with a 25x25 matrix (`mgame = myGame(25, 25)`) and since the inputs are used as indexes for the matrix, any input greater than 24 should be invalid.
 
