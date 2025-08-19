@@ -12,7 +12,6 @@ A while ago I decided to give window managers a try. After a bit of experimentat
 - It has great docs, an easily understandable config, and a sane defaults set
 - It uses Wayland instead of Xorg, which is deprecated and no longer actively maintained
 
-
 So if you are after a minimal tiling window managers that can be completely adapted to you needs, without having to go through to a super steep learning curve (hello xmonad), you should definitely give Sway a try.
 
 ## Installing Sway
@@ -91,7 +90,6 @@ Great! Now you should have a working Sway and a working lock screen.
 
 
 ## References
-
 - `man -k sway`, for a list of all the available Sway man pages
 - [Sway - Arch linux wiki](https://wiki.archlinux.org/title/Sway)
 
