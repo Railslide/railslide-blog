@@ -1,5 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide - tiling-window-managers</title><link href="https://railslide.io/" rel="alternate"/><link href="https://railslide.io/feeds/tiling-window-managers.atom.xml" rel="self"/><id>https://railslide.io/</id><updated>2025-08-08T00:00:00+02:00</updated><entry><title>Setting up Sway: the basics</title><link href="https://railslide.io/setting-up-sway-the-basics.html" rel="alternate"/><published>2025-08-08T00:00:00+02:00</published><updated>2025-08-08T00:00:00+02:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2025-08-08:/setting-up-sway-the-basics.html</id><summary type="html">&lt;p&gt;The first of a series of article about setting up Sway. How to install Sway, creating a config file, and setting the lock screen up.&lt;/p&gt;</summary><content type="html">&lt;p&gt;A while ago I decided to give window managers a try. After a bit of experimentation I landed on Sway and never went back. So after roughly 1.5 years of using it as my daily driver, I decided that it was finally time to dedicate a series of article to how to set it up.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Railslide - tiling-window-managers</title><link href="https://railslide.io/" rel="alternate"/><link href="https://railslide.io/feeds/tiling-window-managers.atom.xml" rel="self"/><id>https://railslide.io/</id><updated>2025-08-19T00:00:00+02:00</updated><entry><title>Setting up Sway: inputs &amp; outputs</title><link href="https://railslide.io/setting-up-sway-inputs-outputs.html" rel="alternate"/><published>2025-08-19T00:00:00+02:00</published><updated>2025-08-19T00:00:00+02:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2025-08-19:/setting-up-sway-inputs-outputs.html</id><summary type="html">&lt;p&gt;Part 2 of the series of articles about setting up Sway. Keyboard, mouse, and multiple screens.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;em&gt;This article is part 2 of &lt;a href="/tag/setting-up-sway.html"&gt;a series about setting up Sway&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;Inputs (aka keyboard, mouse, etc)&lt;/h2&gt;
+&lt;p&gt;One of the first things I used to do after installing a desktop environment was to adjust keyboard and mouse behavior. Thankfully Sway lets you define those in the config, so now I only need to make sure my config is in place and everything just works out of the box.&lt;/p&gt;
+&lt;p&gt;So how do you go for customizing them? Once again, the friendly config provides an example as well as some helpful text&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="gu"&gt;##&lt;/span&gt;# Input configuration
+&lt;span class="gh"&gt;#&lt;/span&gt;
+# Example configuration:
+&lt;span class="gh"&gt;#&lt;/span&gt;
+#   input &amp;quot;2:14:SynPS/2_Synaptics_TouchPad&amp;quot; {
+&lt;span class="gh"&gt;#&lt;/span&gt;       dwt enabled
+&lt;span class="gh"&gt;#&lt;/span&gt;       tap enabled
+&lt;span class="gh"&gt;#&lt;/span&gt;       natural_scroll enabled
+&lt;span class="gh"&gt;#&lt;/span&gt;       middle_emulation enabled
+&lt;span class="gh"&gt;#&lt;/span&gt;   }
+&lt;span class="gh"&gt;#&lt;/span&gt;
+# You can get the names of your inputs by running: swaymsg -t get_inputs
+&lt;span class="gh"&gt;#&lt;/span&gt; Read `man 5 sway-input` for more information about this section.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;So if you want to edit the config for a specific input device, you'd just run &lt;code&gt;swaymsg -t get_inputs&lt;/code&gt;, find it in the list, and adjust its behavior accordingly.&lt;/p&gt;
+&lt;p&gt;This is great, but what if I wanted to have certain behaviors for ALL my keyboards or all my mice? Well, you simply have to define the behaviors on the input type, rather than on the input identifier. For example&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nx"&gt;input&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nx"&gt;keyboard&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nx"&gt;xkb_layout&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;us,it,se&amp;quot;&lt;/span&gt;
+&lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;Map&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;alt&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="nx"&gt;shift&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;keyboard&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;layout&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;switcher&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;and&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;caps&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nx"&gt;lock&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;ctrl&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nx"&gt;xkb_options&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;grp:alt_shift_toggle, ctrl:nocaps&amp;quot;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The snippet above would make the &lt;code&gt;us&lt;/code&gt;, &lt;code&gt;it&lt;/code&gt;, and &lt;code&gt;se&lt;/code&gt; layouts available, set &lt;kbd&gt;alt&lt;/kbd&gt; &lt;kbd&gt;shift&lt;/kbd&gt; as layout switcher, and remap &lt;kbd&gt;caps-lock&lt;/kbd&gt; to &lt;kbd&gt;ctrl&lt;/kbd&gt;, for ALL keyboards.&lt;/p&gt;
+&lt;p&gt;For a list of layouts and options for &lt;code&gt;xkb&lt;/code&gt;, &lt;a href="https://man.archlinux.org/man/xkeyboard-config-2.7.en"&gt;the man page for it&lt;/a&gt; is a great resource.&lt;/p&gt;
+&lt;h2&gt;Outputs (aka screens)&lt;/h2&gt;
+&lt;p&gt;Outputs in Sway work similarly to inputs. You can get a list of the available ones with &lt;code&gt;swaymsg -t get_outputs&lt;/code&gt; and define their setup, as suggested in the config itself&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="gh"&gt;#&lt;/span&gt; Example configuration:
+&lt;span class="gh"&gt;#&lt;/span&gt;
+#   output HDMI-A-1 resolution 1920x1080 position 1920,0
+&lt;span class="gh"&gt;#&lt;/span&gt;
+# You can get the names of your outputs by running: swaymsg -t get_outputs
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;And this would probably work great if you have a very static setup, like a single screen that you only need to set up once. However, if you happen to have a laptop and one or more external screens or setups (e.g. home and office), you'll likely want to use &lt;a href="https://gitlab.freedesktop.org/emersion/kanshi"&gt;Kanshi&lt;/a&gt; instead.&lt;/p&gt;
+&lt;p&gt;Kanshi allows you to define output profiles that are automatically enabled and disabled when screens are plugged in or out. If you are familiar with Autorandr, Kanshi is the Wayland equivalent of it.&lt;/p&gt;
+&lt;p&gt;To setup Kanshi, you first need to install the &lt;code&gt;kanshi&lt;/code&gt; package with your favourite package manager. Next, create a config file at &lt;code&gt;~/.config/kanshi/config&lt;/code&gt; (I personally don't git commit this file to my dotfiles, since it's very machine specific) and fill it with your desired setup. For example&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;profile {
+    output LVDS-1 position 0,0 scale 1.5
+    output &amp;quot;Some Company ASDF 4242&amp;quot; mode 1600x900 position 1920,0
+}
+
+profile {
+    output LVDS-1 enable scale 2
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The snippet above defines two different profiles, one for the laptop built-in monitor only and the other for when a specific external screen is plugged in. Kanshi will then take care of enabling the correct profile whenever all the listed devices are connected.&lt;/p&gt;
+&lt;p&gt;One thing worth paying attention to is the position parameter, especially if you want multiple outputs to be displayed next to each other. The way you achieve that, is to set the position of the screen you want on the left to &lt;code&gt;0,0&lt;/code&gt; and the one you want to the right to &lt;code&gt;&amp;lt;left_screen_width&amp;gt;,0&lt;/code&gt;. You can get the width of the screen by running &lt;code&gt;swaymsg -t get_outputs&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Last but not least, let's tell Sway to use Kanshi by adding the following to your config&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;exec_always &amp;quot;pkill kanshi; kanshi &amp;amp;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code&gt;exec_always&lt;/code&gt; parts guarantees that the command is run even when the Sway config is reloaded (differently from &lt;code&gt;exec&lt;/code&gt;, which will only run at session start). And the rest of the command is just to make sure to stop any running instances of Kanshi, before starting a new one.&lt;/p&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;That's it! You should now be able to config your inputs an outputs as per your liking!&lt;/p&gt;
+&lt;h2&gt;References&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://man.archlinux.org/man/xkeyboard-config-2.7.en"&gt;Man page for xkeyboard-config&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://gitlab.freedesktop.org/emersion/kanshi"&gt;Kanshi source code and docs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;man -k sway&lt;/code&gt;, for a list of all the available Sway man pages&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://wiki.archlinux.org/title/Sway"&gt;Sway - Arch linux wiki&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><category term="tiling-window-managers"/><category term="sway"/><category term="wayland"/><category term="desktop-enviroments"/><category term="setting-up-sway"/></entry><entry><title>Setting up Sway: the basics</title><link href="https://railslide.io/setting-up-sway-the-basics.html" rel="alternate"/><published>2025-08-08T00:00:00+02:00</published><updated>2025-08-08T00:00:00+02:00</updated><author><name>Giulia</name></author><id>tag:railslide.io,2025-08-08:/setting-up-sway-the-basics.html</id><summary type="html">&lt;p&gt;The first of a series of article about setting up Sway. How to install Sway, creating a config file, and setting the lock screen up.&lt;/p&gt;</summary><content type="html">&lt;p&gt;A while ago I decided to give window managers a try. After a bit of experimentation I landed on Sway and never went back. So after roughly 1.5 years of using it as my daily driver, I decided that it was finally time to dedicate a series of article to how to set it up.&lt;/p&gt;
 &lt;h2&gt;Why Sway&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;It is super customizable while still being human-friendly&lt;/li&gt;

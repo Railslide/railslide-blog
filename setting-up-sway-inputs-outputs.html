@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="https://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>Setting up Sway: inputs & outputs // Railslide // Code, experiments, and thoughts</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/puremorning.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="links"><a href="/about.html">About</a></p>
+                                <p class="links"><a href="/categories.html">Categories</a></p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Setting up Sway: inputs & outputs</h1>
+                        <p class="post-meta">
+                        category: <a href="https://railslide.io/category/tiling-window-managers.html">tiling-window-managers</a>, date: 2025-08-19
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="https://railslide.io/tag/sway.html">sway</a>
+                                <a class="post-category" href="https://railslide.io/tag/wayland.html">wayland</a>
+                                <a class="post-category" href="https://railslide.io/tag/desktop-enviroments.html">desktop-enviroments</a>
+                                <a class="post-category" href="https://railslide.io/tag/setting-up-sway.html">setting-up-sway</a>
+                </header>
+            </section>
+            <p><em>This article is part 2 of <a href="/tag/setting-up-sway.html">a series about setting up Sway</a></em></p>
+<h2>Inputs (aka keyboard, mouse, etc)</h2>
+<p>One of the first things I used to do after installing a desktop environment was to adjust keyboard and mouse behavior. Thankfully Sway lets you define those in the config, so now I only need to make sure my config is in place and everything just works out of the box.</p>
+<p>So how do you go for customizing them? Once again, the friendly config provides an example as well as some helpful text</p>
+<div class="highlight"><pre><span></span><code><span class="gu">##</span># Input configuration
+<span class="gh">#</span>
+# Example configuration:
+<span class="gh">#</span>
+#   input &quot;2:14:SynPS/2_Synaptics_TouchPad&quot; {
+<span class="gh">#</span>       dwt enabled
+<span class="gh">#</span>       tap enabled
+<span class="gh">#</span>       natural_scroll enabled
+<span class="gh">#</span>       middle_emulation enabled
+<span class="gh">#</span>   }
+<span class="gh">#</span>
+# You can get the names of your inputs by running: swaymsg -t get_inputs
+<span class="gh">#</span> Read `man 5 sway-input` for more information about this section.
+</code></pre></div>
+
+<p>So if you want to edit the config for a specific input device, you'd just run <code>swaymsg -t get_inputs</code>, find it in the list, and adjust its behavior accordingly.</p>
+<p>This is great, but what if I wanted to have certain behaviors for ALL my keyboards or all my mice? Well, you simply have to define the behaviors on the input type, rather than on the input identifier. For example</p>
+<div class="highlight"><pre><span></span><code><span class="nx">input</span><span class="w"> </span><span class="k">type</span><span class="p">:</span><span class="nx">keyboard</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">xkb_layout</span><span class="w"> </span><span class="s">&quot;us,it,se&quot;</span>
+<span class="err">#</span><span class="w"> </span><span class="nx">Map</span><span class="w"> </span><span class="nx">alt</span><span class="o">+</span><span class="nx">shift</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">keyboard</span><span class="w"> </span><span class="nx">layout</span><span class="w"> </span><span class="nx">switcher</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="nx">caps</span><span class="o">-</span><span class="nx">lock</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">ctrl</span>
+<span class="w">  </span><span class="nx">xkb_options</span><span class="w"> </span><span class="s">&quot;grp:alt_shift_toggle, ctrl:nocaps&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The snippet above would make the <code>us</code>, <code>it</code>, and <code>se</code> layouts available, set <kbd>alt</kbd> <kbd>shift</kbd> as layout switcher, and remap <kbd>caps-lock</kbd> to <kbd>ctrl</kbd>, for ALL keyboards.</p>
+<p>For a list of layouts and options for <code>xkb</code>, <a href="https://man.archlinux.org/man/xkeyboard-config-2.7.en">the man page for it</a> is a great resource.</p>
+<h2>Outputs (aka screens)</h2>
+<p>Outputs in Sway work similarly to inputs. You can get a list of the available ones with <code>swaymsg -t get_outputs</code> and define their setup, as suggested in the config itself</p>
+<div class="highlight"><pre><span></span><code><span class="gh">#</span> Example configuration:
+<span class="gh">#</span>
+#   output HDMI-A-1 resolution 1920x1080 position 1920,0
+<span class="gh">#</span>
+# You can get the names of your outputs by running: swaymsg -t get_outputs
+</code></pre></div>
+
+<p>And this would probably work great if you have a very static setup, like a single screen that you only need to set up once. However, if you happen to have a laptop and one or more external screens or setups (e.g. home and office), you'll likely want to use <a href="https://gitlab.freedesktop.org/emersion/kanshi">Kanshi</a> instead.</p>
+<p>Kanshi allows you to define output profiles that are automatically enabled and disabled when screens are plugged in or out. If you are familiar with Autorandr, Kanshi is the Wayland equivalent of it.</p>
+<p>To setup Kanshi, you first need to install the <code>kanshi</code> package with your favourite package manager. Next, create a config file at <code>~/.config/kanshi/config</code> (I personally don't git commit this file to my dotfiles, since it's very machine specific) and fill it with your desired setup. For example</p>
+<div class="highlight"><pre><span></span><code>profile {
+    output LVDS-1 position 0,0 scale 1.5
+    output &quot;Some Company ASDF 4242&quot; mode 1600x900 position 1920,0
+}
+
+profile {
+    output LVDS-1 enable scale 2
+}
+</code></pre></div>
+
+<p>The snippet above defines two different profiles, one for the laptop built-in monitor only and the other for when a specific external screen is plugged in. Kanshi will then take care of enabling the correct profile whenever all the listed devices are connected.</p>
+<p>One thing worth paying attention to is the position parameter, especially if you want multiple outputs to be displayed next to each other. The way you achieve that, is to set the position of the screen you want on the left to <code>0,0</code> and the one you want to the right to <code>&lt;left_screen_width&gt;,0</code>. You can get the width of the screen by running <code>swaymsg -t get_outputs</code>.</p>
+<p>Last but not least, let's tell Sway to use Kanshi by adding the following to your config</p>
+<div class="highlight"><pre><span></span><code>exec_always &quot;pkill kanshi; kanshi &amp;&quot;
+</code></pre></div>
+
+<p>The <code>exec_always</code> parts guarantees that the command is run even when the Sway config is reloaded (differently from <code>exec</code>, which will only run at session start). And the rest of the command is just to make sure to stop any running instances of Kanshi, before starting a new one.</p>
+<h2>Conclusion</h2>
+<p>That's it! You should now be able to config your inputs an outputs as per your liking!</p>
+<h2>References</h2>
+<ul>
+<li><a href="https://man.archlinux.org/man/xkeyboard-config-2.7.en">Man page for xkeyboard-config</a></li>
+<li><a href="https://gitlab.freedesktop.org/emersion/kanshi">Kanshi source code and docs</a></li>
+<li><code>man -k sway</code>, for a list of all the available Sway man pages</li>
+<li><a href="https://wiki.archlinux.org/title/Sway">Sway - Arch linux wiki</a></li>
+</ul>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>
