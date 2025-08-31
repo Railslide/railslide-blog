@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Railslide, Code, experiments, and thoughts">
+
+        <link rel="alternate"  href="https://railslide.io/feeds/all.atom.xml" type="application/atom+xml" title="Railslide Full Atom Feed"/>
+
+        <title>Setting up Sway: media playing & Pipewire // Railslide // Code, experiments, and thoughts</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/puremorning.css">
+    <link rel="stylesheet" href="https://railslide.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="/">Railslide</a></h1>
+                            <p class="tagline">Code, experiments, and thoughts</p>
+                                <p class="links"><a href="/about.html">About</a></p>
+                                <p class="links"><a href="/categories.html">Categories</a></p>
+                                <p class="social">
+                                    <a href="https://github.com/Railslide/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.atom.xml">
+                                        <i class="fa fa-rss fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Setting up Sway: media playing & Pipewire</h1>
+                        <p class="post-meta">
+                        category: <a href="https://railslide.io/category/tiling-window-managers.html">tiling-window-managers</a>, date: 2025-08-31
+                        </p>
+                        <p class="post-meta">
+                            tags =                                 <a class="post-category" href="https://railslide.io/tag/sway.html">sway</a>
+                                <a class="post-category" href="https://railslide.io/tag/wayland.html">wayland</a>
+                                <a class="post-category" href="https://railslide.io/tag/desktop-enviroments.html">desktop-enviroments</a>
+                                <a class="post-category" href="https://railslide.io/tag/setting-up-sway.html">setting-up-sway</a>
+                                <a class="post-category" href="https://railslide.io/tag/pipewire.html">pipewire</a>
+                </header>
+            </section>
+            <p><em>This article is part 3 of <a href="/tag/setting-up-sway.html">a series about setting up Sway</a></em></p>
+<blockquote>
+<p><strong>Note!</strong> </br>
+In this article I am going to cover how to get media playing to work specifically with Pipewire. If you use something else (e.g. pulseaudio), the instructions below will likely not apply.</p>
+</blockquote>
+<h2>Media keys</h2>
+<p>In order to set up media keys to work under Pipewire, you first need to install two dependencies:</p>
+<ul>
+<li><code>wireplumber</code> to control volume</li>
+<li><code>playerctl</code> to control playback</li>
+</ul>
+<p>You might have noticed that the default Sway configuration already comes with a handy set of key bindings for volume control:</p>
+<div class="highlight"><pre><span></span><code><span class="err">#</span><span class="w"> </span><span class="n">Special</span><span class="w"> </span><span class="n">keys</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">adjust</span><span class="w"> </span><span class="n">volume</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="n">PulseAudio</span>
+<span class="n">bindsym</span><span class="w"> </span><span class="o">--</span><span class="n">locked</span><span class="w"> </span><span class="n">XF86AudioMute</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="n">pactl</span><span class="w"> </span><span class="k">set</span><span class="o">-</span><span class="n">sink</span><span class="o">-</span><span class="n">mute</span><span class="w"> </span><span class="err">\</span><span class="nv">@DEFAULT_SINK</span><span class="err">@</span><span class="w"> </span><span class="n">toggle</span>
+<span class="n">bindsym</span><span class="w"> </span><span class="o">--</span><span class="n">locked</span><span class="w"> </span><span class="n">XF86AudioLowerVolume</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="n">pactl</span><span class="w"> </span><span class="k">set</span><span class="o">-</span><span class="n">sink</span><span class="o">-</span><span class="n">volume</span><span class="w"> </span><span class="err">\</span><span class="nv">@DEFAULT_SINK</span><span class="err">@</span><span class="w"> </span><span class="o">-</span><span class="mi">5</span><span class="o">%</span>
+<span class="n">bindsym</span><span class="w"> </span><span class="o">--</span><span class="n">locked</span><span class="w"> </span><span class="n">XF86AudioRaiseVolume</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="n">pactl</span><span class="w"> </span><span class="k">set</span><span class="o">-</span><span class="n">sink</span><span class="o">-</span><span class="n">volume</span><span class="w"> </span><span class="err">\</span><span class="nv">@DEFAULT_SINK</span><span class="err">@</span><span class="w"> </span><span class="o">+</span><span class="mi">5</span><span class="o">%</span>
+<span class="n">bindsym</span><span class="w"> </span><span class="c1">--locked XF86AudioMicMute exec pactl set-source-mute \@DEFAULT_SOURCE@ toggle</span>
+</code></pre></div>
+
+<p>However, as they comment says, they are meant for working with PulseAudio. So, in order to make it work with Pipewire, you need to change them to:</p>
+<div class="highlight"><pre><span></span><code><span class="n">bindsym</span><span class="w"> </span><span class="o">--</span><span class="n">locked</span><span class="w"> </span><span class="n">XF86AudioMute</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="n">wpctl</span><span class="w"> </span><span class="k">set</span><span class="o">-</span><span class="n">mute</span><span class="w"> </span><span class="nv">@DEFAULT_SINK</span><span class="err">@</span><span class="w"> </span><span class="n">toggle</span>
+<span class="n">bindsym</span><span class="w"> </span><span class="o">--</span><span class="n">locked</span><span class="w"> </span><span class="n">XF86AudioLowerVolume</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="n">wpctl</span><span class="w"> </span><span class="k">set</span><span class="o">-</span><span class="n">volume</span><span class="w"> </span><span class="nv">@DEFAULT_SINK</span><span class="err">@</span><span class="w"> </span><span class="mi">5</span><span class="o">%-</span>
+<span class="n">bindsym</span><span class="w"> </span><span class="o">--</span><span class="n">locked</span><span class="w"> </span><span class="n">XF86AudioRaiseVolume</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="n">wpctl</span><span class="w"> </span><span class="k">set</span><span class="o">-</span><span class="n">volume</span><span class="w"> </span><span class="o">--</span><span class="k">limit</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="nv">@DEFAULT_SINK</span><span class="err">@</span><span class="w"> </span><span class="mi">5</span><span class="o">%+</span>
+<span class="n">byndsym</span><span class="w"> </span><span class="c1">--locked XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle</span>
+</code></pre></div>
+
+<p>As you can see, they look fairly similar, with the only exception of the <code>--limit 1.0</code> flag. The reason for that is to prevent Wireplumber from continuing to increase the volume after reaching 100%.</p>
+<p>Last but not least, let's add the keybindings for playback control to the config file</p>
+<div class="highlight"><pre><span></span><code><span class="nv">bindsym</span><span class="w"> </span><span class="o">--</span><span class="nv">locked</span><span class="w"> </span><span class="nv">XF86AudioPlay</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="nv">playerctl</span><span class="w"> </span><span class="nv">play</span><span class="o">-</span><span class="k">pause</span>
+<span class="nv">bindsym</span><span class="w"> </span><span class="o">--</span><span class="nv">locked</span><span class="w"> </span><span class="nv">XF86AudioNext</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="nv">playerctl</span><span class="w"> </span><span class="k">next</span>
+<span class="nv">bindsym</span><span class="w"> </span><span class="o">--</span><span class="nv">locked</span><span class="w"> </span><span class="nv">XF86AudioPrev</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="nv">playerctl</span><span class="w"> </span><span class="nv">previous</span>
+</code></pre></div>
+
+<p>And now your media key are properly set up for working with Pipewire.</p>
+<h2>Screen sharing</h2>
+<p>In order for screen sharing to work, you need a xdg-desktop-portal. The one for wlroots, which Sway relies on, is called <code>xdg-desktop-portal-wlr</code>. Once installed, screen sharing should just work - with a couple of catches:</p>
+<ul>
+<li>
+<p>Only screen sharing is currently possible at the time of writing (version 0.7.1). Single window sharing should arrive with the next release, but the ETA for it is currently unknown. If you are in a hurry and feel adventurous, you can install from source and follow <a href="https://github.com/emersion/xdg-desktop-portal-wlr/issues/107#issuecomment-3217127025">these instructions</a> (note that I haven't tried them myself, so I have no clue if they works).</p>
+</li>
+<li>
+<p><code>xdg-desktop-portal-wlr</code> will try to pick the first screen selector from a list of hardcoded choosers (slurp, wmenu, wofi, rofi, bemenu). So make sure to have at least one of those installed.</p>
+</li>
+</ul>
+<h2>Preventing idle from triggering when playing media</h2>
+<p>The last bit of settings is to prevent you computer to go in idle mode when media is being played.</p>
+<p>Install <code>wayland-pipewire-idle-inhibit</code> and add the following to Sway config</p>
+<div class="highlight"><pre><span></span><code><span class="n">exec</span><span class="w"> </span><span class="n">wayland</span><span class="o">-</span><span class="n">pipewire</span><span class="o">-</span><span class="n">idle</span><span class="o">-</span><span class="n">inhibit</span>
+</code></pre></div>
+
+<p>And voilà, no more idle and lock screen triggering while watching a video or taking part in a video call!</p>
+<p>The behavior of the inhibitor can be customized by creating a toml file at <code>~/.config/wayland-pipewire-idle-inhibit/config.toml</code>. For example, if you don't care about idle triggering while Spotify is playing, you can simply blacklist it in the config file:</p>
+<div class="highlight"><pre><span></span><code><span class="k">[[node_blacklist]]</span>
+<span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;spotify&quot;</span>
+</code></pre></div>
+
+<p>Check the <a href="https://github.com/rafaelrc7/wayland-pipewire-idle-inhibit/tree/master?tab=readme-ov-file#config">docs</a> for a list of all supported configurations.</p>
+<h2>References</h2>
+<ul>
+<li><a href="https://pipewire.pages.freedesktop.org/wireplumber/">Wireplumber docs</a></li>
+<li><a href="https://github.com/emersion/xdg-desktop-portal-wlr">xdg-desktop-portal-wlr on GitHub</a></li>
+<li><a href="https://github.com/rafaelrc7/wayland-pipewire-idle-inhibit">wayland-pipewire-idle-inhibit on GitHub</a></li>
+</ul>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Railslide <a href="http://creativecommons.org/licenses/by-sa/4.0/">(CC BY-SA 4.0)</a> &ndash;
+        Built with <a href="http://blog.getpelican.com/">Pelican</a>
+        and a modified version of <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>
